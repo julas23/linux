@@ -8,6 +8,13 @@ sed -i '/^HISTCONTROL=ignoreboth/a export export HISTTIMEFORMAT="<%F %T> (${orig
 sed -i '/^HISTCONTROL=ignoreboth/a export original_user=${SUDO_USER:-$(pstree -Alsu "$$" | sed -n "s/.*(\([^)]*\)).*($USER)[^(]*$/\1/p")}' ~/.bashrc
 sed -i 's/^HISTSIZE=1000/HISTSIZE=1000000/g' ~/.bashrc
 sed -i 's/^HISTFILESIZE=2000/HISTFILESIZE=2000000/g' ~/.bashrc
+sed -i '/if \[ "\$color_prompt" = yes \]; then/i \
+Branch=`git branch 2> \/dev\/null | sed -e "s|^[^*]*\* \(.*\)\$|\\1|" -e "s|.*|(&)|"`\
+Line1="\\\\n\\[\\033[38;5;6m\\]\\d\\[\\033[38;5;6m\\] \\t\\[\\033[38;5;1m\\] \\[\\[\\033[38;5;11m\\]\\s\\[\\033[38;5;1m\\]\\] \\[\\033[38;5;1m\\]{\\[\\033[38;5;11m\\]\\$?\\[\\033[38;5;1m\\]}" \$Branch\
+Line2="\\\\n\\[\\$(tput sgr0)\\]\\[\\033[38;5;11m\\]\\u\\[\\$(tput sgr0)\\]\\[\\033[38;5;9m\\]@\\[\\$(tput sgr0)\\]\\[\\033[38;5;27m\\]\\h\\[\\033[38;5;11m\\]:\\[\\033[38;5;39m\\]\\w"\
+Line3="\\\\n\\\\\\$\\[\\$(tput sgr0)\\] \\[\\$(tput sgr0)\\]"\
+PROMPT="\$(echo -e \"\$Line1 \$Line2 \$Line3 \$Line4\")"\n' bashrctest
+sed -i '/PS1=/s/.*/PS1=$PROMPT/' bashrctest
 
 apt install mc synaptic vlc inkscape gimp sweethome3d openscad conky-all screenfetch ncal rosegarden ardour6 audacity hydrogen notepadqq lutris gparted remmina terminator tmux net-utils dnsutils nfs-common openssh-server git
 curl -fsSL https://get.docker.com | bash
