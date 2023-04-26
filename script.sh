@@ -1,11 +1,11 @@
 #!/bin/bash
 
+export original_user=${SUDO_USER:-$(pstree -Alsu "$$" | sed -n "s/.*(\([^)]*\)).*($USER)[^(]*$/\1/p")}
+export HISTTIMEFORMAT="<%F %T> (${original_user:-$USER}) "
+
 apt install mc synaptic vlc inkscape gimp sweethome3d openscad conky-all screenfetch ncal rosegarden ardour6 audacity hydrogen notepadqq lutris gparted remmina terminator tmux net-utils dnsutils nfs-common openssh-server git
 curl -fsSL https://get.docker.com | bash
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-
-export original_user=${SUDO_USER:-$(pstree -Alsu "$$" | sed -n "s/.*(\([^)]*\)).*($USER)[^(]*$/\1/p")}
-export HISTTIMEFORMAT="<%F %T> (${original_user:-$USER}) "
 
 echo 'Package: snapd' > /etc/apt/preferences.d/nosnap.pref
 echo 'Pin: release a=*' >> /etc/apt/preferences.d/nosnap.pref
