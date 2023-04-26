@@ -15,6 +15,7 @@ Line2="\\\\n\\[\\$(tput sgr0)\\]\\[\\033[38;5;11m\\]\\u\\[\\$(tput sgr0)\\]\\[\\
 Line3="\\\\n\\\\\\$\\[\\$(tput sgr0)\\] \\[\\$(tput sgr0)\\]"\
 PROMPT="\$(echo -e \"\$Line1 \$Line2 \$Line3 \$Line4\")"\n' bashrctest
 sed -i '/PS1=/s/.*/PS1=$PROMPT/' bashrctest
+sed -i '/\.dircolors/a alias ls='\''myls'\''\nalias dir='\''myls'\''\nalias ll='\''myls'\''\nalias la='\''myls'\''\nalias l='\''myls'\''\nalias grep='\''egrep --color=auto'\''\nalias fgrep='\''fgrep --color=auto'\''\nalias egrep='\''egrep --color=auto'\''\nalias vgrep='\''egrep -v --color=auto'\''\nalias k='\''kubectl'\''\nalias kgp='\''kubectl get pod'\''\nalias kgn='\''kubectl get node'\''\nalias gpl='\''git pull'\''\nalias gcl='\''git clone'\''\nalias gck='\''git checkout'\''\nalias gbr='\''git branch -a'\''\nalias gad='\''git add .'\''\nalias gcm='\''git commit'\''\nalias gps='\''git push'\''\nalias gft='\''git fetch'\''\nalias gup='\''git add . && git commit -m "update" && git push'\''\nalias tfp='\''terraform plan'\''\nalias tfv='\''terraform validate'\''\nalias tfa='\''terraform apply'\''\nalias tfi='\''terraform import'\''\nalias tsp='\''terraspace plan'\''\nalias tsv='\''terraspace validate'\''\nalias tsa='\''terraspace apply'\''\nalias tsi='\''terraspace import'\''' bashrctest
 
 apt install mc synaptic vlc inkscape gimp sweethome3d openscad conky-all screenfetch ncal rosegarden ardour6 audacity hydrogen notepadqq lutris gparted remmina terminator tmux net-utils dnsutils nfs-common openssh-server git
 curl -fsSL https://get.docker.com | bash
