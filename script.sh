@@ -2,6 +2,7 @@
 
 sudo echo "#!/bin/bash \n
 ls --color=always --group-directories-first -1plArths |awk '{print \$4,\$5,\$2,\$6,\$7,\$8,\$9,\$10}' |column -t" > /usr/bin/myls
+sudo chmod +x /usr/bin/myls
 
 sed -i 's/^HISTCONTROL=ignoreboth/HISTCONTROL=ignoreboth:erasedups/g' ~/.bashrc
 sed -i '/^HISTCONTROL=ignoreboth/a export export HISTTIMEFORMAT="<%F %T> (${original_user:-$USER}) "' ~/.bashrc
