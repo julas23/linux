@@ -1,7 +1,13 @@
 #!/bin/bash
 
-export original_user=${SUDO_USER:-$(pstree -Alsu "$$" | sed -n "s/.*(\([^)]*\)).*($USER)[^(]*$/\1/p")}
-export HISTTIMEFORMAT="<%F %T> (${original_user:-$USER}) "
+sudo echo "#!/bin/bash \n
+ls --color=always --group-directories-first -1plArths |awk '{print \$4,\$5,\$2,\$6,\$7,\$8,\$9,\$10}' |column -t" > /usr/bin/myls
+
+sed -i 's/^HISTCONTROL=ignoreboth/HISTCONTROL=ignoreboth:erasedups/g' ~/.bashrc
+sed -i '/^HISTCONTROL=ignoreboth/a export export HISTTIMEFORMAT="<%F %T> (${original_user:-$USER}) "' ~/.bashrc
+sed -i '/^HISTCONTROL=ignoreboth/a export original_user=${SUDO_USER:-$(pstree -Alsu "$$" | sed -n "s/.*(\([^)]*\)).*($USER)[^(]*$/\1/p")}' ~/.bashrc
+sed -i 's/^HISTSIZE=1000/HISTSIZE=1000000/g' ~/.bashrc
+sed -i 's/^HISTFILESIZE=2000/HISTFILESIZE=2000000/g' ~/.bashrc
 
 apt install mc synaptic vlc inkscape gimp sweethome3d openscad conky-all screenfetch ncal rosegarden ardour6 audacity hydrogen notepadqq lutris gparted remmina terminator tmux net-utils dnsutils nfs-common openssh-server git
 curl -fsSL https://get.docker.com | bash
@@ -36,3 +42,5 @@ apt-get install ffmpeg
 add-apt-repository ppa:obsproject/obs-studio
 apt-get update && sudo apt-get install obs-studio
 
+cd /home/juliano/Downloads/Install
+for i in `ls |grep .deb |awk '{print $8}'; do dpkg -i && apt -f install; done
