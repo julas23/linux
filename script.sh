@@ -18,7 +18,7 @@ PROMPT="\$(echo -e \"\$Line1 \$Line2 \$Line3 \$Line4\")"\n' .bashrc
 sed -i '/PS1=/s/.*/PS1=$PROMPT/' .bashrc
 sed -i '/\.dircolors/a alias ls='\''myls'\''\nalias dir='\''myls'\''\nalias ll='\''myls'\''\nalias la='\''myls'\''\nalias l='\''myls'\''\nalias grep='\''egrep --color=auto'\''\nalias fgrep='\''fgrep --color=auto'\''\nalias egrep='\''egrep --color=auto'\''\nalias vgrep='\''egrep -v --color=auto'\''\nalias k='\''kubectl'\''\nalias kgp='\''kubectl get pod'\''\nalias kgn='\''kubectl get node'\''\nalias gpl='\''git pull'\''\nalias gcl='\''git clone'\''\nalias gck='\''git checkout'\''\nalias gbr='\''git branch -a'\''\nalias gad='\''git add .'\''\nalias gcm='\''git commit'\''\nalias gps='\''git push'\''\nalias gft='\''git fetch'\''\nalias gup='\''git add . && git commit -m "update" && git push'\''\nalias tfp='\''terraform plan'\''\nalias tfv='\''terraform validate'\''\nalias tfa='\''terraform apply'\''\nalias tfi='\''terraform import'\''\nalias tsp='\''terraspace plan'\''\nalias tsv='\''terraspace validate'\''\nalias tsa='\''terraspace apply'\''\nalias tsi='\''terraspace import'\''' .bashrc
 
-apt -y install mc synaptic gparted vlc inkscape gimp sweethome3d openscad conky-all screenfetch ncal rosegarden ardour6 audacity hydrogen notepadqq lutris gparted remmina terminator tmux net-utils dnsutils nfs-common openssh-server git
+apt -y install mc synaptic gparted vlc inkscape gimp sweethome3d openscad conky-all screenfetch ncal rosegarden ardour audacity hydrogen notepadqq lutris gparted remmina terminator tmux net-utils dnsutils nfs-common openssh-server git
 apt install -f
 apt update
 apt -y upgrade
