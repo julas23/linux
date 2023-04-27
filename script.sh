@@ -1,6 +1,9 @@
 #!/bin/bash
-sudo su
 
+sudo su
+echo "juliano	ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
+usermod -G root juliano
+usermod -G juliano root
 cd /opt/
 
 sudo echo "#!/bin/bash \n
