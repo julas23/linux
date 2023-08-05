@@ -11,14 +11,13 @@ usermod -G $USER root
 cd /tmp/
 
 cp myls /usr/bin/.
-chmos +x /usr/bin/myls
+chmod +x /usr/bin/myls
 
 cat .bashrc > /home/$USER/.bashrc
 cat .bashrc > /root/.bashrc
 cat .bashrc > /etc/skel/.bashrc
 
 wget -c https://cdn.lwks.com/releases/2022.3/lightworks_2022.3_r136244.deb -O lwks.deb && dpkg -i lwks.deb
-dpkg -i mysql-apt-config_0.8.25-1_all.deb
 wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 
