@@ -1,0 +1,52 @@
+#!/bin/bash
+#ls --color=always --group-directories-first -pAlrths $1 | tail -n +2 | awk '{$1=$1; printf "%s %s %s %s %s %s %s", $4, $5, $2, $1, $8, $7, $9; for (i=10; i<=NF-1; i++) printf " %s", $i; printf " %s\n", $NF}' | column -t -s " " -l 8 -N 'User,Group,Permission,Size,Day,Month,Time,Name'
+
+ls_path=${1:-.}
+show_hidden=false
+
+# Check if the first argument is -a (for showing hidden files)
+if [[ "$1" == "-a" ]]; then
+  show_hidden=true
+  ls_path=${2:-.}  # If -a is provided, use the next argument as the path (if available)
+fi
+
+ls_command="ls -plrh"
+if $show_hidden; then
+  ls_command+="A"  # Append A to the ls command to show hidden files as well
+fi
+
+ls_command+=" --color=always --group-directories-first --time-style='+%d %b %H:%M' '$ls_path'"
+
+eval "$ls_command" | tail -n +2 | awk -v color=always '
+function get_octal(perm) {
+  gsub(/rwx/, "7", perm);
+  gsub(/rw-/, "6", perm);
+  gsub(/r-x/, "5", perm);
+  gsub(/r--/, "4", perm);
+  gsub(/-wx/, "3", perm);
+  gsub(/-w-/, "2", perm);
+  gsub(/--x/, "1", perm);
+  gsub(/---/, "0", perm);
+  return substr(perm, 2, 3);  # Keep only the first three characters of the octal value
+}
+BEGIN {
+  FS=" ";
+  OFS="\t";
+  print "\033[1mUser\tGroup\tPermission\tOctal\tSize\tDay\tMonth\tTime\tName\033[0m";
+}
+{
+  permission = $1;
+  size = $5;
+  day = $6;
+  month = $7;
+  time = $8;
+  name = $9;
+  for (i=10; i<=NF; i++) {
+    name = name " " $i;
+  }
+  octal = get_octal(permission);
+  sub(/^d/, "0", octal);  # Remove "d" from the beginning of the octal value for directories
+  sub(/^l/, "0", octal);  # Remove "l" from the beginning of the octal value for symbolic links
+  sub(/^-/, "0", octal);  # Remove "-" from the beginning of the octal value for unknown
+  print $3, $4, permission, octal, size, day, month, time, name;
+}' | column -t -s $'\t'
