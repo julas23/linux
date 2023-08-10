@@ -24,7 +24,7 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashi
 apt update
 apt -y upgrade
 
-apt -y install terraform mysql-workbench-community mc synaptic gparted vlc inkscape gimp sweethome3d openscad conky-all screenfetch ncal rosegarden ardour audacity hydrogen notepadqq lutris gparted remmina terminator tmux net-utils dnsutils nfs-common openssh-server git
+apt -y install terraform mysql-workbench-community mc synaptic gparted vlc inkscape gimp sweethome3d openscad conky-all screenfetch ncal rosegarden ardour audacity hydrogen notepadqq lutris gparted remmina terminator tmux net-utils dnsutils nfs-common openssh-server git zsh fish
 apt install -f
 
 curl -fsSL https://get.docker.com | bash
