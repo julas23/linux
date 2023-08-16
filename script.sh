@@ -66,6 +66,7 @@ for var in `cat /home/$USERNAME/.config/user-dirs.dirs |grep -v '#' |cut -d/ -f 
 	ln -s /FS_DATA/$USERNAME/.config/OpenSCAD /home/$USERNAME/.config/OpenSCAD
 	ln -s /FS_DATA/$USERNAME/.config/Todoist /home/$USERNAME/.config/Todoist
 	ln -s /FS_DATA/$USERNAME/.config/VirtualBox /home/$USERNAME/.config/VirtualBox
+	ln -s /FS_DATA/$USERNAME/.todo /home/$USERNAME/.todo
 }
 
 install_packages() {
