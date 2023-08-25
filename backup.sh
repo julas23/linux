@@ -76,3 +76,5 @@ if [ -n "$diff_output" ]; then
 else
     echo "No differences found."
 fi
+
+shutdown -h now
