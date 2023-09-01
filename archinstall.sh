@@ -1,70 +1,107 @@
 #!/bin/bash
-<<<<<<< HEAD
-=======
-#set -e
-#parted /dev/nvme0n1 <<EOF
-#mklabel gpt
-#mkpart primary fat32 1MiB 501MiB
-#set 1 esp on
-#mkpart primary btrfs 501MiB 1501MiB
-#mkpart primary btrfs 1501MiB 51501MiB
-#mkpart primary btrfs 51501MiB 100%
-#quit
-#EOF
 
-#mkfs.fat -F32 /dev/nvme0n1p1
-#mkfs.btrfs /dev/nvme0n1p2
-#mkfs.btrfs /dev/nvme0n1p3
-#mkfs.btrfs /dev/nvme0n1p4
+if [[ $(id -u) -eq 0 ]]; then
+    echo "This script should not be run as root or with sudo."
+    exit 1
+else
+	USERNAME=`sudo cat /etc/passwd |grep '1000:1000' |cut -d: -f 1`
+	if [ -e "/etc/sudoers.d/1000-$USERNAME" ]; then
+	    sudo echo "$USERNAME    ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/1000-$USERNAME
+	fi
+	sudo sed -i "s|$USERNAME:x:.*:.*:.*:/home/$USERNAME:|$USERNAME:x:1000:1000:.*:/FS/DATA/juliano:/bin/zsh|g" /etc/passwd
+	sudo usermod -G root $USERNAME
+	sudo usermod -G $USERNAME root
+fi
 
-#mount /dev/nvme0n1p3 /mnt
-#mkdir /mnt/boot
-#mkdir /mnt/home
-#mount /dev/nvme0n1p2 /mnt/boot
-#mount /dev/nvme0n1p4 /mnt/home
->>>>>>> refs/remotes/origin/main
+func_lvm_raid() {
+	sudo pvcreate /dev/nvme1n1
+	sudo pvcreate /dev/nvme2n1
+	sudo vgcreate vg_data /dev/nvme1n1 /dev/nvme2n1
+	sudo lvcreate --mirrors 1 --type raid1 -l 100%FREE -n lv_data vg_data
+	sudo mkdir /FS /FS/DATA /FS/BACK /FS/GAME
+	sudo chown $USERNAME:USERNAME /FS -R
+	if ! grep -q '/dev/vg_data/lv_data' /etc/fstab; then
+		sudo echo "/dev/vg_data/lv_data /FS/DATA ext4 defaults,noatime 0 0" >> /etc/fstab
+	fi
+	if ! grep -q '/dev/nvme0n1p1' /etc/fstab; then
+		sudo echo "/dev/nvme0n1p1 /FS/GAME ext4 defaults,noatime 0 0" >> /etc/fstab
+	fi
+	if ! grep -q '/dev/sdb1' /etc/fstab; then
+		sudo echo "/dev/sdb1 /FS/BACK btrfs defaults,nofail,noatime 0 0" >> /etc/fstab
+	fi
+}
 
-#pacman -Syy
-#pacman -S reflector
-#cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
-#reflector -c "US" -f 12 -l 10 -n 12 --save /etc/pacman.d/mirrorlist
-#pacstrap /mnt base linux linux-firmware vim nano
-#genfstab -U /mnt >> /mnt/etc/fstab
-#arch-chroot /mnt
-#ln -sf /usr/share/zoneinfo/Europe/Lisbon /etc/localtime
-#hwclock --systohc
-#locale-gen
-#echo "LANG=en_US.UTF-8" > /etc/locale.conf
-#export LANG=en_GB.UTF-8
-#echo myarch > /etc/hostname
-#echo '127.0.0.1	localhost' > /etc/hosts
-#echo '::1		localhost' >> /etc/hosts
-#echo '127.0.1.1	myarch' >> /etc/hosts
-#passwd
-#pacman -S grub
-#grub-install --target=i386-pc /dev/nvme0n1p2
-#grub-mkconfig -o /boot/grub/grub.cfg
-#umount -R /mnt
-#reboot
+func_chaotic() {
+	sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+	sudo pacman-key --lsign-key 3056513887B78AEB
+	sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+	if ! grep -q '^\[chaotic-aur\]$' /etc/pacman.conf || ! grep -q '^Include = /etc/pacman.d/chaotic-mirrorlist$' /etc/pacman.conf; then
+	    sudo echo "[chaotic-aur]" | sudo tee -a /etc/pacman.conf
+	    sudo echo "Include = /etc/pacman.d/chaotic-mirrorlist" | sudo tee -a /etc/pacman.conf
+	    sudo echo "Added the [chaotic-aur] section and Include line."
+	else
+	    echo "The [chaotic-aur] Repo is already available."
+	fi
+}
 
-pacman -S pamac
-pamac enable AUR
-pacman -Syy
-<<<<<<< HEAD
-pacman -Syyu
-pacman -S pamac
-pacman -S paru
-pacman -S yay
-pamac enable AUR
-pacman -S simple-scan
-paru MFC-L2710DW
-paru brscan4
+func_pacman(){
+	sudo pacman --noconfirm -S pamac
+	sudo pacman --noconfirm -Syy
+	sudo pacman --noconfirm -Syyu
+	sudo pacman --noconfirm -S pamac
+	sudo pacman --noconfirm -S paru
+	sudo pacman --noconfirm -S yay
+	sudo pamac enable AUR
+}
 
-for var in $(cat arc_pkg_list); do pacman --noconfirm -S $var; done
-=======
+func_mariadb() {
+	sudo pacman --noconfirm -S mariadb mariadb-clients
+	DBDIRS='/var/lib/mysql /var/lib/mariadb /var/run/mysqld /var/run/mariadb'
+	for var in $DBDIRS;
+	do
+		sudo rm -Rf $var
+		sudo mkdir $var
+		sudo chattr +C $var
+		sudo chown mysql:mysql $var
+		sudo chmod 777 $var
+	done
+	sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+	sudo systemctl restart mariadb
 
-for var in $(cat arc_pkg_list);
-do
-    pacman -S $var
-done
->>>>>>> refs/remotes/origin/main
+	CREATE DATABASE conky;
+	sudo mariadb -u root -p -e "CREATE USER 'juliano'@'localhost' IDENTIFIED BY 'jas2305X';"
+	sudo mariadb -u root -p -e "GRANT ALL PRIVILEGES ON *.* TO 'juliano'@'localhost';"
+
+	sudo mariadb -u root -p -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'jas2305X';"
+	sudo mariadb -u root -p -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';"
+
+	sudo mariadb -u root -p -e "CREATE USER 'conky'@'localhost' IDENTIFIED BY 'conky_db123';"
+	sudo mariadb -u root -p -e "GRANT ALL PRIVILEGES ON conky.* TO 'conky'@'localhost';"
+}
+
+func_install() {
+	echo "" > error.log
+	PACKAGES='alacritty ansible ansible-core ardour audacity balena-etcher bash bash-completion bat bitwarden blender brave-bin cava cheese chromium code conky conky-manager containerd curl dbeaver dmidecode docker docker-compose dosbox elisa endeavour evolution evolution-data-server exa expect filezilla firedragon firefox fish franz-bin gimp git gnucash helm homebank htop hydrogen inkscape jdk-openjdk jre-openjdk kubectl latte-dock links lm_sensors lshw lsd lutris mc mysql-workbench nano nfs-utils notepadqq obs-studio openlens-bin openrgb openscad openssh opera pycharm python python-mysqlconnector python-pymysql qbittorrent remmina retroarch rosegarden rpi-imager screenfetch solaar sqlite steam sweethome3d terminator terraform thunar thunderbird tilix todoist virtualbox vlc xterm yay youtube-dl zsh yay paru xsane brother-mfc-l2710dw simple-scan linux-api-headers wine winetricks'
+	sudo pacman --noconfirm -S simple-scan
+	paru MFC-L2710DW
+	paru brscan4
+	yay -S --mflags --skipinteg openlens-bin
+	yay -S --mflags --skipinteg franz-bin
+	for var in $PACKAGES;
+	do
+		clear
+		echo 'Installing - '$var
+		pacman --noconfirm -S $var 2>> error.log
+	done
+	sudo modprobe i2c_piix4
+	sudo modprobe i2c-i801
+	sudo modprobe i2c_dev
+}
+
+func_lvm_raid
+func_chaotic
+func_pacman
+func_mariadb
+func_install
+
+reboot

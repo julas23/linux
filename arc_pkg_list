@@ -10,6 +10,7 @@ bat
 bitwarden
 blender
 brave-bin
+cava
 cheese
 chromium
 code
@@ -44,6 +45,7 @@ inkscape
 jdk-openjdk
 jre-openjdk
 kubectl
+latte-dock
 links
 lm_sensors
 lshw
@@ -62,11 +64,7 @@ openssh
 opera
 pycharm
 python
-python-tqdm
-python-matplotlib
-python-cartopy
-python-pillow
-python-mysql.connector
+python-mysqlconnector
 python-pymysql
 qbittorrent
 remmina
@@ -95,3 +93,5 @@ paru
 xsane
 brother-mfc-l2710dw
 simple-scan
+xplanet
+xplanetfx
