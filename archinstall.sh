@@ -151,7 +151,7 @@ func_linux_amd() {
 	pacman -S xf86-video-ati
 	pacman -S xf86-video-amdgpu
 	pacman --noconfirm -S xorg
-	pacman --noconfirm -S mate-desktop mate-session-manager mate-panel mate-extra mate-applet-dock mate-applet-streamer caja marco
+	pacman --noconfirm -S mate-desktop mate-session-manager mate-panel mate-control-center mate-extra mate-applet-dock mate-applet-streamer caja marco
 	pacman --noconfirm -S sddm
 	modprobe fbdev
 	modprobe ati
@@ -162,7 +162,7 @@ func_linux_nvidia() {
 	pacman -S xf86-video-fbdev
 	pacman -S nvidia
 	pacman --noconfirm -S xorg
-	pacman --noconfirm -S mate-desktop mate-session-manager mate-panel mate-extra mate-applet-dock mate-applet-streamer caja marco 
+	pacman --noconfirm -S mate-desktop mate-session-manager mate-panel mate-control-center mate-extra mate-applet-dock mate-applet-streamer caja marco 
 	pacman --noconfirm -S sddm
 	modprobe fbdev
 	modprobe nvidia
