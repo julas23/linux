@@ -14,15 +14,17 @@ echo 'Updating data.'
 
 echo 'Backing Up Linux files'
 cp /etc/default/grub $TARGET/grub
-cp /etc/X11/xorg.conf $TARGET/xorg.conf
+cp /etc/fstab $TARGET/fstab
+cp /etc/passwd $TARGET/passwd
 crontab -l > $TARGET/crontab.bak
+cp ~/.xinitrc $TARGET/.xinitrc
 
 echo 'MariaDB Dump backup'
 mariadb-dump -x -A -u juliano -pjas2305X -h localhost --all-databases > $TARGET/conky.sql
 
-echo 'Copy Wallpaper file'
-sudo cp /home/juliano/.git/conky/worldmapwp/images/*.jpg /usr/share/wallpapers/bg.jpg
-sudo chmod +r /usr/share/wallpapers/bg.jpg
+echo 'ZSH Theme'
+cp -r /usr/share/zsh-theme-powerlevel10k $TARGET
+cp -r /usr/share/zsh $TARGET
 
 echo 'Removing 6 hour old backups. This list will be deleted.'
 find $TARGET -type d -cmin +360 -print
