@@ -1,2 +1,0 @@
-48 * * * * /FS/DATA/linux_backup/files_backup_update.sh
-15 3 * * * nohup nice -20 mybackup -s /FS/DATA/juliano -d /FS/BACK/juliano
