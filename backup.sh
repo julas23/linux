@@ -1,84 +1,52 @@
 #!/bin/bash
+
 echo "" >> /var/log/backup
 echo "Starting Backup Process" >> /var/log/backup
-rsync_options="-avu --delete"
 
-source_directory=""
-destination_directory=""
+source_directory="/FS/DATA"
+destination_directory="/FS/BACK"
 
-# Function to display usage information
-display_usage() {
-    echo "Usage: $0 [-s|--source SOURCE_DIR] [-d|--destination DEST_DIR]"
-    exit 1
-}
+TARGET=$destination_directory/linux_backup/$(date +'%a%d%b%Hh')
+mkdir $TARGET
+echo $TARGET 'created successfully'
 
-# Function to check if a directory is mounted
-is_mounted() {
-    mountpoint "$1"
-}
+echo 'Backup of Crontab'
+crontab -l $TARGET/crontab.bak
 
-# Function to attempt mounting a directory
-attempt_mount() {
-    if ! is_mounted "$1"; then
-        echo "Mounting '$1'..."
-        if ! mount "$1"; then
-            echo "Failed to mount '$1'. Aborting."
-            sudo echo $(date +'%A %d %B %Y %H:%M') 'Failed during the mount' >> /var/log/backup
+echo 'Updating data.'
+/home/juliano/.git/conky/data update
 
-            exit 1
-        fi
-    fi
-}
+echo 'Backing Up Linux files'
+cp /etc/default/grub $TARGET/grub
+cp /etc/fstab $TARGET/fstab
+cp /etc/passwd $TARGET/passwd
+crontab -l > $TARGET/crontab.bak
+cp ~/.xinitrc $TARGET/.xinitrc
 
-# Process command-line arguments
-while [[ $# -gt 0 ]]; do
-    key="$1"
-    case $key in
-        -s|--source)
-        source_directory="$2"
-        shift 2
-        ;;
-        -d|--destination)
-        destination_directory="$2"
-        shift 2
-        ;;
-        *)
-        echo "Unknown option: $1"
-        display_usage
-        sudo echo $(date +'%A %d %B %Y %H:%M') 'Unknown option' >> /var/log/backup
-        ;;
-    esac
-done
+echo 'MariaDB Dump backup'
+mariadb-dump -x -A -u juliano -pjas2305X -h localhost --all-databases > $TARGET/conky.sql
 
-# Check if required parameters are provided
-if [ -z "$source_directory" ] || [ -z "$destination_directory" ]; then
-    echo "Missing required parameters."
-    echo $(date +'%A %d %B %Y %H:%M') 'Missing parameters' >> /var/log/backup
-    display_usage
-fi
+echo 'ZSH Theme'
+cp -r /usr/share/zsh-theme-powerlevel10k $TARGET
+cp -r /usr/share/zsh $TARGET
 
-# Check if provided directories exist
-if [ ! -d "$source_directory" ]; then
-    echo "Source directory '$source_directory' does not exist."
-    echo $(date +'%A %d %B %Y %H:%M') 'Source Directory does not exist' >> /var/log/backup
-    exit 1
-fi
+echo 'Removing 6 hour old backups. This list will be deleted.'
+find $TARGET -type d -cmin +360 -print
+find $TARGET -type d -cmin +360 -exec rm -r {} \;
 
-if [ ! -d "$destination_directory" ]; then
-    echo "Destination directory '$destination_directory' does not exist."
-    echo $(date +'%A %d %B %Y %H:%M') 'Destination Directory does not exist' >> /var/log/backup
-    exit 1
-fi
+echo 'Backup Pacman conf.'
+sudo cp /etc/pacman.conf $TARGET
+sudo cp -r /etc/pacman.d $TARGET
+sudo cp -r /var/log/backup $TARGET
+sudo chown juliano:juliano $TARGET -R
+sudo chmod +r $TARGET -R
 
-# Attempt to mount destination directory if it's not mounted
-attempt_mount "$destination_directory"
 
-# Compare files between source and destination directories
 diff_output=$(rsync -rcv --delete "$source_directory/" "$destination_directory/")
 
 if [ -n "$diff_output" ]; then
     echo "Differences found. Synchronizing..."
-    rsync $rsync_options "$source_directory/" "$destination_directory/" >> /var/log/backup
+    rsync -avu --delete "$source_directory/" "$destination_directory/" >> /var/log/backup
     echo "Synchronization complete."
 else
     echo "No differences found."
@@ -86,4 +54,3 @@ fi
 
 echo $(date +'%A %d %B %Y %H:%M') 'Backup finished successfuly!' >> /var/log/backup
 echo "" >> /var/log/backup
-shutdown -h now
