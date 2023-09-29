@@ -10,14 +10,16 @@ PASSWORD=""
 STORAGE=""
 ARCHITECTURE=""
 WINDOWMANAGER=""
+HOSTNAME=""
 
-if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ] || [ -z "$STORAGE" ] || [ -z "$ARCHITECTURE" ] || [ -z "$WINDOWMANAGER" ]; then
+if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ] || [ -z "$STORAGE" ] || [ -z "$ARCHITECTURE" ] || [ -z "$WINDOWMANAGER" ] || [ -z "$HOSTNAME" ]; then
   echo "The following variables are empty on script:"
   [ -z "$USERNAME" ] && echo "- USERNAME"
   [ -z "$PASSWORD" ] && echo "- PASSWORD"
   [ -z "$STORAGE" ] && echo "- STORAGE"
   [ -z "$ARCHITECTURE" ] && echo "- ARCHITECTURE"
   [ -z "$WINDOWMANAGER" ] && echo "- WINDOWMANAGER"
+  [ -z "$HOSTNAME" ] && echo "- HOSTNAME"
 else
   echo "All variables are set."
   echo "Proceeding."
@@ -29,6 +31,7 @@ echo "USERNAME:" $USERNAME
 echo "PASSWORD:" $PASSWORD
 echo "ARCHTECT:" $ARCHITECTURE
 echo "WINDOW M:" $WINDOWMANAGER
+echo "HOSTNAME:" $HOSTNAME
 echo "STORAGE :" $TYPE
 echo "DEVICE  :" $DISK
 echo "PartBOOT:" $BOOT
@@ -51,7 +54,7 @@ case "$response" in
     ;;
 esac
 
-wminstall() {
+func_wm_install() {
     pacman --noconfirm -Syy
 	pacman --noconfirm -Syyu
 	pacman -S git base-devel
@@ -103,7 +106,7 @@ wminstall() {
     esac
 }
 
-confirm_disk() {
+func_confirm_disk() {
   while true; do
     echo "Detected storage type: $TYPE"
     echo "Device name: $DISK"
@@ -136,7 +139,7 @@ confirm_disk() {
                 UEFI="${DISK}1"
                 ROOT="${DISK}3"
                 fi
-            confirm_disk
+            func_confirm_disk
         else
             echo "Invalid storage device: $STORAGE"
             exit 1
@@ -148,40 +151,46 @@ confirm_disk() {
             BOOT="$DISK"2
             UEFI="$DISK"1
             ROOT="$DISK"3
-            confirm_disk
+            func_confirm_disk
         elif [ -e "/dev/xvda" ]; then
             TYPE="Virtual SATA"
             DISK="/dev/xvda"
             BOOT="$DISK"2
             UEFI="$DISK"1
             ROOT="$DISK"3
-            confirm_disk
+            func_confirm_disk
         elif [ -e "/dev/nvme0n1" ]; then
             TYPE="NVMe"
             DISK="/dev/nvme0n1"
             BOOT="${DISK}p2"
             UEFI="${DISK}p1"
             ROOT="${DISK}p3"
-            confirm_disk
+            func_confirm_disk
         else
-            confirm_disk
+            func_confirm_disk
         fi
     fi
 }
 
-net_cfg() {
+func_net_cfg() {
     ip link set dev enp2s0 up
     ip route addr add 192.168.0.30/27 dev enp2s0
     ip route add default via 192.168.0.1
     echo "8.8.8.8" > /etc/resolv.conf
     echo "1.1.1.1" >> /etc/resolv.conf
-    echo myarch > /etc/hostname
+    echo $HOSTNAME > /etc/hostname
     echo '127.0.0.1     localhost'  > /etc/hosts
     echo '::1           localhost'  >> /etc/hosts
     echo '127.0.1.1	    myarch'     >> /etc/hosts
 }
 
 func_lvm_raid() {
+    sudo modprobe raid1
+	sudo modprobe dm-mod
+	sed -i '/^MODULES=/c\MODULES="vmd dm-raid dm-mod raid1"' /etc/mkinitcpio.conf
+	mkinitcpio -P
+	grub-install
+    echo "need a reboot to grant the changes"
 	sudo pvcreate /dev/nvme1n1
 	sudo pvcreate /dev/nvme2n1
 	sudo vgcreate vg_data /dev/nvme1n1 /dev/nvme2n1
@@ -197,11 +206,6 @@ func_lvm_raid() {
 	if ! grep -q '/dev/sdb1' /etc/fstab; then
 		sudo echo "/dev/sdb1 /FS/BACK btrfs defaults,nofail,noatime 0 0" >> /etc/fstab
 	fi
-	sudo modprobe raid1
-	sudo modprobe dm-mod
-	sed -i '/^MODULES=/c\MODULES="vmd dm-raid dm-mod raid1"' /etc/mkinitcpio.conf
-	mkinitcpio -P
-	grub-install
 }
 
 func_chaotic() {
@@ -239,17 +243,17 @@ func_mariadb() {
 		sudo mkdir $var
 		sudo chown mysql:mysql $var
 		sudo chown mysql:mysql $var -R
-		sudo chmod 777 $var -R
+		sudo chmod 744 $var -R
 	done
 	sudo mariadb-install-db --user=mysql --basedir=/usr/bin --datadir=/var/lib/mysql
 
 	sudo mariadb -u root -p -e "CREATE DATABASE conky;"
-	sudo mariadb -u root -p -e "CREATE USER 'juliano'@'localhost' IDENTIFIED BY 'jas2305X';"
-	sudo mariadb -u root -p -e "GRANT ALL PRIVILEGES ON *.* TO 'juliano'@'localhost';"
-	sudo mariadb -u root -p -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'jas2305X';"
-	sudo mariadb -u root -pjas2305X -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';"
-	sudo mariadb -u root -pjas2305X -e "CREATE USER 'conky'@'localhost' IDENTIFIED BY 'conky_db123';"
-	sudo mariadb -u root -pjas2305X -e "GRANT ALL PRIVILEGES ON conky.* TO 'conky'@'localhost';"
+	sudo mariadb -u root -p -e "CREATE USER '$USERNAME'@'localhost' IDENTIFIED BY '$PASSWORD';"
+	sudo mariadb -u root -p -e "GRANT ALL PRIVILEGES ON *.* TO '$USERNAME'@'localhost';"
+	sudo mariadb -u root -p -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$PASSWORD';"
+	sudo mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';"
+	sudo mariadb -u root -p$PASSWORD -e "CREATE USER 'conky'@'localhost' IDENTIFIED BY '$PASSWORD';"
+	sudo mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON conky.* TO 'conky'@'localhost';"
 	sudo systemctl restart mariadb
 }
 
@@ -292,7 +296,7 @@ func_linux_nvidia() {
 	modprobe nvidia
 }
 
-func_archlinux() {
+func_archlinux_installation() {
     set -e
 
     sudo parted $DISK mklabel gpt
@@ -325,17 +329,21 @@ func_archlinux() {
     locale-gen
     echo "LANG=en_US.UTF-8" > /etc/locale.conf
     export LANG=en_US.UTF-8
-    net_cfg
+    func_net_cfg
 
     passwd < $PASSWOR
     useradd -m $USERNAM
     passwd $USERNAM < $PASSWOR
     usermod -aG wheel,audio,video,storage,root $USERNAM
 	sudo usermod -G $USERNAME root
-	sudo sed -i "s|$USERNAME:x:1000:1000:Juliano Santos:/home/$USERNAME:/bin/bash|$USERNAME:x:1000:1000:Juliano Santos:/FS/DATA/$USERNAME:/bin/zsh|g" /etc/passwd
+	sudo sed -i "s|$USERNAME:x:1000:1000:$USERNAME Santos:/home/$USERNAME:/bin/bash|$USERNAME:x:1000:1000:$USERNAME Santos:/FS/DATA/$USERNAME:/bin/zsh|g" /etc/passwd
     echo "$USERNAM ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
     sudo sed -i 's/^#%wheel  ALL=(ALL:ALL) ALL$/%wheel  ALL=(ALL:ALL) ALL/' /etc/sudoers
-
+    GRUBLINE=$(cat /etc/default/grub | grep GRUB_CMDLINE_LINUX_DEFAULT=)
+    if [[ $GRUBLINE != *"acpi_enforce_resources=lax"* ]]; then
+        NEW_GRUBLINE="${GRUBLINE%\"}\" acpi_enforce_resources=lax\""
+        sed -i "s/$GRUBLINE/$NEW_GRUBLINE/" /etc/default/grub
+    fi
     grub-install --target=x86_64-efi $BOOT
     grub-mkconfig -o /boot/grub/grub.cfg
     mkinitcpio -p linux
@@ -349,12 +357,12 @@ elif [ "$1" == "pamac" ]; then
     func_pamac_yay
 elif [ "$1" == "mariadb" ]; then
     func_mariadb
-elif [ "$1" == "install" ]; then
-    func_install
-elif [ "$1" == "archlinux" ]; then
-    confirm_disk
-    func_archlinux
-    wminstall
+elif [ "$1" == "packages" ]; then
+    func_install_packages
+elif [ "$1" == "initial" ]; then
+    func_confirm_disk
+    func_archlinux_installation
+    func_wm_install
 elif [ "$1" == "amd" ]; then
     func_linux_amd
 elif [ "$1" == "nvidia" ]; then
@@ -365,7 +373,7 @@ else
     echo "chaotic - enable CHAOTIC AUR repo"
     echo "pamac - install pamac and yay"
     echo "mariadb - configure mariadb instance"
-    echo "install - install a huge list of packages"
-    echo "archlinux - will run all commands to install archlinux using all variables set in the script"
+    echo "packages - install a huge list of packages"
+    echo "initial - will run all commands to install archlinux using all variables set in the script"
     exit 1
 fi
