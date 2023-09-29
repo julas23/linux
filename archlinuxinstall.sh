@@ -5,26 +5,16 @@ if [[ $(id -u) -ne 0 ]]; then
     exit 1
 fi
 
-USERNAME=""
-PASSWORD=""
-STORAGE=""
-ARCHITECTURE=""
-WINDOWMANAGER=""
-HOSTNAME=""
+USERNAME=$(cat data.ini |grep USERNAME |cut -d= -f2)
+PASSWORD=$(cat data.ini |grep PASSWORD |cut -d= -f2)
+STORAGE=$(cat data.ini |grep STORAGE |cut -d= -f2)
+ARCHITECTURE=$(cat data.ini |grep ARCHITECTURE |cut -d= -f2)
+WINDOWMANAGER=$(cat data.ini |grep WINDOWMANAGER |cut -d= -f2)
+HOSTNAME=$(cat data.ini |grep HOSTNAME |cut -d= -f2)
 
 if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ] || [ -z "$STORAGE" ] || [ -z "$ARCHITECTURE" ] || [ -z "$WINDOWMANAGER" ] || [ -z "$HOSTNAME" ]; then
-  echo "The following variables are empty on script:"
-  [ -z "$USERNAME" ] && echo "- USERNAME"
-  [ -z "$PASSWORD" ] && echo "- PASSWORD"
-  [ -z "$STORAGE" ] && echo "- STORAGE"
-  [ -z "$ARCHITECTURE" ] && echo "- ARCHITECTURE"
-  [ -z "$WINDOWMANAGER" ] && echo "- WINDOWMANAGER"
-  [ -z "$HOSTNAME" ] && echo "- HOSTNAME"
-else
-  echo "All variables are set."
-  echo "Proceeding."
-  sleep 2
-  clear
+    echo "At least one variable are empty, please check data.ini file to confirm."
+    exit 1
 fi
 
 echo "USERNAME:" $USERNAME
