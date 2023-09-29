@@ -41,7 +41,6 @@ sudo cp -r /var/log/backup $TARGET
 sudo chown juliano:juliano $TARGET -R
 sudo chmod +r $TARGET -R
 
-
 diff_output=$(rsync -rcv --delete "$source_directory/" "$destination_directory/")
 
 if [ -n "$diff_output" ]; then
