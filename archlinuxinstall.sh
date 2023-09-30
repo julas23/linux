@@ -11,6 +11,12 @@ STORAGE=$(cat data.ini |grep STORAGE |cut -d= -f2)
 ARCHITECTURE=$(cat data.ini |grep ARCHITECTURE |cut -d= -f2)
 WINDOWMANAGER=$(cat data.ini |grep WINDOWMANAGER |cut -d= -f2)
 HOSTNAME=$(cat data.ini |grep HOSTNAME |cut -d= -f2)
+NETWORKIP=$(cat data.ini |grep NETWORKIP |cut -d= -f2)
+GATEWAYIP=$(cat data.ini |grep GATEWAYIP |cut -d= -f2)
+NAMESERVER1=$(cat data.ini |grep NAMESERVER1 |cut -d= -f2)
+NAMESERVER2=$(cat data.ini |grep NAMESERVER2 |cut -d= -f2)
+WIFIPASSWORD=$(cat data.ini |grep WIFIPASSWORD |cut -d= -f2)
+WIFISSID=$(cat data.ini |grep WIFISSID |cut -d= -f2)
 
 if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ] || [ -z "$STORAGE" ] || [ -z "$ARCHITECTURE" ] || [ -z "$WINDOWMANAGER" ] || [ -z "$HOSTNAME" ]; then
     echo "At least one variable are empty, please check data.ini file to confirm."
@@ -22,11 +28,11 @@ echo "PASSWORD:" $PASSWORD
 echo "ARCHTECT:" $ARCHITECTURE
 echo "WINDOW M:" $WINDOWMANAGER
 echo "HOSTNAME:" $HOSTNAME
-echo "STORAGE :" $TYPE
-echo "DEVICE  :" $DISK
-echo "PartBOOT:" $BOOT
-echo "PartUEFI:" $UEFI
-echo "PartROOT:" $ROOT
+echo "HOSTNAME:" $NETWORKIP
+echo "HOSTNAME:" $GATEWAYIP
+echo "HOSTNAME:" $NAMESERVER1
+echo "HOSTNAME:" $NAMESERVER2
+echo "HOSTNAME:" $WIFIPASSWORD
 
 read -rp "All done to proceed? (Y/N): " response
 case "$response" in
@@ -160,14 +166,51 @@ func_confirm_disk() {
             func_confirm_disk
         fi
     fi
+    echo "STORAGE :" $TYPE
+    echo "DEVICE  :" $DISK
+    echo "PartBOOT:" $BOOT
+    echo "PartUEFI:" $UEFI
+    echo "PartROOT:" $ROOT
+    read -rp "All done to proceed? (Y/N): " response
+    case "$response" in
+        [yY])
+        echo 'Proceeding with install!'
+        sleep 2
+        clear
+        ;;
+        [nN])
+        echo 'Aborted!'
+        exit 1
+        ;;
+        *)
+        echo "Please enter Y or N."
+        ;;
+    esac
 }
 
-func_net_cfg() {
+func_cable_cfg() {
     ip link set dev enp2s0 up
-    ip route addr add 192.168.0.30/27 dev enp2s0
-    ip route add default via 192.168.0.1
-    echo "8.8.8.8" > /etc/resolv.conf
-    echo "1.1.1.1" >> /etc/resolv.conf
+    ip route addr add $NETWORKIP/27 dev enp2s0
+    ip route add default via $GATEWAYIP
+    echo $NAMESERVER1 > /etc/resolv.conf
+    echo $NAMESERVER2 >> /etc/resolv.conf
+    echo $HOSTNAME > /etc/hostname
+    echo '127.0.0.1     localhost'  > /etc/hosts
+    echo '::1           localhost'  >> /etc/hosts
+    echo '127.0.1.1	    myarch'     >> /etc/hosts
+}
+
+func_wifi_cfg() {
+    ADAPTER=$(iwctl device list |awk 'NR==5 {print $2}')
+    station $ADAPTER scan
+    station $ADAPTER get-networks
+    station $ADAPTER connect $WIFISSID
+    iwctl --passphrase $WIFIPASSWORD station $ADAPTER connect $WIFISSID
+    ip link set dev $ADAPTER up
+    ip route addr add $NETWORKIP/27 dev $ADAPTER
+    ip route add default via $GATEWAYIP
+    echo $NAMESERVER1 > /etc/resolv.conf
+    echo $NAMESERVER2 >> /etc/resolv.conf
     echo $HOSTNAME > /etc/hostname
     echo '127.0.0.1     localhost'  > /etc/hosts
     echo '::1           localhost'  >> /etc/hosts
@@ -319,7 +362,7 @@ func_archlinux_installation() {
     locale-gen
     echo "LANG=en_US.UTF-8" > /etc/locale.conf
     export LANG=en_US.UTF-8
-    func_net_cfg
+    func_cable_cfg
 
     passwd < $PASSWOR
     useradd -m $USERNAM
