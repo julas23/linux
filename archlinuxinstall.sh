@@ -12,6 +12,7 @@ ARCHITECTURE=$(cat data.ini |grep ARCHITECTURE |cut -d= -f2)
 WINDOWMANAGER=$(cat data.ini |grep WINDOWMANAGER |cut -d= -f2)
 HOSTNAME=$(cat data.ini |grep HOSTNAME |cut -d= -f2)
 NETWORKIP=$(cat data.ini |grep NETWORKIP |cut -d= -f2)
+PREFIX=$(cat data.ini |grep PREFIX |cut -d= -f2)
 GATEWAYIP=$(cat data.ini |grep GATEWAYIP |cut -d= -f2)
 NAMESERVER1=$(cat data.ini |grep NAMESERVER1 |cut -d= -f2)
 NAMESERVER2=$(cat data.ini |grep NAMESERVER2 |cut -d= -f2)
@@ -59,8 +60,8 @@ func_wm_install() {
 	cd yay
 	makepkg -si
 	yay -S pamac
-	sudo pacman --noconfirm -S paru
-	sudo pamac enable AUR
+	pacman --noconfirm -S paru
+	pamac enable AUR
     pacman -Syy
     pacman -Syyu
     pacman -S --needed xorg lightdm lightdm-gtk-greeter acpid networkmanager connman
@@ -189,8 +190,9 @@ func_confirm_disk() {
 }
 
 func_cable_cfg() {
-    ip link set dev enp2s0 up
-    ip route addr add $NETWORKIP/27 dev enp2s0
+    ETHNIC=$(ip -f inet -o link | awk -F ': ' '{print $2}' | grep -Ev 'w|lo')
+    ip link set dev $ETHNIC up
+    ip route addr add $NETWORKIP/$PREFIX dev $ETHNIC
     ip route add default via $GATEWAYIP
     echo $NAMESERVER1 > /etc/resolv.conf
     echo $NAMESERVER2 >> /etc/resolv.conf
@@ -201,13 +203,15 @@ func_cable_cfg() {
 }
 
 func_wifi_cfg() {
+    rfkill unblock wifi
+    rfkill list
+    systemctl restart iwd.service
     ADAPTER=$(iwctl device list |awk 'NR==5 {print $2}')
-    station $ADAPTER scan
-    station $ADAPTER get-networks
-    station $ADAPTER connect $WIFISSID
+    iwctl station $ADAPTER scan
+    iwctl station $ADAPTER get-networks
     iwctl --passphrase $WIFIPASSWORD station $ADAPTER connect $WIFISSID
     ip link set dev $ADAPTER up
-    ip route addr add $NETWORKIP/27 dev $ADAPTER
+    ip route addr add $NETWORKIP/$PREFIX dev $ADAPTER
     ip route add default via $GATEWAYIP
     echo $NAMESERVER1 > /etc/resolv.conf
     echo $NAMESERVER2 >> /etc/resolv.conf
@@ -218,82 +222,84 @@ func_wifi_cfg() {
 }
 
 func_lvm_raid() {
-    sudo modprobe raid1
-	sudo modprobe dm-mod
+    modprobe raid1
+	modprobe dm-mod
 	sed -i '/^MODULES=/c\MODULES="vmd dm-raid dm-mod raid1"' /etc/mkinitcpio.conf
 	mkinitcpio -P
 	grub-install
     echo "need a reboot to grant the changes"
-	sudo pvcreate /dev/nvme1n1
-	sudo pvcreate /dev/nvme2n1
-	sudo vgcreate vg_data /dev/nvme1n1 /dev/nvme2n1
-	sudo lvcreate --mirrors 1 --type raid1 -l 100%FREE -n lv_data vg_data
-	sudo mkdir /FS /FS/DATA /FS/BACK /FS/GAME
-	sudo chown $USERNAME:$USERNAME /FS -R
+	pvcreate /dev/nvme1n1
+	pvcreate /dev/nvme2n1
+	vgcreate vg_data /dev/nvme1n1 /dev/nvme2n1
+	lvcreate --mirrors 1 --type raid1 -l 100%FREE -n lv_data vg_data
+	mkdir /FS /FS/DATA /FS/BACK /FS/GAME
+	chown $USERNAME:$USERNAME /FS -R
 	if ! grep -q '/dev/vg_data/lv_data' /etc/fstab; then
-		sudo echo "/dev/vg_data/lv_data /FS/DATA ext4 defaults,noatime 0 0" >> /etc/fstab
+		echo "/dev/vg_data/lv_data /FS/DATA ext4 defaults,noatime 0 0" >> /etc/fstab
 	fi
 	if ! grep -q '/dev/nvme0n1p1' /etc/fstab; then
-		sudo echo "/dev/nvme0n1p1 /FS/GAME ext4 defaults,noatime 0 0" >> /etc/fstab
+		echo "/dev/nvme0n1p1 /FS/GAME ext4 defaults,noatime 0 0" >> /etc/fstab
 	fi
 	if ! grep -q '/dev/sdb1' /etc/fstab; then
-		sudo echo "/dev/sdb1 /FS/BACK btrfs defaults,nofail,noatime 0 0" >> /etc/fstab
+		echo "/dev/sdb1 /FS/BACK btrfs defaults,nofail,noatime 0 0" >> /etc/fstab
 	fi
 }
 
 func_chaotic() {
-	sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
-	sudo pacman-key --lsign-key 3056513887B78AEB
-	sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+    pacman --noconfirm -Syy
+	pacman --noconfirm -Syyu
+	pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+	pacman-key --lsign-key 3056513887B78AEB
+	pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 	if ! grep -q '^\[chaotic-aur\]$' /etc/pacman.conf || ! grep -q '^Include = /etc/pacman.d/chaotic-mirrorlist$' /etc/pacman.conf; then
-	    sudo echo "[chaotic-aur]" | sudo tee -a /etc/pacman.conf
-	    sudo echo "Include = /etc/pacman.d/chaotic-mirrorlist" | sudo tee -a /etc/pacman.conf
-	    sudo echo "Added the [chaotic-aur] section and Include line."
+	    echo "[chaotic-aur]" | tee -a /etc/pacman.conf
+	    echo "Include = /etc/pacman.d/chaotic-mirrorlist" | tee -a /etc/pacman.conf
+	    echo "Added the [chaotic-aur] section and Include line."
 	else
 	    echo "The [chaotic-aur] Repo is already available."
 	fi
 }
 
 func_pamac_yay() {
-	sudo pacman --noconfirm -Syy
-	sudo pacman --noconfirm -Syyu
-	sudo pacman -S git base-devel
-	sudo pacman -S git
+	pacman --noconfirm -Syy
+	pacman --noconfirm -Syyu
+	pacman -S git base-devel
+	pacman -S git
 	git clone https://aur.archlinux.org/yay.git
 	cd yay
 	makepkg -si
 	yay -S pamac
-	sudo pacman --noconfirm -S paru
-	sudo pamac enable AUR
+	pacman --noconfirm -S paru
+	pamac enable AUR
 }
 
 func_mariadb() {
-	sudo pacman --noconfirm -S mariadb mariadb-clients
+	pacman --noconfirm -S mariadb mariadb-clients
 	DBDIRS='/var/lib/mysql /var/lib/mariadb /var/run/mysqld /var/run/mariadb /run/mariadb /run/mysqld'
 	for var in $DBDIRS;
 	do
-		sudo rm -Rf $var
-		sudo mkdir $var
-		sudo chown mysql:mysql $var
-		sudo chown mysql:mysql $var -R
-		sudo chmod 744 $var -R
+		rm -Rf $var
+		mkdir $var
+		chown mysql:mysql $var
+		chown mysql:mysql $var -R
+		chmod 744 $var -R
 	done
-	sudo mariadb-install-db --user=mysql --basedir=/usr/bin --datadir=/var/lib/mysql
+	mariadb-install-db --user=mysql --basedir=/usr/bin --datadir=/var/lib/mysql
 
-	sudo mariadb -u root -p -e "CREATE DATABASE conky;"
-	sudo mariadb -u root -p -e "CREATE USER '$USERNAME'@'localhost' IDENTIFIED BY '$PASSWORD';"
-	sudo mariadb -u root -p -e "GRANT ALL PRIVILEGES ON *.* TO '$USERNAME'@'localhost';"
-	sudo mariadb -u root -p -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$PASSWORD';"
-	sudo mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';"
-	sudo mariadb -u root -p$PASSWORD -e "CREATE USER 'conky'@'localhost' IDENTIFIED BY '$PASSWORD';"
-	sudo mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON conky.* TO 'conky'@'localhost';"
-	sudo systemctl restart mariadb
+	mariadb -u root -p -e "CREATE DATABASE conky;"
+	mariadb -u root -p -e "CREATE USER '$USERNAME'@'localhost' IDENTIFIED BY '$PASSWORD';"
+	mariadb -u root -p -e "GRANT ALL PRIVILEGES ON *.* TO '$USERNAME'@'localhost';"
+	mariadb -u root -p -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$PASSWORD';"
+	mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';"
+	mariadb -u root -p$PASSWORD -e "CREATE USER 'conky'@'localhost' IDENTIFIED BY '$PASSWORD';"
+	mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON conky.* TO 'conky'@'localhost';"
+	systemctl restart mariadb
 }
 
 func_install() {
 	echo "" > error.log
-	PACKAGES='alacritty ansible ansible-core ardour audacity balena-etcher bash bash-completion bat bitwarden blender brave-bin cava cheese chromium code conky conky-manager containerd curl dbeaver dmidecode docker docker-compose dosbox elisa endeavour evolution evolution-data-server exa expect filezilla firedragon firefox fish franz-bin gimp git gnucash helm homebank htop hydrogen inkscape jdk-openjdk jre-openjdk kubectl latte-dock links lm_sensors lshw lsd lutris mc mysql-workbench nano nfs-utils notepadqq obs-studio openlens-bin openrgb openscad openssh opera pycharm python python-mysqlconnector python-pymysql qbittorrent remmina retroarch rosegarden rpi-imager screenfetch solaar sqlite steam sweethome3d terminator terraform thunar thunderbird tilix todoist virtualbox vlc xterm yay youtube-dl zsh yay paru xsane brother-mfc-l2710dw simple-scan linux-api-headers wine winetricks make patch electron19 python-mysql-connector python-pymysql consola xterm gksu breeze-gtk materia-gtk-theme papirus-icon-theme pop-icon-theme todoist-appimage system-config-printer gnu-netcat'
-	sudo pacman --noconfirm -S simple-scan
+	PACKAGES=$(cat pkg.ini)
+	pacman --noconfirm -S simple-scan
 	paru MFC-L2710DW
 	paru brscan4
 	yay -S --mflags --skipinteg openlens-bin
@@ -303,12 +309,12 @@ func_install() {
 	do
 		clear
 		echo 'Installing - '$var
-		sudo pacman --noconfirm -S $var 2>> error.log
+		pacman --noconfirm -S $var 2>> error.log
 	done
-	sudo modprobe i2c_piix4
-	sudo modprobe i2c-i801
-	sudo modprobe i2c_dev
-	sudo modprobe snd_aloop
+	modprobe i2c_piix4
+	modprobe i2c-i801
+	modprobe i2c_dev
+	modprobe snd_aloop
 	pacman -R xdg-desktop-portal-gnome
 	pacman -Rns $(pacman -Qtdq)
 }
@@ -332,12 +338,12 @@ func_linux_nvidia() {
 func_archlinux_installation() {
     set -e
 
-    sudo parted $DISK mklabel gpt
-    sudo parted $DISK mkpart primary fat32 1MiB 501MiB
-    sudo parted $DISK set 1 esp on
-    sudo parted $DISK mkpart primary btrfs 501MiB 1501MiB
-    sudo parted $DISK mkpart primary btrfs 1501MiB 100%
-    sudo parted $DISK quit
+    parted $DISK mklabel gpt
+    parted $DISK mkpart primary fat32 1MiB 501MiB
+    parted $DISK set 1 esp on
+    parted $DISK mkpart primary btrfs 501MiB 1501MiB
+    parted $DISK mkpart primary btrfs 1501MiB 100%
+    parted $DISK quit
 
     mkfs.fat -F32 $UEFI
     mkfs.btrfs $BOOT
@@ -354,7 +360,7 @@ func_archlinux_installation() {
     pacman -S reflector
     cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
     reflector -c "US" -f 12 -l 10 -n 12 --save /etc/pacman.d/mirrorlist
-    pacstrap /mnt base linux linux-firmware vim nano nano dhcpcd net-tools grub efibootmgr sudo openssh
+    pacstrap /mnt base linux linux-firmware vim nano nano dhcpcd net-tools grub efibootmgr openssh
     genfstab -U /mnt >> /mnt/etc/fstab
     arch-chroot /mnt
     ln -sf /usr/share/zoneinfo/Europe/Lisbon /etc/localtime
@@ -368,10 +374,11 @@ func_archlinux_installation() {
     useradd -m $USERNAM
     passwd $USERNAM < $PASSWOR
     usermod -aG wheel,audio,video,storage,root $USERNAM
-	sudo usermod -G $USERNAME root
-	sudo sed -i "s|$USERNAME:x:1000:1000:$USERNAME Santos:/home/$USERNAME:/bin/bash|$USERNAME:x:1000:1000:$USERNAME Santos:/FS/DATA/$USERNAME:/bin/zsh|g" /etc/passwd
+	usermod -G $USERNAME root
+    FULLNAME=$(cat /etc/passwd |grep $USERNAME |cut -d: -f5)
+	sed -i "s|$USERNAME:x:1000:1000:$FULLNAME:/home/$USERNAME:/bin/bash|$USERNAME:x:1000:1000:$FULLNAME:/FS/DATA/$USERNAME:/bin/zsh|g" /etc/passwd
     echo "$USERNAM ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
-    sudo sed -i 's/^#%wheel  ALL=(ALL:ALL) ALL$/%wheel  ALL=(ALL:ALL) ALL/' /etc/sudoers
+    sed -i 's/^#%wheel  ALL=(ALL:ALL) ALL$/%wheel  ALL=(ALL:ALL) ALL/' /etc/sudoers
     GRUBLINE=$(cat /etc/default/grub | grep GRUB_CMDLINE_LINUX_DEFAULT=)
     if [[ $GRUBLINE != *"acpi_enforce_resources=lax"* ]]; then
         NEW_GRUBLINE="${GRUBLINE%\"}\" acpi_enforce_resources=lax\""
@@ -401,12 +408,12 @@ elif [ "$1" == "amd" ]; then
 elif [ "$1" == "nvidia" ]; then
     func_linux_nvidia
 else
-    echo "Argumento inválido: $1. Use the following variables below:"
-    echo "raid - to set lvm softraid between 2 NVMe (1/2)"
-    echo "chaotic - enable CHAOTIC AUR repo"
-    echo "pamac - install pamac and yay"
-    echo "mariadb - configure mariadb instance"
-    echo "packages - install a huge list of packages"
+    echo "Invalid argument: $1. Use the following variables below:"
     echo "initial - will run all commands to install archlinux using all variables set in the script"
+    echo "raid - to set lvm softraid between 2 NVMe (1/2)"
+    echo "pamac - install pamac and yay"
+    echo "chaotic - enable CHAOTIC AUR repo"
+    echo "packages - install a huge list of packages"
+    echo "mariadb - configure mariadb instance"
     exit 1
 fi
