@@ -368,8 +368,15 @@ func_archlinux_installation() {
     locale-gen
     echo "LANG=en_US.UTF-8" > /etc/locale.conf
     export LANG=en_US.UTF-8
-    func_cable_cfg
-
+    if ip link show eth0 | grep -q "state UP"; then
+        func_cable_cfg
+    else
+        if iwconfig 2>/dev/null | grep -q "IEEE 802.11"; then
+            func_wifi_cfg
+        else
+            echo "Not available an WiFi interface."
+        fi
+    fi
     passwd < $PASSWOR
     useradd -m $USERNAM
     passwd $USERNAM < $PASSWOR
