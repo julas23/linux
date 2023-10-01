@@ -25,6 +25,49 @@ if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ] || [ -z "$STORAGE" ] || [ -z "$ARCHI
     exit 1
 fi
 
+func_cable_cfg() {
+    ETHNIC=$(ip -f inet -o link | awk -F ': ' '{print $2}' | grep -Ev 'w|lo')
+    ip link set dev $ETHNIC up
+    ip route addr add $NETWORKIP/$PREFIX dev $ETHNIC
+    ip route add default via $GATEWAYIP
+    echo $NAMESERVER1 > /etc/resolv.conf
+    echo $NAMESERVER2 >> /etc/resolv.conf
+    echo $HOSTNAME > /etc/hostname
+    echo '127.0.0.1     localhost'  > /etc/hosts
+    echo '::1           localhost'  >> /etc/hosts
+    echo '127.0.1.1	    myarch'     >> /etc/hosts
+}
+
+func_wifi_cfg() {
+    rfkill unblock wifi
+    rfkill list
+    systemctl restart iwd.service
+    ADAPTER=$(iwctl device list |awk 'NR==5 {print $2}')
+    iwctl station $ADAPTER scan
+    iwctl station $ADAPTER get-networks
+    iwctl --passphrase $WIFIPASSWORD station $ADAPTER connect $WIFISSID
+    ip link set dev $ADAPTER up
+    ip route addr add $NETWORKIP/$PREFIX dev $ADAPTER
+    ip route add default via $GATEWAYIP
+    echo $NAMESERVER1 > /etc/resolv.conf
+    echo $NAMESERVER2 >> /etc/resolv.conf
+    echo $HOSTNAME > /etc/hostname
+    echo '127.0.0.1     localhost'  > /etc/hosts
+    echo '::1           localhost'  >> /etc/hosts
+    echo '127.0.1.1	    myarch'     >> /etc/hosts
+}
+
+if ip link show $ETHNIC | grep -q "state UP"; then
+    func_cable_cfg
+
+else
+    if iwconfig 2>/dev/null | grep -q "IEEE 802.11"; then
+        func_wifi_cfg
+    else
+        echo "Ethernet is down/offline and no WiFi interface available as well"
+    fi
+fi
+
 echo "USERNAME:" $USERNAME
 echo "PASSWORD:" $PASSWORD
 echo "ARCHTECT:" $ARCHITECTURE
@@ -52,58 +95,6 @@ case "$response" in
     echo "Please enter Y or N."
     ;;
 esac
-
-func_wm_install() {
-    pacman --noconfirm -Syy
-	pacman --noconfirm -Syyu
-	pacman --noconfirm -S git base-devel
-	pacman --noconfirm -S git
-	git clone https://aur.archlinux.org/yay.git
-	cd yay
-	makepkg -si
-	yay -S pamac
-	pacman --noconfirm -S paru
-	pamac enable AUR
-    pacman --noconfirm -Syy
-    pacman --noconfirm -Syyu
-    pacman --noconfirm -S --needed xorg lightdm lightdm-gtk-greeter acpid networkmanager connman
-    systemctl enable dhcpcd
-    systemctl enable sshd
-    systemctl enable lightdm
-    systemctl enable NetworkManager
-    systemctl enable connman
-    systemctl enable acpid
-    case "$1" in
-        "mate")
-            pacman --noconfirm -S --needed mate-desktop mate-session-manager mate-panel mate-control-center mate-extra mate-applet-dock mate-applet-streamer caja marco
-            ;;
-        "plasma")
-            pacman --noconfirm -S --needed plasma plasma-desktop plasma-wayland-session kde-applications
-            ;;
-        "gnome")
-            pacman --noconfirm -S --needed gnome gnome-extra gnome-tweaks
-            ;;
-        "xfe")
-            pacman --noconfirm -S --needed xfce4 xfce4-goodies
-            ;;
-        "lxde")
-            pacman --noconfirm -S --needed pacman -S lxdm
-            ;;
-        "afterstep")
-            pacman --noconfirm -S --needed afterstep
-            ;;
-        "enlightenment")
-                pacman --noconfirm -S efl
-                pacman --noconfirm -S enlightenment
-                pacman --noconfirm -S --needed firefox vlc filezilla leafpad xscreensaver archlinux-wallpaper 
-                pacman --noconfirm -S ecrire ephoto evisum rage terminology
-            ;;
-        *)
-            echo "Window Manager not recognized.: $1"
-            echo "Window Manager can be like this: mate afterstep enlightenment xfce lxde plasma gnome"
-            ;;
-    esac
-}
 
 func_confirm_disk() {
   while true; do
@@ -199,174 +190,27 @@ func_confirm_disk() {
     func_archlinux_installation
 }
 
-func_cable_cfg() {
-    ETHNIC=$(ip -f inet -o link | awk -F ': ' '{print $2}' | grep -Ev 'w|lo')
-    ip link set dev $ETHNIC up
-    ip route addr add $NETWORKIP/$PREFIX dev $ETHNIC
-    ip route add default via $GATEWAYIP
-    echo $NAMESERVER1 > /etc/resolv.conf
-    echo $NAMESERVER2 >> /etc/resolv.conf
-    echo $HOSTNAME > /etc/hostname
-    echo '127.0.0.1     localhost'  > /etc/hosts
-    echo '::1           localhost'  >> /etc/hosts
-    echo '127.0.1.1	    myarch'     >> /etc/hosts
-}
-
-func_wifi_cfg() {
-    rfkill unblock wifi
-    rfkill list
-    systemctl restart iwd.service
-    ADAPTER=$(iwctl device list |awk 'NR==5 {print $2}')
-    iwctl station $ADAPTER scan
-    iwctl station $ADAPTER get-networks
-    iwctl --passphrase $WIFIPASSWORD station $ADAPTER connect $WIFISSID
-    ip link set dev $ADAPTER up
-    ip route addr add $NETWORKIP/$PREFIX dev $ADAPTER
-    ip route add default via $GATEWAYIP
-    echo $NAMESERVER1 > /etc/resolv.conf
-    echo $NAMESERVER2 >> /etc/resolv.conf
-    echo $HOSTNAME > /etc/hostname
-    echo '127.0.0.1     localhost'  > /etc/hosts
-    echo '::1           localhost'  >> /etc/hosts
-    echo '127.0.1.1	    myarch'     >> /etc/hosts
-}
-
-func_lvm_raid() {
-    modprobe raid1
-	modprobe dm-mod
-	sed -i '/^MODULES=/c\MODULES="vmd dm-raid dm-mod raid1"' /etc/mkinitcpio.conf
-	mkinitcpio -P
-	grub-install
-    echo "need a reboot to grant the changes"
-	pvcreate /dev/nvme1n1
-	pvcreate /dev/nvme2n1
-	vgcreate vg_data /dev/nvme1n1 /dev/nvme2n1
-	lvcreate --mirrors 1 --type raid1 -l 100%FREE -n lv_data vg_data
-	mkdir /FS /FS/DATA /FS/BACK /FS/GAME
-	chown $USERNAME:$USERNAME /FS -R
-	if ! grep -q '/dev/vg_data/lv_data' /etc/fstab; then
-		echo "/dev/vg_data/lv_data /FS/DATA ext4 defaults,noatime 0 0" >> /etc/fstab
-	fi
-	if ! grep -q '/dev/nvme0n1p1' /etc/fstab; then
-		echo "/dev/nvme0n1p1 /FS/GAME ext4 defaults,noatime 0 0" >> /etc/fstab
-	fi
-	if ! grep -q '/dev/sdb1' /etc/fstab; then
-		echo "/dev/sdb1 /FS/BACK btrfs defaults,nofail,noatime 0 0" >> /etc/fstab
-	fi
-}
-
-func_chaotic() {
-    pacman --noconfirm -Syy
-	pacman --noconfirm -Syyu
-	pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
-	pacman-key --lsign-key 3056513887B78AEB
-	pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
-	if ! grep -q '^\[chaotic-aur\]$' /etc/pacman.conf || ! grep -q '^Include = /etc/pacman.d/chaotic-mirrorlist$' /etc/pacman.conf; then
-	    echo "[chaotic-aur]" | tee -a /etc/pacman.conf
-	    echo "Include = /etc/pacman.d/chaotic-mirrorlist" | tee -a /etc/pacman.conf
-	    echo "Added the [chaotic-aur] section and Include line."
-	else
-	    echo "The [chaotic-aur] Repo is already available."
-	fi
-}
-
-func_pamac_yay() {
-	pacman --noconfirm -Syy
-	pacman --noconfirm -Syyu
-	pacman --noconfirm -S git base-devel
-	pacman --noconfirm -S git
-	git clone https://aur.archlinux.org/yay.git
-	cd yay
-	makepkg -si
-	yay -S pamac
-	pacman --noconfirm -S paru
-	pamac enable AUR
-    func_wm_install
-}
-
-func_mariadb() {
-	pacman --noconfirm -S mariadb mariadb-clients
-	DBDIRS='/var/lib/mysql /var/lib/mariadb /var/run/mysqld /var/run/mariadb /run/mariadb /run/mysqld'
-	for var in $DBDIRS;
-	do
-		rm -Rf $var
-		mkdir $var
-		chown mysql:mysql $var
-		chown mysql:mysql $var -R
-		chmod 744 $var -R
-	done
-	mariadb-install-db --user=mysql --basedir=/usr/bin --datadir=/var/lib/mysql
-
-	mariadb -u root -p -e "CREATE DATABASE conky;"
-	mariadb -u root -p -e "CREATE USER '$USERNAME'@'localhost' IDENTIFIED BY '$PASSWORD';"
-	mariadb -u root -p -e "GRANT ALL PRIVILEGES ON *.* TO '$USERNAME'@'localhost';"
-	mariadb -u root -p -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$PASSWORD';"
-	mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';"
-	mariadb -u root -p$PASSWORD -e "CREATE USER 'conky'@'localhost' IDENTIFIED BY '$PASSWORD';"
-	mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON conky.* TO 'conky'@'localhost';"
-	systemctl restart mariadb
-}
-
-func_package_install() {
-	echo "" > error.log
-	pacman --noconfirm -S simple-scan
-	paru MFC-L2710DW
-	paru brscan4
-	yay -S --mflags --skipinteg openlens-bin
-	yay -Sy --noconfirm franz
-	yay -S --noconfirm arc-gtk-theme
-	for var in $PACKAGES;
-	do
-		clear
-		echo 'Installing - '$var
-		pacman --noconfirm -S $var 2>> error.log
-	done
-	modprobe i2c_piix4
-	modprobe i2c-i801
-	modprobe i2c_dev
-	modprobe snd_aloop
-	pacman -R xdg-desktop-portal-gnome
-	pacman -Rns $(pacman -Qtdq)
-}
-
-func_linux_amd() {
-	pacman --noconfirm -S xf86-video-fbdev
-	pacman --noconfirm -S xf86-video-ati
-	pacman --noconfirm -S xf86-video-amdgpu
-	modprobe fbdev
-	modprobe ati
-	modprobe amdgpu
-}
-
-func_linux_nvidia() {
-	pacman --noconfirm -S xf86-video-fbdev
-	pacman --noconfirm -S nvidia
-	modprobe fbdev
-	modprobe nvidia
-}
-
 func_archlinux_installation() {
     set -e
-
     if [ -e "$UEFI" ]; then
-        echo 'Removing Partition' "$UEFI"
+        echo '.Removing Partition' "$UEFI"
         parted --script -f "$DISK" rm 1
     else
-        echo 'UEFI partition does not exist.'
+        echo '.UEFI partition does not exist.'
     fi
 
     if [ -e "$BOOT" ]; then
-        echo 'Removing Partition' "$BOOT"
+        echo '.Removing Partition' "$BOOT"
         parted --script -f "$DISK" rm 2
     else
-        echo 'BOOT partition does not exist.'
+        echo '.BOOT partition does not exist.'
     fi
 
     if [ -e "$ROOT" ]; then
-        echo 'Removing Partition' "$ROOT"
+        echo '.Removing Partition' "$ROOT"
         parted --script -f "$DISK" rm 3
     else
-        echo 'ROOT partition does not exist.'
+        echo '.ROOT partition does not exist.'
     fi
     parted --script -f $DISK mklabel gpt
     parted --script -f $DISK mkpart primary fat32 1MiB 501MiB
@@ -389,7 +233,7 @@ func_archlinux_installation() {
     pacstrap /mnt base linux linux-firmware vim nano nano dhcpcd net-tools grub efibootmgr openssh
     genfstab -U /mnt >> /mnt/etc/fstab
     cp sc_* /mnt/
-    arch-chroot /mnt /usr/bin/bash sc_archlinux.sh func_after_chroot
+    arch-chroot /mnt /usr/bin/bash /sc_archlinux.sh after_chroot
 }
 
 func_after_chroot(){
@@ -427,18 +271,186 @@ func_after_chroot(){
     func_pamac_yay
 }
 
-if [ "$1" == "raid" ]; then
+func_pamac_yay() {
+	pacman --noconfirm -Syy
+	pacman --noconfirm -Syyu
+	pacman --noconfirm -S git base-devel
+	pacman --noconfirm -S git
+	git clone https://aur.archlinux.org/yay.git
+	cd yay
+	makepkg -si
+	yay -S pamac
+	pacman --noconfirm -S paru
+	pamac enable AUR
+    func_wm_install
+}
+
+func_wm_install() {
+    pacman --noconfirm -Syy
+	pacman --noconfirm -Syyu
+	pacman --noconfirm -S git base-devel
+	pacman --noconfirm -S git
+	git clone https://aur.archlinux.org/yay.git
+	cd yay
+	makepkg -si
+	yay -S pamac
+	pacman --noconfirm -S paru
+	pamac enable AUR
+    pacman --noconfirm -Syy
+    pacman --noconfirm -Syyu
+    pacman --noconfirm -S --needed xorg lightdm lightdm-gtk-greeter acpid networkmanager connman
+    systemctl enable dhcpcd
+    systemctl enable sshd
+    systemctl enable lightdm
+    systemctl enable NetworkManager
+    systemctl enable connman
+    systemctl enable acpid
+    case "$1" in
+        "mate")
+            pacman --noconfirm -S --needed mate-desktop mate-session-manager mate-panel mate-control-center mate-extra mate-applet-dock mate-applet-streamer caja marco
+            ;;
+        "plasma")
+            pacman --noconfirm -S --needed plasma plasma-desktop plasma-wayland-session kde-applications
+            ;;
+        "gnome")
+            pacman --noconfirm -S --needed gnome gnome-extra gnome-tweaks
+            ;;
+        "xfe")
+            pacman --noconfirm -S --needed xfce4 xfce4-goodies
+            ;;
+        "lxde")
+            pacman --noconfirm -S --needed pacman -S lxdm
+            ;;
+        "afterstep")
+            pacman --noconfirm -S --needed afterstep
+            ;;
+        "enlightenment")
+                pacman --noconfirm -S efl
+                pacman --noconfirm -S enlightenment
+                pacman --noconfirm -S --needed firefox vlc filezilla leafpad xscreensaver archlinux-wallpaper 
+                pacman --noconfirm -S ecrire ephoto evisum rage terminology
+            ;;
+        *)
+            echo "Window Manager not recognized.: $1"
+            echo "Window Manager can be like this: mate afterstep enlightenment xfce lxde plasma gnome"
+            ;;
+    esac
+}
+
+func_linux_amd() {
+	pacman --noconfirm -S xf86-video-fbdev
+	pacman --noconfirm -S xf86-video-ati
+	pacman --noconfirm -S xf86-video-amdgpu
+	modprobe fbdev
+	modprobe ati
+	modprobe amdgpu
+}
+
+func_linux_nvidia() {
+	pacman --noconfirm -S xf86-video-fbdev
+	pacman --noconfirm -S nvidia
+	modprobe fbdev
+	modprobe nvidia
+}
+
+func_chaotic() {
+    pacman --noconfirm -Syy
+	pacman --noconfirm -Syyu
+	pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+	pacman-key --lsign-key 3056513887B78AEB
+	pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+	if ! grep -q '^\[chaotic-aur\]$' /etc/pacman.conf || ! grep -q '^Include = /etc/pacman.d/chaotic-mirrorlist$' /etc/pacman.conf; then
+	    echo "[chaotic-aur]" | tee -a /etc/pacman.conf
+	    echo "Include = /etc/pacman.d/chaotic-mirrorlist" | tee -a /etc/pacman.conf
+	    echo "Added the [chaotic-aur] section and Include line."
+	else
+	    echo "The [chaotic-aur] Repo is already available."
+	fi
+}
+
+func_package_install() {
+	echo "" > error.log
+	pacman --noconfirm -S simple-scan
+	paru MFC-L2710DW
+	paru brscan4
+	yay -S --mflags --skipinteg openlens-bin
+	yay -Sy --noconfirm franz
+	yay -S --noconfirm arc-gtk-theme
+	for var in $PACKAGES;
+	do
+		clear
+		echo 'Installing - '$var
+		pacman --noconfirm -S $var 2>> error.log
+	done
+	modprobe i2c_piix4
+	modprobe i2c-i801
+	modprobe i2c_dev
+	modprobe snd_aloop
+	pacman -R xdg-desktop-portal-gnome
+	pacman -Rns $(pacman -Qtdq)
+}
+
+func_lvm_raid() {
+    modprobe raid1
+	modprobe dm-mod
+	sed -i '/^MODULES=/c\MODULES="vmd dm-raid dm-mod raid1"' /etc/mkinitcpio.conf
+	mkinitcpio -P
+	grub-install
+    echo "need a reboot to grant the changes"
+	pvcreate /dev/nvme1n1
+	pvcreate /dev/nvme2n1
+	vgcreate vg_data /dev/nvme1n1 /dev/nvme2n1
+	lvcreate --mirrors 1 --type raid1 -l 100%FREE -n lv_data vg_data
+	mkdir /FS /FS/DATA /FS/BACK /FS/GAME
+	chown $USERNAME:$USERNAME /FS -R
+	if ! grep -q '/dev/vg_data/lv_data' /etc/fstab; then
+		echo "/dev/vg_data/lv_data /FS/DATA ext4 defaults,noatime 0 0" >> /etc/fstab
+	fi
+	if ! grep -q '/dev/nvme0n1p1' /etc/fstab; then
+		echo "/dev/nvme0n1p1 /FS/GAME ext4 defaults,noatime 0 0" >> /etc/fstab
+	fi
+	if ! grep -q '/dev/sdb1' /etc/fstab; then
+		echo "/dev/sdb1 /FS/BACK btrfs defaults,nofail,noatime 0 0" >> /etc/fstab
+	fi
+}
+
+func_mariadb() {
+	pacman --noconfirm -S mariadb mariadb-clients
+	DBDIRS='/var/lib/mysql /var/lib/mariadb /var/run/mysqld /var/run/mariadb /run/mariadb /run/mysqld'
+	for var in $DBDIRS;
+	do
+		rm -Rf $var
+		mkdir $var
+		chown mysql:mysql $var
+		chown mysql:mysql $var -R
+		chmod 744 $var -R
+	done
+	mariadb-install-db --user=mysql --basedir=/usr/bin --datadir=/var/lib/mysql
+
+	mariadb -u root -p -e "CREATE DATABASE conky;"
+	mariadb -u root -p -e "CREATE USER '$USERNAME'@'localhost' IDENTIFIED BY '$PASSWORD';"
+	mariadb -u root -p -e "GRANT ALL PRIVILEGES ON *.* TO '$USERNAME'@'localhost';"
+	mariadb -u root -p -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$PASSWORD';"
+	mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';"
+	mariadb -u root -p$PASSWORD -e "CREATE USER 'conky'@'localhost' IDENTIFIED BY '$PASSWORD';"
+	mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON conky.* TO 'conky'@'localhost';"
+	systemctl restart mariadb
+}
+
+if [ "$1" == "initial" ]; then
+    func_confirm_disk
+elif [ "$1" == "after_chroot" ]; then
+    func_after_chroot
+elif [ "$1" == "pamac" ]; then
+    func_pamac_yay
+elif [ "$1" == "raid" ]; then
     func_lvm_raid
 elif [ "$1" == "chaotic" ]; then
     func_chaotic
-elif [ "$1" == "pamac" ]; then
-    func_pamac_yay
 elif [ "$1" == "mariadb" ]; then
     func_mariadb
 elif [ "$1" == "packages" ]; then
     func_install_packages
-elif [ "$1" == "initial" ]; then
-    func_confirm_disk
 elif [ "$1" == "amd" ]; then
     func_linux_amd
 elif [ "$1" == "nvidia" ]; then
@@ -446,10 +458,13 @@ elif [ "$1" == "nvidia" ]; then
 else
     echo "Invalid argument: $1. Use the following variables below:"
     echo "initial - will run all through steps"
+    echo "after_chroot - proceed with script after arch_chroot"
     echo "raid - to set lvm softraid between 2 NVMe (1/2)"
     echo "pamac - install pamac and yay"
     echo "chaotic - enable CHAOTIC AUR repo"
     echo "packages - install a huge list of packages"
     echo "mariadb - configure mariadb instance"
+    echo "nvidia - install nvidia gpu drivers"
+    echo "amd - install amd gpu drivers"
     exit 1
 fi
