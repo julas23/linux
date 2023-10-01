@@ -30,11 +30,12 @@ echo "PASSWORD:" $PASSWORD
 echo "ARCHTECT:" $ARCHITECTURE
 echo "WINDOW M:" $WINDOWMANAGER
 echo "HOSTNAME:" $HOSTNAME
-echo "HOSTNAME:" $NETWORKIP
-echo "HOSTNAME:" $GATEWAYIP
-echo "HOSTNAME:" $NAMESERVER1
-echo "HOSTNAME:" $NAMESERVER2
-echo "HOSTNAME:" $WIFIPASSWORD
+echo "NETWORKIP:" $NETWORKIP
+echo "GATEWAYIP:" $GATEWAYIP
+echo "NAMESERVER1:" $NAMESERVER1
+echo "NAMESERVER2:" $NAMESERVER2
+echo "WIFIPASSWORD:" $WIFIPASSWORD
+echo "STORAGE:" $STORAGE
 
 read -rp "All done to proceed? (Y/N): " response
 case "$response" in
@@ -106,12 +107,6 @@ func_wm_install() {
 
 func_confirm_disk() {
   while true; do
-    echo "Detected storage type: $TYPE"
-    echo "Device name: $DISK"
-    echo "Partition for BOOT:" $BOOT
-    echo "Partition for UEFI:" $UEFI
-    echo "Partition for ROOT:" $ROOT
-    read -rp "Is this correct? (Y/N): " response
     case "$response" in
       [yY])
         break
@@ -128,52 +123,59 @@ func_confirm_disk() {
         if [ -e "$STORAGE" ]; then
             TYPE="Custom"
             DISK="$STORAGE"
-                if [[ $DISK == *nvme* ]]; then
-                BOOT="${DISK}p2"
+            if [[ $DISK == *nvme* ]]; then
                 UEFI="${DISK}p1"
+                BOOT="${DISK}p2"
                 ROOT="${DISK}p3"
-                else
-                BOOT="${DISK}2"
+            else
                 UEFI="${DISK}1"
+                BOOT="${DISK}2"
                 ROOT="${DISK}3"
-                fi
-            func_confirm_disk
+            fi
         else
             echo "Invalid storage device: $STORAGE"
             exit 1
         fi
+        echo "STORAGE :" $TYPE
+        echo "DEVICE  :" $DISK
+        echo "PartUEFI:" $UEFI
+        echo "PartBOOT:" $BOOT
+        echo "PartROOT:" $ROOT
+        read -rp "All done to proceed? (Y/N): " response
     else
         if [ -e "/dev/sda" ]; then
             TYPE="SATA"
             DISK="/dev/sda"
-            BOOT="$DISK"2
             UEFI="$DISK"1
+            BOOT="$DISK"2
             ROOT="$DISK"3
-            func_confirm_disk
         elif [ -e "/dev/xvda" ]; then
             TYPE="Virtual SATA"
             DISK="/dev/xvda"
-            BOOT="$DISK"2
             UEFI="$DISK"1
+            BOOT="$DISK"2
             ROOT="$DISK"3
-            func_confirm_disk
         elif [ -e "/dev/nvme0n1" ]; then
             TYPE="NVMe"
             DISK="/dev/nvme0n1"
-            BOOT="${DISK}p2"
             UEFI="${DISK}p1"
+            BOOT="${DISK}p2"
             ROOT="${DISK}p3"
-            func_confirm_disk
         else
-            func_confirm_disk
+            echo "STORAGE :" $TYPE
+            echo "DEVICE  :" $DISK
+            echo "PartUEFI:" $UEFI
+            echo "PartBOOT:" $BOOT
+            echo "PartROOT:" $ROOT
+            read -rp "All done to proceed? (Y/N): " response
         fi
+        echo "STORAGE :" $TYPE
+        echo "DEVICE  :" $DISK
+        echo "PartUEFI:" $UEFI
+        echo "PartBOOT:" $BOOT
+        echo "PartROOT:" $ROOT
+        read -rp "All done to proceed? (Y/N): " response
     fi
-    echo "STORAGE :" $TYPE
-    echo "DEVICE  :" $DISK
-    echo "PartBOOT:" $BOOT
-    echo "PartUEFI:" $UEFI
-    echo "PartROOT:" $ROOT
-    read -rp "All done to proceed? (Y/N): " response
     case "$response" in
         [yY])
         echo 'Proceeding with install!'
@@ -188,6 +190,12 @@ func_confirm_disk() {
         echo "Please enter Y or N."
         ;;
     esac
+    echo "STORAGE :" $TYPE
+    echo "DEVICE  :" $DISK
+    echo "PartBOOT:" $BOOT
+    echo "PartUEFI:" $UEFI
+    echo "PartROOT:" $ROOT
+    lsblk -o NAME,MOUNTPOINT,SIZE,FSUSED,FSAVAIL,FSUSE%,FSTYPE
 }
 
 func_cable_cfg() {
@@ -338,24 +346,40 @@ func_linux_nvidia() {
 func_archlinux_installation() {
     set -e
 
-    parted $DISK mklabel gpt
-    parted $DISK mkpart primary fat32 1MiB 501MiB
-    parted $DISK set 1 esp on
-    parted $DISK mkpart primary btrfs 501MiB 1501MiB
-    parted $DISK mkpart primary btrfs 1501MiB 100%
-    parted $DISK quit
+    if [ -e "$UEFI" ]; then
+        echo 'Removing Partition' "$UEFI"
+        parted --script -f "$DISK" rm 1
+    else
+        echo 'UEFI partition does not exist.'
+    fi
 
+    if [ -e "$BOOT" ]; then
+        echo 'Removing Partition' "$BOOT"
+        parted --script -f "$DISK" rm 2
+    else
+        echo 'BOOT partition does not exist.'
+    fi
+
+    if [ -e "$ROOT" ]; then
+        echo 'Removing Partition' "$ROOT"
+        parted --script -f "$DISK" rm 3
+    else
+        echo 'ROOT partition does not exist.'
+    fi
+    parted --script -f $DISK mklabel gpt
+    parted --script -f $DISK mkpart primary fat32 1MiB 501MiB
+    parted --script -f $DISK set 1 esp on
+    parted --script -f $DISK mkpart primary btrfs 501MiB 1501MiB
+    parted --script -f $DISK mkpart primary btrfs 1501MiB 100%
     mkfs.fat -F32 $UEFI
-    mkfs.btrfs $BOOT
-    mkfs.btrfs $ROOT
-
+    mkfs.ext4 -F $BOOT
+    mkfs.ext4 -F $ROOT
     mount $ROOT /mnt
     mkdir /mnt/boot
     mkdir /mnt/home
     mount $BOOT /mnt/boot
     mkdir /mnt/boot/efi
     mount $UEFI /mnt/boot/efi
-
     pacman -Syy
     pacman -S reflector
     cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
