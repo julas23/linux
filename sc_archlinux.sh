@@ -5,23 +5,23 @@ if [[ $(id -u) -ne 0 ]]; then
     exit 1
 fi
 
-USERNAME=$(cat data.ini |grep USERNAME |cut -d= -f2)
-PASSWORD=$(cat data.ini |grep PASSWORD |cut -d= -f2)
-STORAGE=$(cat data.ini |grep STORAGE |cut -d= -f2)
-ARCHITECTURE=$(cat data.ini |grep ARCHITECTURE |cut -d= -f2)
-WINDOWMANAGER=$(cat data.ini |grep WINDOWMANAGER |cut -d= -f2)
-HOSTNAME=$(cat data.ini |grep HOSTNAME |cut -d= -f2)
-NETWORKIP=$(cat data.ini |grep NETWORKIP |cut -d= -f2)
-PREFIX=$(cat data.ini |grep PREFIX |cut -d= -f2)
-GATEWAYIP=$(cat data.ini |grep GATEWAYIP |cut -d= -f2)
-NAMESERVER1=$(cat data.ini |grep NAMESERVER1 |cut -d= -f2)
-NAMESERVER2=$(cat data.ini |grep NAMESERVER2 |cut -d= -f2)
-WIFIPASSWORD=$(cat data.ini |grep WIFIPASSWORD |cut -d= -f2)
-WIFISSID=$(cat data.ini |grep WIFISSID |cut -d= -f2)
-PACKAGES=$(cat data.ini |grep PACKAGES |cut -d= -f2)
+USERNAME=$(cat sc_vars.ini |grep USERNAME |cut -d= -f2)
+PASSWORD=$(cat sc_vars.ini |grep PASSWORD |cut -d= -f2)
+STORAGE=$(cat sc_vars.ini |grep STORAGE |cut -d= -f2)
+ARCHITECTURE=$(cat sc_vars.ini |grep ARCHITECTURE |cut -d= -f2)
+WINDOWMANAGER=$(cat sc_vars.ini |grep WINDOWMANAGER |cut -d= -f2)
+HOSTNAME=$(cat sc_vars.ini |grep HOSTNAME |cut -d= -f2)
+NETWORKIP=$(cat sc_vars.ini |grep NETWORKIP |cut -d= -f2)
+PREFIX=$(cat sc_vars.ini |grep PREFIX |cut -d= -f2)
+GATEWAYIP=$(cat sc_vars.ini |grep GATEWAYIP |cut -d= -f2)
+NAMESERVER1=$(cat sc_vars.ini |grep NAMESERVER1 |cut -d= -f2)
+NAMESERVER2=$(cat sc_vars.ini |grep NAMESERVER2 |cut -d= -f2)
+WIFIPASSWORD=$(cat sc_vars.ini |grep WIFIPASSWORD |cut -d= -f2)
+WIFISSID=$(cat sc_vars.ini |grep WIFISSID |cut -d= -f2)
+PACKAGES=$(cat sc_vars.ini |grep PACKAGES |cut -d= -f2)
 
 if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ] || [ -z "$STORAGE" ] || [ -z "$ARCHITECTURE" ] || [ -z "$WINDOWMANAGER" ] || [ -z "$HOSTNAME" ]; then
-    echo "At least one variable are empty, please check data.ini file to confirm."
+    echo "At least one variable are empty, please check sc_vars.ini file to confirm."
     exit 1
 fi
 
