@@ -1,0 +1,20 @@
+ -- test05.module
+ 
+ local modname = ...
+ local M = {}
+ _G[modname] = M
+ package.loaded[modname] = M
+ 
+ 
+ 
+ 
+ --[[
+ ###############################################################################
+ ###                            MODULE MAIN LOOP                             ###
+ ###############################################################################
+ --]]
+ function M.main()
+ 	string.gsub(conky_parse("${tztime Asia/Tokyo}"), "(%d+):(%d+):(%d+)", function(a,b,c) loadstring("t = { hour="..a..", min="..b..", sec="..c.." }")() end)
+ 	print(t.hour,":",t.min,":",t.sec)
+ end
+

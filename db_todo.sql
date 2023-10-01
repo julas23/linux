@@ -1,0 +1,57 @@
+USE conky;
+
+DROP TABLE IF EXISTS t_todo;
+
+CREATE TABLE IF NOT EXISTS t_todo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tipo TEXT CHECK (tipo IN ('note', 'task', 'safe')),
+    texto TEXT,
+    ok BIT,
+    UNIQUE(id)
+) ENGINE=InnoDB;
+
+INSERT INTO t_todo (tipo,texto, ok) VALUES
+('note', 'NIF 315069430', 0),
+('note', 'NISS 12168172481', 0),
+('note', 'PASSPORT FU580336', 0),
+('note', 'Rua de Santana 12 4705-139 Braga', 0),
+('note', 'OpenBank - Código 02418343 - ES6700730100590797184681', 0),
+('note', 'Swift OPENESMM - IBAN ES6700730100590797184681', 0),
+('note', 'NovoBosta - Adesão 1139361 - Cc 0006 3845 0509', 0),
+('note', 'Swift BESCPTPLXXX - IBAN PT50000700000063845050923', 0),
+('safe', 'Juliano Alves Santos 4151 7500 6824 9159 08/24 954', 0),
+('safe', 'BitWarden julianoas@msn.com b+J@$.2305*12345', 0),
+('safe', 'OpenWeather julianoas@msn.com jas2305X', 0),
+('safe', 'OpenWeather 5X 96191d21d3ba740890e070dec112bd0e', 0),
+('safe', 'OpenAI julianoas@msn.com o+J@$.2305*', 0),
+('safe', 'OpenAI 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', 0),
+('safe', 'MSN julianoas@msn.com m+J@$.2305* kzxmrclbvubuovdr', 0),
+('safe', 'Google julianoas@gmail.com g+J@$.2305* gskrpwqqnjsnbgtb', 0),
+('safe', 'iCloud jueme@icloud.com mas080483 rsxy-hbfc-bcpz-jfyo', 0),
+('safe', 'Apple Chave HT5Q-J9FN-W2Q7-K5CP-U9J3-T7EG-JX4F', 0),
+('task', 'Stunts', 0),
+('task', '4DBox', 0),
+('task', 'HocusPocus', 0),
+('task', 'Another World', 0),
+('task', 'Blood', 0),
+('task', 'DragonsLair', 0),
+('task', 'RaspBerry Pi 4 8Gb MariaDB GitLab',  0),
+('task', 'Caixa Lian Li O11 Dynamic XL ROG WaterCooler',  0),
+('task', 'PSU Seasonic Focus+ 750W 80 Plus Gold Dock',  0),
+('task', 'AMD Ryzen 9 7950X OEM',  0),
+('task', 'MSI MEG CoreLiquid S360 AMD Zen4',  0),
+('task', 'MSI MEG X670E ACE Gaming 2x PCIe Gen 5 16x',  0),
+('task', 'GSkill Trident DDR5 6600Mhz CL12',  0),
+('task', 'AsRock Acqua Radeon RX 7900 XTX WaterCooled',  0),
+('task', 'Storage PCIe Blazing Quad M.2 Card',  0),
+('task', 'M2 NVMe 256Gb PCIe 5 x16 System',  0),
+('task', 'M2 NVMe 256Gb PCIe 5 x16 System',  0),
+('task', 'M2 MSI SPATIUM M570 PCIe 5.0 NVMe M.2 4TB',  0),
+('task', 'M2 MSI SPATIUM M570 PCIe 5.0 NVMe M.2 4TB',  0),
+('task', 'Creative Sound Blaster Audigy PCIe',  0),
+('task', 'Logitech C925-E Webcam', 1),
+('task', 'Mouse Logitech MX Master 3s MX Keys S & MX', 1),
+('task', 'Keyboard Logitech MX Keys S & MX', 1),
+('task', 'HomeTheater Sony Muteki HT-M7', 0),
+('task', 'Monitor Asus ROG Strix XG49VQ', 0),
+('task', 'Home Theater Sony MHC-W777AV', 0);

@@ -1,0 +1,684 @@
+#!/bin/bash
+# BrWeather Modo INPE
+# Criado por LeandroNKZ <leandronkz@gmail.com>
+# Se encontrar BUGs, ou erros no programa, favor reportar ao desenvolvedor
+# Acesse o site para maiores instruções:
+# http://brweatherproject.blogspot.com/
+# Distribuído sob licença GPLv3
+
+##Radiação ultravioleta
+
+
+
+if [ $1 = "--option=UVN" ] || [ $1 = "--option=UVNT" ] ; then
+
+UVN=`grep -m1 '<img src="http://img0.cptec.inpe.br/~rgrafico/icones_principais/uv/medio/' ~/.brweather/cache/cache | cut -f13 -d'/' | cut -f1 -d'.'`
+
+case $UVN in
+"uv_0")
+  NUVN="ND"
+  NUVNT="ND"
+;;
+"uv_-9")
+  NUVN="ND"
+  NUVNT="ND"
+;;
+"uv_nd")
+  NUVN="ND"
+  NUVNT="ND"
+;;
+"uv_nd2")
+  NUVN="ND"
+  NUVNT="ND"
+;;
+"uv_1")
+  NUVN="1"
+  NUVNT="Baixo"
+;;
+"uv_2")
+  NUVN="2"
+  NUVNT="Baixo"
+;;
+"uv_3")
+  NUVN="3"
+  NUVNT="Moderado"
+;;
+"uv_4")
+  NUVN="4"
+  NUVNT="Moderado"
+;;
+"uv_5")
+  NUVN="5"
+  NUVNT="Moderado"
+;;
+"uv_6")
+  NUVN="6"
+  NUVNT="Alto"
+;;
+"uv_7")
+  NUVN="7"
+  NUVNT="Alto"
+;;
+"uv_8")
+  NUVN="8"
+  NUVNT="Muito Alto"
+;;
+"uv_9")
+  NUVN="9"
+  NUVNT="Muito Alto"
+;;
+"uv_10")
+  NUVN="10"
+  NUVNT="Muito Alto"
+;;
+"uv_11")
+  NUVN="11"
+  NUVNT="Extremo"
+;;
+"uv_12")
+  NUVN="12"
+  NUVNT="Extremo"
+;;
+"uv_13")
+  NUVN="13"
+  NUVNT="Extremo"
+;;
+"uv_14")
+  NUVN="14"
+  NUVNT="Extremo"
+;;
+esac
+
+elif [ $1 = "--option=UV1" ] || [ $1 = "--option=UV1T" ] ; then
+UV1=`grep -m2 '<img src="http://img0.cptec.inpe.br/~rgrafico/icones_principais/uv/medio/' ~/.brweather/cache/cache | cut -f14 -d'/' | cut -f1 -d'.' | tail -n1`
+case $UV1 in
+"uv_0")
+  NUV1="ND"
+  NUV1T="ND"
+;;
+"uv_-9")
+  NUV1="ND"
+  NUV1T="ND"
+;;
+"uv_nd")
+  NUV1="ND"
+  NUV1T="ND"
+;;
+"uv_nd2")
+  NUV1="ND"
+  NUV1T="ND"
+;;
+"uv_1")
+  NUV1="1"
+  NUV1T="Baixo"
+;;
+"uv_2")
+  NUV1="2"
+  NUV1T="Baixo"
+;;
+"uv_3")
+  NUV1="3"
+  NUV1T="Moderado"
+;;
+"uv_4")
+  NUV1="4"
+  NUV1T="Moderado"
+;;
+"uv_5")
+  NUV1="5"
+  NUV1T="Moderado"
+;;
+"uv_6")
+  NUV1="6"
+  NUV1T="Alto"
+;;
+"uv_7")
+  NUV1="7"
+  NUV1T="Alto"
+;;
+"uv_8")
+  NUV1="8"
+  NUV1T="Muito Alto"
+;;
+"uv_9")
+  NUV1="9"
+  NUV1T="Muito Alto"
+;;
+"uv_10")
+  NUV1="10"
+  NUV1T="Muito Alto"
+;;
+"uv_11")
+  NUV1="11"
+  NUV1T="Extremo"
+;;
+"uv_12")
+  NUV1="12"
+  NUV1T="Extremo"
+;;
+"uv_13")
+  NUV1="13"
+  NUV1T="Extremo"
+;;
+"uv_14")
+  NUV1="14"
+  NUV1T="Extremo"
+;;
+esac
+
+
+
+elif [ $1 = "--option=UV2" ] || [ $1 = "--option=UV2T" ] ; then
+UV2=`grep -m3 '<img src="http://img0.cptec.inpe.br/~rgrafico/icones_principais/uv/medio/' ~/.brweather/cache/cache | cut -f14 -d'/' | cut -f1 -d'.' | tail -n1`
+
+case $UV2 in
+"uv_0")
+  NUV2="ND"
+  NUV2T="ND"
+;;
+"uv_-9")
+  NUV2="ND"
+  NUV2T="ND"
+;;
+"uv_nd")
+  NUV2="ND"
+  NUV2T="ND"
+;;
+"uv_nd2")
+  NUV2="ND"
+  NUV2T="ND"
+;;
+"uv_1")
+  NUV2="1"
+  NUV2T="Baixo"
+;;
+"uv_2")
+  NUV2="2"
+  NUV2T="Baixo"
+;;
+"uv_3")
+  NUV2="3"
+  NUV2T="Moderado"
+;;
+"uv_4")
+  NUV2="4"
+  NUV2T="Moderado"
+;;
+"uv_5")
+  NUV2="5"
+  NUV2T="Moderado"
+;;
+"uv_6")
+  NUV2="6"
+  NUV2T="Alto"
+;;
+"uv_7")
+  NUV2="7"
+  NUV2T="Alto"
+;;
+"uv_8")
+  NUV2="8"
+  NUV2T="Muito Alto"
+;;
+"uv_9")
+  NUV2="9"
+  NUV2T="Muito Alto"
+;;
+"uv_10")
+  NUV2="10"
+  NUV2T="Muito Alto"
+;;
+"uv_11")
+  NUV2="11"
+  NUV2T="Extremo"
+;;
+"uv_12")
+  NUV2="12"
+  NUV2T="Extremo"
+;;
+"uv_13")
+  NUV2="13"
+  NUV2T="Extremo"
+;;
+"uv_14")
+  NUV2="14"
+  NUV2T="Extremo"
+;;
+esac
+
+
+elif [ $1 = "--option=UV3" ] || [ $1 = "--option=UV3T" ] ; then
+UV3=`grep -m4 '<img src="http://img0.cptec.inpe.br/~rgrafico/icones_principais/uv/medio/' ~/.brweather/cache/cache | cut -f14 -d'/' | cut -f1 -d'.' | tail -n1`
+
+case $UV3 in
+"uv_0")
+  NUV3="ND"
+  NUV3T="ND"
+;;
+"uv_-9")
+  NUV3="ND"
+  NUV3T="ND"
+;;
+"uv_nd")
+  NUV3="ND"
+  NUV3T="ND"
+;;
+"uv_nd2")
+  NUV3="ND"
+  NUV3T="ND"
+;;
+"uv_1")
+  NUV3="1"
+  NUV3T="Baixo"
+;;
+"uv_2")
+  NUV3="2"
+  NUV3T="Baixo"
+;;
+"uv_3")
+  NUV3="3"
+  NUV3T="Moderado"
+;;
+"uv_4")
+  NUV3="4"
+  NUV3T="Moderado"
+;;
+"uv_5")
+  NUV3="5"
+  NUV3T="Moderado"
+;;
+"uv_6")
+  NUV3="6"
+  NUV3T="Alto"
+;;
+"uv_7")
+  NUV3="7"
+  NUV3T="Alto"
+;;
+"uv_8")
+  NUV3="8"
+  NUV3T="Muito Alto"
+;;
+"uv_9")
+  NUV3="9"
+  NUV3T="Muito Alto"
+;;
+"uv_10")
+  NUV3="10"
+  NUV3T="Muito Alto"
+;;
+"uv_11")
+  NUV3="11"
+  NUV3T="Extremo"
+;;
+"uv_12")
+  NUV3="12"
+  NUV3T="Extremo"
+;;
+"uv_13")
+  NUV3="13"
+  NUV3T="Extremo"
+;;
+"uv_14")
+  NUV3="14"
+  NUV3T="Extremo"
+;;
+esac
+
+
+
+elif [ $1 = "--option=UV4" ] || [ $1 = "--option=UV4T" ] ; then
+UV4=`grep -m5 '<img src="http://img0.cptec.inpe.br/~rgrafico/icones_principais/uv/medio/' ~/.brweather/cache/cache | cut -f14 -d'/' | cut -f1 -d'.' | tail -n1`
+
+case $UV4 in
+"uv_0")
+  NUV4="ND"
+  NUV4T="ND"
+;;
+"uv_-9")
+  NUV4="ND"
+  NUV4T="ND"
+;;
+"uv_nd")
+  NUV4="ND"
+  NUV4T="ND"
+;;
+"uv_nd2")
+  NUV4="ND"
+  NUV4T="ND"
+;;
+"uv_1")
+  NUV4="1"
+  NUV4T="Baixo"
+;;
+"uv_2")
+  NUV4="2"
+  NUV4T="Baixo"
+;;
+"uv_3")
+  NUV4="3"
+  NUV4T="Moderado"
+;;
+"uv_4")
+  NUV4="4"
+  NUV4T="Moderado"
+;;
+"uv_5")
+  NUV4="5"
+  NUV4T="Moderado"
+;;
+"uv_6")
+  NUV4="6"
+  NUV4T="Alto"
+;;
+"uv_7")
+  NUV4="7"
+  NUV4T="Alto"
+;;
+"uv_8")
+  NUV4="8"
+  NUV4T="Muito Alto"
+;;
+"uv_9")
+  NUV4="9"
+  NUV4T="Muito Alto"
+;;
+"uv_10")
+  NUV4="10"
+  NUV4T="Muito Alto"
+;;
+"uv_11")
+  NUV4="11"
+  NUV4T="Extremo"
+;;
+"uv_12")
+  NUV4="12"
+  NUV4T="Extremo"
+;;
+"uv_13")
+  NUV4="13"
+  NUV4T="Extremo"
+;;
+"uv_14")
+  NUV4="14"
+  NUV4T="Extremo"
+;;
+esac
+
+
+
+elif [ $1 = "--option=UV5" ] || [ $1 = "--option=UV5T" ] ; then
+UV5=`grep -m6 '<img src="http://img0.cptec.inpe.br/~rgrafico/icones_principais/uv/medio/' ~/.brweather/cache/cache | cut -f14 -d'/' | cut -f1 -d'.' | tail -n1`
+
+case $UV5 in
+"uv_0")
+  NUV5="ND"
+  NUV5T="ND"
+;;
+"uv_-9")
+  NUV5="ND"
+  NUV5T="ND"
+;;
+"uv_nd")
+  NUV5="ND"
+  NUV5T="ND"
+;;
+"uv_nd2")
+  NUV5="ND"
+  NUV5T="ND"
+;;
+"uv_1")
+  NUV5="1"
+  NUV5T="Baixo"
+;;
+"uv_2")
+  NUV5="2"
+  NUV5T="Baixo"
+;;
+"uv_3")
+  NUV5="3"
+  NUV5T="Moderado"
+;;
+"uv_4")
+  NUV5="4"
+  NUV5T="Moderado"
+;;
+"uv_5")
+  NUV5="5"
+  NUV5T="Moderado"
+;;
+"uv_6")
+  NUV5="6"
+  NUV5T="Alto"
+;;
+"uv_7")
+  NUV5="7"
+  NUV5T="Alto"
+;;
+"uv_8")
+  NUV5="8"
+  NUV5T="Muito Alto"
+;;
+"uv_9")
+  NUV5="9"
+  NUV5T="Muito Alto"
+;;
+"uv_10")
+  NUV5="10"
+  NUV5T="Muito Alto"
+;;
+"uv_11")
+  NUV5="11"
+  NUV5T="Extremo"
+;;
+"uv_12")
+  NUV5="12"
+  NUV5T="Extremo"
+;;
+"uv_13")
+  NUV5="13"
+  NUV5T="Extremo"
+;;
+"uv_14")
+  NUV5="14"
+  NUV5T="Extremo"
+;;
+esac
+
+
+elif [ $1 = "--option=UV6" ] || [ $1 = "--option=UV6T" ] ; then
+UV6=`grep -m7 '<img src="http://img0.cptec.inpe.br/~rgrafico/icones_principais/uv/medio/' ~/.brweather/cache/cache | cut -f14 -d'/' | cut -f1 -d'.' | tail -n1`
+
+case $UV6 in
+"uv_0")
+  NUV6="ND"
+  NUV6T="ND"
+;;
+"uv_-9")
+  NUV6="ND"
+  NUV6T="ND"
+;;
+"uv_nd")
+  NUV6="ND"
+  NUV6T="ND"
+;;
+"uv_nd2")
+  NUV6="ND"
+  NUV6T="ND"
+;;
+"uv_1")
+  NUV6="1"
+  NUV6T="Baixo"
+;;
+"uv_2")
+  NUV6="2"
+  NUV6T="Baixo"
+;;
+"uv_3")
+  NUV6="3"
+  NUV6T="Moderado"
+;;
+"uv_4")
+  NUV6="4"
+  NUV6T="Moderado"
+;;
+"uv_5")
+  NUV6="5"
+  NUV6T="Moderado"
+;;
+"uv_6")
+  NUV6="6"
+  NUV6T="Alto"
+;;
+"uv_7")
+  NUV6="7"
+  NUV6T="Alto"
+;;
+"uv_8")
+  NUV6="8"
+  NUV6T="Muito Alto"
+;;
+"uv_9")
+  NUV6="9"
+  NUV6T="Muito Alto"
+;;
+"uv_10")
+  NUV6="10"
+  NUV6T="Muito Alto"
+;;
+"uv_11")
+  NUV6="11"
+  NUV6T="Extremo"
+;;
+"uv_12")
+  NUV6="12"
+  NUV6T="Extremo"
+;;
+"uv_13")
+  NUV6="13"
+  NUV6T="Extremo"
+;;
+"uv_14")
+  NUV6="14"
+  NUV6T="Extremo"
+;;
+esac
+
+
+elif [ $1 = "--option=UV7" ] || [ $1 = "--option=UV7T" ] ; then
+UV7=`grep -m8 '<img src="http://img0.cptec.inpe.br/~rgrafico/icones_principais/uv/medio/' ~/.brweather/cache/cache | cut -f14 -d'/' | cut -f1 -d'.' | tail -n1`
+
+case $UV7 in
+"uv_0")
+  NUV7="ND"
+  NUV7T="ND"
+;;
+"uv_-9")
+  NUV7="ND"
+  NUV7T="ND"
+;;
+"uv_nd")
+  NUV7="ND"
+  NUV7T="ND"
+;;
+"uv_nd2")
+  NUV7="ND"
+  NUV7T="ND"
+;;
+"uv_1")
+  NUV7="1"
+  NUV7T="Baixo"
+;;
+"uv_2")
+  NUV7="2"
+  NUV7T="Baixo"
+;;
+"uv_3")
+  NUV7="3"
+  NUV7T="Moderado"
+;;
+"uv_4")
+  NUV7="4"
+  NUV7T="Moderado"
+;;
+"uv_5")
+  NUV7="5"
+  NUV7T="Moderado"
+;;
+"uv_6")
+  NUV7="6"
+  NUV7T="Alto"
+;;
+"uv_7")
+  NUV7="7"
+  NUV7T="Alto"
+;;
+"uv_8")
+  NUV7="8"
+  NUV7T="Muito Alto"
+;;
+"uv_9")
+  NUV7="9"
+  NUV7T="Muito Alto"
+;;
+"uv_10")
+  NUV7="10"
+  NUV7T="Muito Alto"
+;;
+"uv_11")
+  NUV7="11"
+  NUV7T="Extremo"
+;;
+"uv_12")
+  NUV7="12"
+  NUV7T="Extremo"
+;;
+"uv_13")
+  NUV7="13"
+  NUV7T="Extremo"
+;;
+"uv_14")
+  NUV7="14"
+  NUV7T="Extremo"
+;;
+esac
+
+fi
+
+case $1 in
+"--option=UVN") echo $NUVN
+;;
+"--option=UVNT") echo $NUVNT
+;;
+"--option=UV1") echo $NUV1
+;;
+"--option=UV1T") echo $NUV1T
+;;
+"--option=UV2") echo $NUV2
+;;
+"--option=UV2T") echo $NUV2T
+;;
+"--option=UV3") echo $NUV3
+;;
+"--option=UV3T") echo $NUV3T
+;;
+"--option=UV4") echo $NUV4
+;;
+"--option=UV4T") echo $NUV4T
+;;
+"--option=UV5") echo $NUV5
+;;
+"--option=UV5T") echo $NUV5T
+;;
+"--option=UV6") echo $NUV6
+;;
+"--option=UV6T") echo $NUV6T
+;;
+"--option=UV7") echo $NUV7
+;;
+"--option=UV7T") echo $NUV7T
+;;
+"--option"* ) echo "Opção inválida.
+Experimente --help para mais informações."
+;;
+esac

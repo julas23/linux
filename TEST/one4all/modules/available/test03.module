@@ -1,0 +1,66 @@
+ -- test03.module
+ 
+ local modname = ...
+ local M = {}
+ _G[modname] = M
+ package.loaded[modname] = M
+ 
+ 
+ 
+ --[[
+ ###############################################################################
+ ###                              SETTINGS                                   ###
+ ###############################################################################
+ --]]
+ 
+ local settings_table = {
+ 	{	
+ 		sizeX	= 100,
+ 		sizeY	= 100;
+ 		radius	= 20,
+ 	},
+ }
+ 		
+ --[[
+ ###############################################################################
+ ###                           END OF SETTINGS                               ###
+ ###############################################################################
+ --]]
+ 
+ 
+ 
+ function M.draw_box(offsetX, offsetY, sizeX, sizeY, radius, color, alpha)
+ 	if sizeX < sizeY then radius = math.floor((radius * sizeX) / 200) else radius = math.floor((radius * sizeY) / 200) end
+ 	cairo_save(cr)
+ 	cairo_arc(cr, offsetX+radius, offsetY+radius, radius, 3.1415926535898, 4.7123889803847)
+ 	cairo_arc(cr, offsetX+sizeX-radius, offsetY+radius, radius, 4.7123889803847, 0)
+ 	cairo_arc(cr, offsetX+sizeX-radius, offsetY+sizeY-radius, radius, 0, 1.5707963267949)
+ 	cairo_arc(cr, offsetX+radius, offsetY+sizeY-radius, radius, 1.5707963267949, 3.1415926535898)
+ 	cairo_close_path(cr)
+ 	cairo_set_source_rgba(cr, one4all_cairo.rgb2rgba(color, alpha))
+ 	cairo_fill(cr)
+ 	cairo_stroke(cr)
+ 	cairo_restore(cr)
+ end
+ 
+ function M.test(t)
+ 	local color = { 0xff0000, 0x00ff00, 0x0000ff }
+ 	for x=1, 3
+ 	do
+ 		M.draw_box(x*100, 20, t.sizeX, t.sizeY, t.radius, color[x], 0.5)
+ 	end
+ end
+ 
+ 
+ 
+ --[[
+ ###############################################################################
+ ###                            MODULE MAIN LOOP                             ###
+ ###############################################################################
+ --]]
+ function M.main()
+         for i in pairs(settings_table) do
+             M.test(settings_table[i])
+         end
+ end
+ 

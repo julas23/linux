@@ -1,0 +1,21 @@
+       ${voffset -10}${font Verana:style=Bold:size=16}${color1}Hoje${color}${font}
+       ${font Verana:style=Bold:size=18}${color1}[--datatype=HT --hideunits --centeredwidth=3]C${color}${font}
+
+
+
+${font Liberation Sans Mono:style=bold:size=6}${color1}
+[--datatype=LT --startday=1 --hideunits --centeredwidth=3]/[--datatype=HT --startday=1 --hideunits --centeredwidth=3]      [--datatype=LT --startday=2 --hideunits --centeredwidth=3]/[--datatype=HT --startday=2 --hideunits --centeredwidth=3]      [--datatype=LT --startday=3 --hideunits --centeredwidth=3]/[--datatype=HT --startday=3 --hideunits --centeredwidth=3]       [--datatype=LT --startday=4 --hideunits --centeredwidth=3]/[--datatype=HT --startday=4 --hideunits --centeredwidth=3]${font}${color}
+
+
+
+
+${voffset 6}${goto 10}${font ConkyWindNESW:size=40}${color3}[--datatype=BS]${color}${font}
+${voffset 4}${goto 22}${color1}${font Sans Mono:style=Bold:size=8}[--datatype=WS]${color}${font}
+${voffset -116}${goto 70}${font Liberation Sans Mono:style=Bold:size=10}${color1}[--datatype=CT]${color}${font}${font Sans Mono:style=Bold:size=8}
+${voffset 8}${goto 70}Estação: ${color1}[--datatype=OB]${color}
+${goto 70}Chuva: ${color1}[--datatype=PC]${color}
+${goto 70}UV: ${color1}[--datatype=UI] - [--datatype=UT]${color}
+${goto 70}Umidade: ${color1}[--datatype=HM]${color}
+${goto 70}Amanhecer: ${color1}[--datatype=SR]${color}
+${goto 70}Anoitecer: ${color1}[--datatype=SS]${color}
+${goto 70}Lua: ${color1}[--datatype=MP]${voffset -10}${color}${font}

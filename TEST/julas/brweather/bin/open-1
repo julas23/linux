@@ -1,0 +1,206 @@
+#!/bin/bash
+# BrWeather
+# Criado por LeandroNKZ <leandronkz@gmail.com>
+# Se encontrar BUGs, ou erros no programa, favor reportar ao desenvolvedor
+# Acesse o site para maiores instruções:
+# http://brweatherproject.blogspot.com/
+# Distribuído sob licença GPLv3
+
+LU=`cat ~/.brweather/cache/lastupdate`
+
+ODATE=`date "+%d-%m-%Y"`
+DAY0=`date "+%a"`
+
+ALT=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/min\042/){print$(i+1)}}}')
+AHT=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/max\042/){print$(i+1)}}}')
+APA=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/pressure\042/){print$(i+1)}}}')
+AUM=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/humidity\042/){print$(i+1)}}}')
+AWS=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/speed\042/){print$(i+1)}}}')
+AWD=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/deg\042/){print$(i+1)}}}')
+ACA=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/all\042/){print$(i+1)}}}')
+ACA2=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/"clouds\042/){print$(i+1)}}}')
+
+D1=$(echo grep -m1 $(date +%a) ~/.brweather/cache/open2)
+DAY1=$(grep -m1 $(date +%a) ~/.brweather/cache/open2 | cut -f2 -d':')
+
+D2=$(grep -m1 $(date -d "1 day" "+%a") ~/.brweather/cache/open2 | tail -n1)
+DAY2=$(echo $D2 | cut -f2 -d':')
+
+DAY0T=`date +%A | sed -r 's/\b[a-z]{3,}/\u&/g'`
+
+case $DAY1 in
+"Seg")
+    DAY1T="Segunda"
+    DAY2T="Terça"
+    DAY3T="Quarta"
+    DAY4T="Quinta"
+    DAY5T="Sexta"
+    DAY6T="Sábado"
+    DAY7T="Domingo"
+;;
+"Ter")
+    DAY1T="Terça"
+    DAY2T="Quarta"
+    DAY3T="Quinta"
+    DAY4T="Sexta"
+    DAY5T="Sábado"
+    DAY6T="Domingo"
+    DAY7T="Segunda"
+;;
+"Qua")
+    DAY1T="Quarta"
+    DAY2T="Quinta"
+    DAY3T="Sexta"
+    DAY4T="Sábado"
+    DAY5T="Domingo"
+    DAY6T="Segunda"
+    DAY7T="Terça"
+;;
+"Qui")
+    DAY1T="Quinta"
+    DAY2T="Sexta"
+    DAY3T="Sábado"
+    DAY4T="Domingo"
+    DAY5T="Segunda"
+    DAY6T="Terça"
+    DAY7T="Quarta"
+;;
+"Sex")
+    DAY1T="Sexta"
+    DAY2T="Sábado"
+    DAY3T="Domingo"
+    DAY4T="Segunda"
+    DAY5T="Terça"
+    DAY6T="Quarta"
+    DAY7T="Quinta"
+;;
+"Sáb")
+    DAY1T="Sábado"
+    DAY2T="Domingo"
+    DAY3T="Segunda"
+    DAY4T="Terça"
+    DAY5T="Quarta"
+    DAY6T="Quinta"
+    DAY7T="Sexta"
+;;
+"Dom")
+    DAY1T="Domingo"
+    DAY2T="Segunda"
+    DAY3T="Terça"
+    DAY4T="Quarta"
+    DAY5T="Quinta"
+    DAY6T="Sexta"
+    DAY7T="Sábado"
+;;
+esac
+
+
+AWD=$($AWD ~/.brweather/cache/open1 | sed 's/}//g')
+
+if [ -n "$(echo $AWD | grep -e '^[0-9]*\.\?[0-9]*$')" ] ; then
+    if (($(bc <<< "$AWD < 22.5"))) ; then
+        windd="N"
+    elif (($(bc <<< "$AWD >= 22.5") && $(bc <<< "$AWD < 45"))) ; then
+        windd="NNE"
+    elif (($(bc <<< "$AWD >= 45") && $(bc <<< "$AWD < 67.5"))) ; then
+        windd="NE"
+    elif (($(bc <<< "$AWD >= 67.5") && $(bc <<< "$AWD < 90"))) ; then
+        windd="ENE"
+    elif (($(bc <<< "$AWD >= 90") && $(bc <<< "$AWD < 112.5"))) ; then
+        windd="E"
+    elif (($(bc <<< "$AWD >= 112.5") && $(bc <<< "$AWD < 135"))) ; then
+        windd="ESE"
+    elif (($(bc <<< "$AWD >= 135") && $(bc <<< "$AWD < 157.5"))) ; then
+        windd="SE"
+    elif (($(bc <<< "$AWD >= 157.5") && $(bc <<< "$AWD < 180"))) ; then
+        windd="SSE"
+    elif (($(bc <<< "$AWD >= 180") && $(bc <<< "$AWD < 202.5"))) ; then
+        windd="S"
+    elif (($(bc <<< "$AWD >= 202.5") && $(bc <<< "$AWD < 225"))) ; then
+        windd="SSO"
+    elif (($(bc <<< "$AWD >= 225") && $(bc <<< "$AWD < 247.5"))) ; then
+        windd="SO"
+    elif (($(bc <<< "$AWD >= 247.5") && $(bc <<< "$AWD < 270"))) ; then
+        windd="OSO"
+    elif (($(bc <<< "$AWD >= 270") && $(bc <<< "$AWD < 292.5"))) ; then
+        windd="O"
+    elif (($(bc <<< "$AWD >= 292.5") && $(bc <<< "$AWD < 315"))) ; then
+        windd="ONO"
+    elif (($(bc <<< "$AWD >= 315") && $(bc <<< "$AWD < 337.5"))) ; then
+        windd="NO"
+    elif (($(bc <<< "$AWD >= 337.5"))) ; then
+        windd="NNO"
+    else
+        windd=""
+    fi
+else
+    windd=""
+fi
+
+case $1 in
+"--option=city") echo $(awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/name\042/){print$(i+1)}}}' ~/.brweather/cache/open1 | cut -f2 -d'"')
+;;
+"--option=date") echo $ODATE
+;;
+"--option=Day0") echo $DAY0
+;;
+"--option=Day0T") echo $DAY0T
+;;
+"--option=LU") echo $LU
+#;;
+# "--option=LUS") echo $LUS
+;;
+"--option=TN") printf "%.0f\n" $(echo $(awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/temp\042/){print$(i+1)}}}' ~/.brweather/cache/open1) | sed 's/\./,/ ; s/}//g')
+;;
+"--option=umid") echo $($AUM ~/.brweather/cache/open1 | sed 's/}//g')
+;;
+"--option=PA") echo $($APA ~/.brweather/cache/open1 | sed 's/}//g')
+;;
+"--option=winds") printf "%.0f\n" $(echo $($AWS ~/.brweather/cache/open1)*1.609344 | bc | sed 's/\./,/ ; s/}//g')
+;;
+"--option=windd") echo $windd
+;;
+"--option=CLD") echo $($ACA ~/.brweather/cache/open1 | sed 's/}//g')
+;;
+"--option=Day1") echo $DAY1
+;;
+"--option=Day1T") echo $DAY1T
+;;
+"--option=LT1") printf "%.0f\n" $(echo $($D1 | $ALT) | sed 's/\./,/ ; s/}//g')
+;;
+"--option=HT1") printf "%.0f\n" $(echo $($D1 | $AHT) | sed 's/\./,/ ; s/}//g')
+;;
+"--option=PA1") echo $($D1 | $APA)
+;;
+"--option=umid1") echo $($D1 | $AUM) | sed 's/}//g'
+;;
+"--option=CLD1") echo $($D1 | $ACA2) | sed 's/}//g'
+;;
+"--option=Day2") echo $DAY2
+;;
+"--option=Day2T") echo $DAY2T
+;;
+"--option=LT2") printf "%.0f\n" $(echo $(echo $D2 | $ALT) | sed 's/\./,/ ; s/}//g')
+;;
+"--option=HT2") printf "%.0f\n" $(echo $(echo $D2 | $AHT) | sed 's/\./,/ ; s/}//g')
+;;
+"--option=PA2") echo $D2 | $APA | sed 's/}//g'
+;;
+"--option=umid2") echo $D2 | $AUM | sed 's/}//g'
+;;
+"--option=CLD2") echo $D2 | $ACA2 | sed 's/}//g'
+;;
+"--option=Day3T") echo $DAY3T
+;;
+"--option=Day4T") echo $DAY4T
+;;
+"--option=Day5T") echo $DAY5T
+;;
+"--option=Day6T") echo $DAY6T
+;;
+"--option=Day7T") echo $DAY7T
+;;
+"--option"*) echo "Opção inválida.
+Experimente --help para mais informações."
+;;
+esac

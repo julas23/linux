@@ -1,0 +1,32 @@
+# ${execpi 10800 ~/.conkycolors/bin/conkyForecast --location=BRXX0050 -t ~/.conkycolors/scripts/juforeca.template}
+# ${execpi 10801 ~/.conkycolors/bin/conkyForecast -t ~/.conkycolors/scripts/juimg.template}
+${color0}${font Arial Black:size=25}${time %H:%M}${font Arial Black:size=12}.${time %S}${font}${color}
+
+${color3}${font Arial Black:size=20}${time %A}${font}${color}
+${color3}${color2}${font Arial Black:size=15}${time %d-%b-%Y}${font}${color}
+
+${font Liberation Mono:bold:size=8}${execpi 10809 cal | sed 's/^/${GOTO 2} /' | sed '1d' | sed s/" `date +%-d` "/" `date +%-d` "/}${font}
+${goto 154}${voffset -215}${font Verana:style=Bold:size=16}${color1}Hoje${color}${font}
+${goto 154}${font Verana:style=Bold:size=18}${color3}[--datatype=HT --hideunits --centeredwidth=3]C${color}${font}
+
+${font Liberation Sans Mono:style=bold:size=6}${color2}
+${goto 150}[--datatype=LT --startday=1 --hideunits --centeredwidth=3]/[--datatype=HT --startday=1 --hideunits --centeredwidth=3]      [--datatype=LT --startday=2 --hideunits --centeredwidth=3]/[--datatype=HT --startday=2 --hideunits --centeredwidth=3]      [--datatype=LT --startday=3 --hideunits --centeredwidth=3]/[--datatype=HT --startday=3 --hideunits --centeredwidth=3]       [--datatype=LT --startday=4 --hideunits --centeredwidth=3]/[--datatype=HT --startday=4 --hideunits --centeredwidth=3]${font}${color}
+${goto 220}${font Liberation Sans Mono:style=Bold:size=10}${color3}[--datatype=CT]${color}${font}${font Sans Mono:style=Bold:size=8}
+${goto 220}Estação: ${color3}[--datatype=OB]${color}
+${goto 220}Chuva: ${color3}[--datatype=PC]${color}
+${goto 220}UV: ${color3}[--datatype=UI] - [--datatype=UT]${color}
+${goto 220}Umidade: ${color3}[--datatype=HM]${color}
+${goto 220}Amanhecer: ${color3}[--datatype=SR]${color}
+${goto 220}Anoitecer: ${color3}[--datatype=SS]${color}
+${goto 220}Lua: ${color3}[--datatype=MP]${voffset -10}${color}${font}
+${voffset -70}
+${goto 157}${font ConkyWindNESW:size=40}${color1}[--datatype=BS]${color}${font}
+${goto 165}${color1}${font Sans Mono:style=Bold:size=8}[--datatype=WS]${color}${font}
+
+${execi 10001 cp `conkyForecast -l BRXX0115 -d WI` ~/.conkyWheaterCurrent.png}${image ~/.conkyWheaterCurrent.png -s 90x90 -p 240,12}
+${execi 10002 cp `conkyForecast -l BRXX0115 -d WI --startday=1 --shortweekday` ~/.conkyWheater1.png}${image ~/.conkyWheater1.png -s 40x40 -p 150,80}
+${execi 10003 cp `conkyForecast -l BRXX0115 -d WI --startday=2 --shortweekday` ~/.conkyWheater2.png}${image ~/.conkyWheater2.png -s 40x40 -p 202,80}
+${execi 10004 cp `conkyForecast -l BRXX0115 -d WI --startday=3 --shortweekday` ~/.conkyWheater3.png}${image ~/.conkyWheater3.png -s 40x40 -p 253,80}
+${execi 10005 cp `conkyForecast -l BRXX0115 -d WI --startday=4 --shortweekday` ~/.conkyWheater4.png}${image ~/.conkyWheater4.png -s 40x40 -p 307,80}
+${execi 10006 cp `conkyForecast -l BRXX0115 -d MI` ~/.conkyMoonPhaseCurrent.png}${image ~/.conkyMoonPhaseCurrent.png -s 50x50 -p 159,124}
+${execi 10007 cp `conkyForecast -l BRXX0115 -d BI` ~/.conkyWindDirectionCurrent.png}${image ~/.conkyWindDirectionCurrent.png -s 55x55 -p 157,167}

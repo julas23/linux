@@ -1,0 +1,14 @@
+${font :style=Bold}SISTEMA${font} ${hr 2}
+
+        Kernel:  ${alignr}${kernel}
+		CPU Temp: 
+        1:${cpubar cpu0 8,40}   ${freq_g}Ghz  ${acpitemp}°C ${alignr}${cpu cpu0}% 
+        2:${cpubar cpu1 8,40}   ${freq_g}Ghz  ${acpitemp}°C ${alignr}${cpu cpu1}% 
+        3:${cpubar cpu2 8,40}   ${freq_g}Ghz  ${acpitemp}°C ${alignr}${cpu cpu2}% 
+        4:${cpubar cpu3 8,40}   ${freq_g}Ghz  ${acpitemp}°C ${alignr}${cpu cpu3}% 
+        5:${cpubar cpu3 8,40}   ${freq_g}Ghz  ${acpitemp}°C ${alignr}${cpu cpu4}% 
+        6:${cpubar cpu4 8,40}   ${freq_g}Ghz  ${acpitemp}°C ${alignr}${cpu cpu5}% 
+
+        RAM: $memperc% ${alignr}${membar 8,60}
+
+        Uptime: ${alignr}${uptime}

@@ -1,0 +1,114 @@
+#!/bin/bash
+# Analisador de logs do BrWeather
+# Criado por LeandroNKZ <leandronkz@gmail.com>
+# Se encontrar BUGs, ou erros no programa, favor reportar ao desenvolvedor
+# Acesse o site para maiores instruções:
+# http://brweatherproject.blogspot.com/
+# Distribuído sob licença GPLv3
+
+#Data e hora atual
+DATA=`date "+%A %d/%m/%y %H:%M:%S"`
+
+#Cabeçalho
+clear
+echo "Criando relatório de logs..."
+
+sleep 2
+
+echo "Arquivo de logs do BrWeather-$VERSION
+Criado em: $DATA
+
+Em caso de erros persistentes no programa, por favor, leia e envie este arquivo de logs para o e-mail abaixo:
+
+leandronkz@gmail.com
+
+Lembre-se de que ele contém a sua cidade/estado.
+Se não quiser expor estar informações, não envie." > ~/brweather.log
+
+echo "" >> ~/brweather.log
+echo "-----------------------------------------------------------------------------------------------------------------" >> ~/brweather.log
+echo "" >> ~/brweather.log
+
+
+
+
+
+#Copiando logs de erros
+echo ""
+echo "Analisando logs de erros..."
+sleep 2
+
+echo "Log de erros" >> ~/brweather.log
+cat ~/.brweather/log 2>/dev/null >> ~/brweather.log || echo "Não encontrado" >> ~/brweather.log
+
+echo "" >> ~/brweather.log
+echo "-----------------------------------------------------------------------------------------------------------------" >> ~/brweather.log
+echo "" >> ~/brweather.log
+
+
+#Copiando cache INPE
+echo ""
+echo "Copiando cache..."
+sleep 1
+
+echo "Previsão" >> ~/brweather.log
+echo "" >> ~/brweather.log
+cat ~/.brweather/cache/previsao 2>/dev/null >> ~/brweather.log || echo "Não encontrado" >> ~/brweather.log
+echo "" >> ~/brweather.log
+echo "-----------------------------------------------------------------------------------------------------------------" >> ~/brweather.log
+echo "" >> ~/brweather.log
+
+echo "Cache" >> ~/brweather.log
+echo "" >> ~/brweather.log
+cat ~/.brweather/cache/cache 2>/dev/null >> ~/brweather.log || echo "Não encontrado" >> ~/brweather.log
+echo "" >> ~/brweather.log
+echo "-----------------------------------------------------------------------------------------------------------------" >> ~/brweather.log
+echo "" >> ~/brweather.log
+
+
+#Copiando cache Google
+echo "PrevisãoOpen1_A" >> ~/brweather.log
+echo "" >> ~/brweather.log
+cat ~/.brweather/cache/open1_A 2>/dev/null >> ~/brweather.log || echo "Não encontrado" >> ~/brweather.log
+echo "" >> ~/brweather.log
+echo "-----------------------------------------------------------------------------------------------------------------" >> ~/brweather.log
+echo "" >> ~/brweather.log
+
+echo "PrevisãoOpen1" >> ~/brweather.log
+echo "" >> ~/brweather.log
+cat ~/.brweather/cache/open1 2>/dev/null >> ~/brweather.log || echo "Não encontrado" >> ~/brweather.log
+echo "" >> ~/brweather.log
+echo "-----------------------------------------------------------------------------------------------------------------" >> ~/brweather.log
+echo "" >> ~/brweather.log
+
+echo "PrevisãoOpen2_A" >> ~/brweather.log
+echo "" >> ~/brweather.log
+cat ~/.brweather/cache/open2_A 2>/dev/null >> ~/brweather.log || echo "Não encontrado" >> ~/brweather.log
+echo "" >> ~/brweather.log
+echo "-----------------------------------------------------------------------------------------------------------------" >> ~/brweather.log
+echo "" >> ~/brweather.log
+
+echo "PrevisãoOpen2_B" >> ~/brweather.log
+echo "" >> ~/brweather.log
+cat ~/.brweather/cache/open2_B 2>/dev/null >> ~/brweather.log || echo "Não encontrado" >> ~/brweather.log
+echo "" >> ~/brweather.log
+echo "-----------------------------------------------------------------------------------------------------------------" >> ~/brweather.log
+echo "" >> ~/brweather.log
+
+
+echo "PrevisãoOpen2" >> ~/brweather.log
+echo "" >> ~/brweather.log
+cat ~/.brweather/cache/open2 2>/dev/null >> ~/brweather.log || echo "Não encontrado" >> ~/brweather.log
+echo "" >> ~/brweather.log
+echo "-----------------------------------------------------------------------------------------------------------------" >> ~/brweather.log
+echo "" >> ~/brweather.log
+
+sleep 2
+
+#FIM
+echo ""
+echo "Criação do log completa!
+Leia o arquivo em:
+/home/seu_usuário/brweather.log"
+echo ""
+sleep 2

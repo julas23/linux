@@ -1,0 +1,11 @@
+${font :style=Bold}PROCESSOS${font} ${hr 2}${font Zero Threes:size=9}
+${font :size=8:style=Bold}       NOME $alignr   PID  USO${font}${font :size=7:style=Bold}
+${color3}          ${top name 1} $alignr ${top pid 1} ${top cpu 1}${color}
+${color2}          ${top name 2} $alignr ${top pid 2} ${top cpu 2}${color}
+${color1}          ${top name 3} $alignr ${top pid 3} ${top cpu 3}${color}
+${font :size=8:style=Bold}       RAM $alignr   USO${font}${font :size=7:style=Bold}
+${color3}          ${top_mem name 2}${alignr}${top mem 2} %${color}
+${color2}          ${top_mem name 3}${alignr}${top mem 3} %${color}
+${color1}          ${top_mem name 4}${alignr}${top mem 4} %${color}${font :size=8:style=Bold}
+
+$alignc ${color0}Proc:${color} (${color4}$Processes${color}) Exec: (${color3}$running_processes${color})${font}

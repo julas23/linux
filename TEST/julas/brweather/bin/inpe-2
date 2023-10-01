@@ -1,0 +1,106 @@
+#!/bin/bash
+# BrWeather Modo INPE
+# Criado por LeandroNKZ <leandronkz@gmail.com>
+# Se encontrar BUGs, ou erros no programa, favor reportar ao desenvolvedor
+# Acesse o site para maiores instruções:
+# http://brweatherproject.blogspot.com/
+# Distribuído sob licença GPLv3
+
+LT1=`grep -A2 -m1 '<div class="c2">TEMP. MÍNIMA<br><b>' ~/.brweather/cache/cache | tail -n1 | sed 's/ //g ; s/º//g ; s/C//g'`
+
+if [ -f $NLT1 ] ; then
+LT1="ND"
+else
+LT1="$NLT1"
+fi
+
+case $1 in
+"--option=LT1") echo $LT1
+;;
+"--option=HT1") grep -m1 '<div class="c3">TEMP. MÁXIMA<br><b>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'C' | sed 's/º//g'
+;;
+"--option=PC1") grep -m1 '/imgs/pixel.gif" width="30px" height="10px" border="0"/>' ~/.brweather/cache/cache | cut -f2 -d'>' | cut -f1 -d'<' | sed 's/ //g' | tail -n1 | sed 's/%//g'
+;;
+"--option=umid1") grep -m1 '<div class="dd1"> 15h00<br>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<'
+;;
+"--option=SOLN1") grep -m1 '<div class="c5">NASCER DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<'
+;;
+"--option=SOLP1") grep -m1 '<div class="c6">PÔR DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<'
+;;
+"--option=LT2") grep -m2 '<div class="c2">TEMP. MÍNIMA<br><b>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'C' | sed 's/º//g' | tail -n1
+;;
+"--option=HT2") grep -m2 '<div class="c3">TEMP. MÁXIMA<br><b>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'C' | sed 's/º//g' | tail -n1
+;;
+"--option=PC2") grep -m2 '/imgs/pixel.gif" width="30px" height="10px" border="0"/>' ~/.brweather/cache/cache | cut -f2 -d'>' | cut -f1 -d'<' | sed 's/ //g' | tail -n1 | sed 's/%//g'
+;;
+"--option=umid2") grep -m2 '<div class="dd1"> 15h00<br>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=SOLN2") grep -m2 '<div class="c5">NASCER DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=SOLP2") grep -m2 '<div class="c6">PÔR DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=LT3") grep -m3 '<div class="c2">TEMP. MÍNIMA<br><b>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'C' | sed 's/º//g' | tail -n1
+;;
+"--option=HT3") grep -m3 '<div class="c3">TEMP. MÁXIMA<br><b>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'C' | sed 's/º//g' | tail -n1
+;;
+"--option=PC3") grep -m3 '/imgs/pixel.gif" width="30px" height="10px" border="0"/>' ~/.brweather/cache/cache | cut -f2 -d'>' | cut -f1 -d'<' | sed 's/ //g' | tail -n1 | sed 's/%//g'
+;;
+"--option=umid3") grep -m3 '<div class="dd1"> 15h00<br>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=SOLN3") grep -m3 '<div class="c5">NASCER DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=SOLP3") grep -m3 '<div class="c6">PÔR DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=LT4") grep -m4 '<div class="c2">TEMP. MÍNIMA<br><b>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'C' | sed 's/º//g' | tail -n1
+;;
+"--option=HT4") grep -m4 '<div class="c3">TEMP. MÁXIMA<br><b>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'C' | sed 's/º//g' | tail -n1
+;;
+"--option=PC4") grep -m4 '/imgs/pixel.gif" width="30px" height="10px" border="0"/>' ~/.brweather/cache/cache | cut -f2 -d'>' | cut -f1 -d'<' | sed 's/ //g' | tail -n1 | sed 's/%//g'
+;;
+"--option=umid4") grep -m4 '<div class="dd1"> 15h00<br>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=SOLN4") grep -m4 '<div class="c5">NASCER DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=SOLP4") grep -m4 '<div class="c6">PÔR DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=LT5") grep -m5 '<div class="c2">TEMP. MÍNIMA<br><b>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'C' | sed 's/º//g' | tail -n1
+;;
+"--option=HT5") grep -m5 '<div class="c3">TEMP. MÁXIMA<br><b>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'C' | sed 's/º//g' | tail -n1
+;;
+"--option=PC5") grep -m5 '/imgs/pixel.gif" width="30px" height="10px" border="0"/>' ~/.brweather/cache/cache | cut -f2 -d'>' | cut -f1 -d'<' | sed 's/ //g' | tail -n1 | sed 's/%//g'
+;;
+"--option=umid5") grep -m5 '<div class="dd1"> 15h00<br>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=SOLN5") grep -m5 '<div class="c5">NASCER DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=SOLP5") grep -m5 '<div class="c6">PÔR DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=LT6") grep -m6 '<div class="c2">TEMP. MÍNIMA<br><b>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'C' | sed 's/º//g' | tail -n1
+;;
+"--option=HT6") grep -m6 '<div class="c3">TEMP. MÁXIMA<br><b>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'C' | sed 's/º//g' | tail -n1
+;;
+"--option=PC6") grep -m6 '/imgs/pixel.gif" width="30px" height="10px" border="0"/>' ~/.brweather/cache/cache | cut -f2 -d'>' | cut -f1 -d'<' | sed 's/ //g' | tail -n1 | sed 's/%//g'
+;;
+"--option=umid6") grep -m6 '<div class="dd1"> 15h00<br>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=SOLN6") grep -m6 '<div class="c5">NASCER DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=SOLP6") grep -m6 '<div class="c6">PÔR DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=LT7") grep -m7 '<div class="c2">TEMP. MÍNIMA<br><b>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'C' | sed 's/º//g' | tail -n1
+;;
+"--option=HT7") grep -m7 '<div class="c3">TEMP. MÁXIMA<br><b>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'C' | sed 's/º//g' | tail -n1
+;;
+"--option=PC7") grep -m7 '/imgs/pixel.gif" width="30px" height="10px" border="0"/>' ~/.brweather/cache/cache | cut -f2 -d'>' | cut -f1 -d'<' | sed 's/ //g' | tail -n1 | sed 's/%//g'
+;;
+"--option=umid7") grep -m7 '<div class="dd1"> 15h00<br>' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=SOLN7") grep -m7 '<div class="c5">NASCER DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option=SOLP7") grep -m7 '<div class="c6">PÔR DO SOL' ~/.brweather/cache/cache | cut -f4 -d'>' | cut -f1 -d'<' | tail -n1
+;;
+"--option"* ) echo "Opção inválida.
+Experimente --help para mais informações."
+;;
+esac
+exit 0

@@ -1,0 +1,379 @@
+
+Arquivo de ajuda do BrWeather
+Escrito por LeandroNKZ
+
+Menu de opções do modo híbrido (INPE + OPEN)
+
+Gerais
+--option=city
+    Cidade
+
+--option=date
+    Data atual
+
+--option=Day0
+    Dia de Hoje. Nome abreviado. Ex.: Sáb
+
+--option=Day0T
+    Hoje, nome completo. Ex.: Sábado
+
+--option=LU
+    Last update (última atualização)
+
+--option=LUS
+    Last update do servidor (última atualização do site)
+
+
+Condições atuais
+--option=CNT
+	Tempo agora (modo texto - por extenso)
+
+--option=CNI
+	Tempo agora (modo ícone - fonte weather)
+
+--option=TN
+	Temperatura atual
+
+--option=umid
+	Nível de umidade
+
+--option=PA
+	Nível de pressão atmosférica
+
+--option=winds
+	Força (velocidade) do vento
+
+--option=windd
+	Direção do vento
+
+--option=UVN
+	Nível de Radiação ultravioleta
+
+--option=UVNT
+	Nível de Radiação ultravioleta modo texto. Ex.: Moderado, Baixo.
+
+--option=CLD
+	Quantidade de nuvens (em %)
+
+--option=Day0
+	Hoje. Nome abreviado. Ex.: Sáb.
+
+--option=Day0T
+	Hoje. Nome completo. Ex.: Sábado.
+
+
+
+Previsão para as próximas horas
+--option=Day1
+	Próximas horas. Modo abreviado. Ex.: Sáb.
+
+--option=Day1T
+	Próximas horas. Completo. Ex.: Sábado
+
+--option=C1T
+	Previsão para hoje (modo texto)
+
+--option=C1I
+	Previsão para hoje (modo ícone)
+
+--option=LT1
+	Temperatura mínima para hoje
+
+--option=HT1
+	Temperatura máxima para hoje
+
+--option=PC1
+	Probabilidade de chuva (em %)
+
+--option=UV1
+	Previsão de nível de radiação ultravioleta
+
+--option=UV1T
+	Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+
+--option=SOLN1
+	Nascer do SOL (horário)
+
+--option=SOLP1
+	Por-do-SOL (horário)
+
+--option=umid1
+	Previsão do nível de umidade
+
+--option=CLD1
+    Quantidade de nuvens (em %)
+
+--option=PA1
+    Nível de pressão atmosférica
+
+
+Previsão para o segundo dia
+--option=Day2
+	Segundo dia
+
+--option=Day2T
+	Segundo dia. Completo. Ex.: Sábado
+
+--option=LT2
+	Temperatura mínima para amanhã
+
+--option=HT2
+	Temperatura máxima para amanhã
+
+--option=C2T
+	Previsão para amanhã (modo texto)
+
+--option=C2I
+	Previsão para amanhã (modo ícone)
+
+--option=PC2
+	Probabilidade de chuva (em %)
+
+--option=UV2
+	Previsão de nível de radiação ultravioleta
+
+--option=UV2T
+	Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+
+--option=SOLN2
+	Nascer do SOL (horário)
+
+--option=SOLP2
+	Por-do-SOL (horário)
+
+--option=umid2
+	Previsão do nível de umidade
+
+--option=CLD2
+    Quantidade de nuvens (em %)
+
+--option=PA2
+    Nível de pressão atmosférica
+
+
+
+Previsão para o terceiro dia
+--option=Day3
+	Terceiro dia
+
+--option=Day3T
+	Terceiro dia. Completo. Ex.: Sábado
+
+--option=LT3
+	Temperatura mínima para o terceiro dia
+
+--option=HT3
+	Temperatura máxima para o terceiro dia
+
+--option=C3T
+	Previsão para o terceiro dia (modo texto)
+
+--option=C3I
+	Previsão para o terceiro dia (modo ícone)
+
+--option=PC3
+	Probabilidade de chuva (em %)
+
+--option=UV3
+	Previsão de nível de radiação ultravioleta
+
+--option=UV3T
+	Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+
+--option=SOLN3
+	Nascer do SOL (horário)
+
+--option=SOLP3
+	Por-do-SOL (horário)
+
+--option=umid3
+	Previsão do nível de umidade
+
+--option=CLD3
+    Quantidade de nuvens (em %)
+
+--option=PA3
+    Nível de pressão atmosférica
+
+
+
+Previsão para o quarto dia
+--option=Day4
+	Quarto dia
+
+--option=Day4T
+	Quarto dia. Completo. Ex.: Sábado
+
+--option=LT4
+	Temperatura mínima para o quarto dia
+
+--option=HT4
+	Temperatura máxima para o quarto dia
+
+--option=C4T
+	Previsão para o quarto dia (modo texto)
+
+--option=C4I
+	Previsão para o quarto dia (modo ícone)
+
+--option=PC4
+	Probabilidade de chuva (em %)
+
+--option=UV4
+	Previsão de nível de radiação ultravioleta
+
+--option=UV4T
+	Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+
+--option=SOLN4
+	Nascer do SOL (horário)
+
+--option=SOLP4
+	Por-do-SOL (horário)
+
+--option=umid4
+	Previsão do nível de umidade
+
+--option=CLD4
+    Quantidade de nuvens (em %)
+
+--option=PA4
+    Nível de pressão atmosférica
+
+
+
+Previsão para o quinto dia
+--option=Day5
+	Quinto dia
+
+--option=Day5T
+	Quinto dia. Completo. Ex.: Sábado
+
+--option=LT5
+	Temperatura mínima para o quinto dia
+
+--option=HT5
+	Temperatura máxima para o quinto dia
+
+--option=C5T
+	Previsão para o quinto dia (modo texto)
+
+--option=C5I
+	Previsão para o quinto dia (modo ícone)
+
+--option=PC5
+	Probabilidade de chuva (em %)
+
+--option=UV5
+	Previsão de nível de radiação ultravioleta
+
+--option=UV5T
+	Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+
+--option=SOLN5
+	Nascer do SOL (horário)
+
+--option=SOLP5
+	Por-do-SOL (horário)
+
+--option=umid5
+	Previsão do nível de umidade
+
+--option=CLD5
+    Quantidade de nuvens (em %)
+
+--option=PA5
+    Nível de pressão atmosférica
+
+
+Previsão para o sexto dia
+--option=Day6
+	Sexto dia
+
+--option=Day6T
+	Sexto dia. Completo. Ex.: Sábado
+
+--option=LT6
+	Temperatura mínima para o sexto dia
+
+--option=HT6
+	Temperatura máxima para o sexto dia
+
+--option=C6T
+	Previsão para o sexto dia (modo texto)
+
+--option=C6I
+	Previsão para o sexto dia (modo ícone)
+
+--option=PC6
+	Probabilidade de chuva (em %)
+
+--option=UV6
+	Previsão de nível de radiação ultravioleta
+
+--option=UV6T
+	Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+
+--option=SOLN6
+	Nascer do SOL (horário)
+
+--option=SOLP6
+	Por-do-SOL (horário)
+
+--option=umid6
+	Previsão do nível de umidade
+
+--option=CLD6
+    Quantidade de nuvens (em %)
+
+--option=PA6
+    Nível de pressão atmosférica
+
+
+
+Previsão para o sétimo dia
+--option=Day7
+	Sétimo dia
+
+--option=Day7T
+	Sétimo dia. Completo. Ex.: Sábado
+
+--option=LT7
+	Temperatura mínima para o sétimo dia
+
+--option=HT7
+	Temperatura máxima para o sétimo dia
+
+--option=C7T
+	Previsão para o sétimo dia (modo texto)
+
+--option=C7I
+	Previsão para o sétimo dia (modo ícone)
+
+--option=PC7
+	Probabilidade de chuva (em %)
+
+--option=UV7
+	Previsão de nível de radiação ultravioleta
+
+--option=UV7T
+	Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+
+--option=SOLN7
+	Nascer do SOL (horário)
+
+--option=SOLP7
+	Por-do-SOL (horário)
+
+--option=umid7
+	Previsão do nível de umidade
+
+--option=CLD7
+    Quantidade de nuvens (em %)
+
+--option=PA7
+    Nível de pressão atmosférica
+
+Para maiores informações, consulte a manpage do programa:
+
+brweather --man

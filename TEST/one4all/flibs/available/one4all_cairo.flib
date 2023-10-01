@@ -1,0 +1,93 @@
+ --[[
+ Ubuntuforums Conky thread Cairo helper script
+ 
+ changelog:
+ v1.2.2 - (11.07.2012) print_text function added
+ v1.2.1	- (21.06.2012) draw_bg function moved to draw_bg module
+ v1.2.0	- (20.06.2012) draw_bg and draw box functions added
+ v1.0.0 - converted to module
+ --]]
+ 
+ local modname = ...
+ local M = {}
+ _G[modname] = M
+ package.loaded[modname] = M
+ 
+ local cr, cs = nil
+ 
+ function M.rgb2rgba(colour,alpha) -- colour = hex color code, alpha = float [0.0 - 1.0] transparency factor
+ 	return ((colour / 0x10000) % 0x100) / 255., ((colour / 0x100) % 0x100) / 255., (colour % 0x100) / 255., alpha
+ 	-- returns color used by "cairo_set_rgba()" function
+ end
+ 
+ function M.window_hook(cr, cs)
+ 	if conky_window == nil then return end
+ 	if cs == nil or cairo_xlib_surface_get_width(cs) ~= conky_window.width or cairo_xlib_surface_get_height(cs) ~= conky_window.height then
+ 		if cs then cairo_surface_destroy(cs) end
+ 		cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
+ 	end
+ 	if cr then cairo_destroy(cr) end
+ 	cr = cairo_create(cs)
+ 	return cr, cs, conky_window
+ end
+ 
+ function M.window_clean(cr, cs)
+ 	if cr then cairo_destroy(cr) end
+ 	if cs then cairo_surface_destroy(cs) end
+ end
+ 
+ function M.elipse(cr,x, y, rw, rh)
+ 	cairo_save(cr)
+ 	cairo_translate(cr, x, y)
+ 	cairo_scale(cr, rw, rh)
+ 	cairo_arc(cr, 0., 0., 1., 0., 2 * math.pi)
+ 	cairo_storke(cr)
+ 	cairo_restore(cr)
+ end
+ 
+ function M.draw_box(cr, x, y, width, height, radius, color, alpha, nofill)
+ 	if width < height then radius = math.floor(width * radius / 200) else radius = math.floor(height * radius / 200) end
+ 	cairo_save(cr)
+ 	--
+ 	cairo_arc(cr, x+radius, y+radius, radius, 3.1415926535898, 4.7123889803847)
+ 	cairo_arc(cr, x+width-radius, y+radius, radius, 4.7123889803847, 0)
+ 	cairo_arc(cr, x+width-radius, y+height-radius, radius, 0, 1.5707963267949)
+ 	cairo_arc(cr, x+radius, y+height-radius, radius, 1.5707963267949, 3.1415926535898)
+ 	--]]
+ 	cairo_close_path(cr)
+ 	cairo_set_source_rgba(cr, M.rgb2rgba(color, alpha))
+ 	if nofill then cairo_set_line_width (cr, width/20); cairo_stroke(cr) else cairo_fill(cr) end
+ 	cairo_restore(cr)
+ end
+ 
+ function M.print_text(cr, x, y, _text, color, alpha, font, font_size, style, weight, alignHorizontal, alignVertical) -- style = [normal(default)|italic|oblique]; weight = [normal(default)|bold]; alignHorizontal = [left(default)|center|right]; alignVertical = [top|center|bottom(default)]
+ 	if style == "italic" then style = CAIRO_FONT_SLANT_ITALIC
+ 	elseif style == "oblique" then style = CAIRO_FONT_SLANT_OBLIQUE
+ 	else style = CAIRO_FONT_SLANT_NORMAL end
+ 	
+ 	if weight == "bold" then weight = CAIRO_FONT_WEIGHT_BOLD
+ 	else weight = CAIRO_FONT_WEIGHT_NORMAL end
+ 	
+ 	local extents = cairo_text_extents_t:create() -- initialize text_extents structure (generic, a must be for following functions)
+ 	cairo_save(cr)
+ 	
+ 	cairo_select_font_face(cr, font, style, weight)
+ 	cairo_set_font_size(cr, font_size)
+	cairo_set_source_rgba(cr, M.rgb2rgba(color, alpha))
+	
+ 	cairo_text_extents(cr, _text, extents)
+ 	
+  	if alignHorizontal == "center" then alignHorizontal = tonumber(extents.x_advance/2)
+  	elseif alignHorizontal == "right" then alignHorizontal = tonumber(extents.x_advance)
+  	else alignHorizontal = 0 end
+  	
+ 	if alignVertical == "top" then alignVertical = tonumber(extents.height)
+ 	elseif alignVertical == "center" then alignVertical = tonumber(extents.height/2)
+ 	else alignVertical = 0 end
+ 	--print(extents.x_advance, "x", extents.y_advance, "/", extents.x_bearing, "x", extents.y_bearing)
+ 	
+ 	cairo_move_to(cr, x-alignHorizontal, y+alignVertical)
+ 	cairo_show_text(cr, _text)
+ 	cairo_stroke(cr)
+ 	cairo_restore(cr)
+ end

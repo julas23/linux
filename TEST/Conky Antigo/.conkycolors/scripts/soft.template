@@ -1,0 +1,8 @@
+# S O F T W A R E
+${font DejaVu Sans:bold:size=12}${color0}Software${font}${color}
+Kernel:${GOTO 120}${color5}${sysname} ${kernel} ${machine}${color}
+Host:${GOTO 120}${color5}${execpi 9000 whoami}@${nodename}${color}
+Uptime:${GOTO 120}${color5}${uptime}${color}
+Threads:${GOTO 120}${color5}${running_threads} de ${threads}${color}
+Load:${GOTO 120}${color5}${loadavg}${color}
+Text Buffer:${GOTO 120}${color4}${entropy_perc}%${color} (${color4}${entropy_avail}${color} of ${color4}${entropy_poolsize}${color})

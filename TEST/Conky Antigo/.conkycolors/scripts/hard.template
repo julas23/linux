@@ -1,0 +1,24 @@
+# H A R D W A R E
+${font DejaVu Sans:bold:size=12}${color0}Hardware${font}${color}
+#${pre_exec ~/.conkycolors/scripts/hdw.sh}
+Placa-Mae:${GOTO 75}${color3}${exec ~/.conkycolors/scripts/hdw.sh |grep Mae |awk '{print $2}'}${color}
+MoBoard:${GOTO 75}${color3}${pre_exec ~/.conkycolors/scripts/mobo.sh |awk 'ORS=NR%5?" | ":"\n"'}${color}
+VGA PCIe:${GOTO 75}${color3}${exec ~/.conkycolors/scripts/hdw.sh |grep Vid |cut -c 8-25}${color}
+Memoria:${GOTO 75}${color3}${exec ~/.conkycolors/scripts/hdw.sh |grep Mem |awk '{print $2,$3,$4,$5}'}${color}${GOTO 250}${membar 10,80}
+Processor:${GOTO 75}${color3}${exec ~/.conkycolors/scripts/hdw.sh |grep Proc |cut -c 14-39}${color}
+# Battery:${GOTO 120}${battery BAT0} - ${battery_time BAT0}
+Temperatura: ${color4}${execpi 10000 sensors |grep "CPU Tem" |cut -c 21-27}${GOTO 180}${color}Rotacao: ${color4}${execpi 10001 sensors |grep "CPU FAN" |cut -c 20-27}${color}
+${GOTO 10}Consumo Total da CPU [${color4}$cpu%${color}]
+${voffset -40}
+${cpugraph 20,340 000000 4682B4}
+${cpubar cpu0 16,145}${GOTO 200}${cpubar cpu1 16,145}
+${voffset -26}
+${GOTO 10}${color1}CPU 0:${GOTO 60}${cpu cpu0}%${GOTO 95}${freq_g 0}GHz${color}${GOTO 205}${color1}CPU 1:${GOTO 255}${cpu cpu1}%${GOTO 292}${freq_g 1}GHz${color}
+${cpubar cpu2 16,145}${GOTO 200}${cpubar cpu3 16,145}
+${voffset -26}
+${GOTO 10}${color1}CPU 2:${GOTO 60}${cpu cpu2}%${GOTO 95}${freq_g 2}GHz${color}${GOTO 205}${color1}CPU 3:${GOTO 255}${cpu cpu3}%${GOTO 292}${freq_g 3}GHz${color}
+${cpubar cpu4 16,145}${GOTO 200}${cpubar cpu5 16,145}
+${voffset -26}
+${GOTO 10}${color1}CPU 4:${GOTO 60}${cpu cpu4}%${GOTO 95}${freq_g 4}GHz${color}${GOTO 205}${color1}CPU 5:${GOTO 255}${cpu cpu5}%${GOTO 292}${freq_g 5}GHz${color}
+#${if_match "$cpu%" <= "90%"}${GOTO 50}${cpubar cpu0 10,85}${else}${endif}
+

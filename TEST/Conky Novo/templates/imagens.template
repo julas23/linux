@@ -1,0 +1,32 @@
+${image ~/.conkycolors/icons/bg.png -s 300x1015 -p -50,00}
+${image ~/.conkycolors/icons/cal.png -s 32x32 -p 03,10}
+${image ~/.conkycolors/icons/term.png -s 42x42 -p -5,155}
+
+${execi 300 cp `conkyForecast -l BRXX0115 -d WI` ~/.conkyWheaterCurrent.png}${image ~/.conkyWheaterCurrent.png -s 90x90 -p 112,132}
+${execi 300 cp `conkyForecast -l BRXX0115 -d WI --startday=1 --shortweekday` ~/.conkyWheater1.png}${image ~/.conkyWheater1.png -s 40x40 -p 02,210}
+${execi 300 cp `conkyForecast -l BRXX0115 -d WI --startday=2 --shortweekday` ~/.conkyWheater2.png}${image ~/.conkyWheater2.png -s 40x40 -p 58,210}
+${execi 300 cp `conkyForecast -l BRXX0115 -d WI --startday=3 --shortweekday` ~/.conkyWheater3.png}${image ~/.conkyWheater3.png -s 40x40 -p 110,210}
+${execi 300 cp `conkyForecast -l BRXX0115 -d WI --startday=4 --shortweekday` ~/.conkyWheater4.png}${image ~/.conkyWheater4.png -s 40x40 -p 166,210}
+${execi 300 cp `conkyForecast -l BRXX0115 -d MI` ~/.conkyMoonPhaseCurrent.png}${image ~/.conkyMoonPhaseCurrent.png -s 50x50 -p 12,265}
+${execi 300 cp `conkyForecast -l BRXX0115 -d BI` ~/.conkyWindDirectionCurrent.png}${image ~/.conkyWindDirectionCurrent.png -s 55x55 -p 9,313}
+
+${image ~/.conkycolors/icons/linux.png -s 28x28 -p 00,408}
+${image ~/.conkycolors/icons/cpu.png -s 28x28 -p 00,468}
+${image ~/.conkycolors/icons/ram.png -s 28x28 -p 00,522}
+${image ~/.conkycolors/icons/on.png -s 28x28 -p 00,550}
+
+${image ~/.conkycolors/icons/hd.png -s 28x28 -p 00,613}
+${image ~/.conkycolors/icons/home.png -s 28x28 -p 00,652}
+${image ~/.conkycolors/icons/mnt.png -s 28x28 -p 00,690}
+${image ~/.conkycolors/icons/files.png -s 28x26 -p 00,732}
+${image ~/.conkycolors/icons/games.png -s 28x22 -p 00,770}
+
+${image ~/.conkycolors/icons/wlan.png -s 28x28 -p 02,829}
+${image ~/.conkycolors/icons/lan.png -s 22x22 -p 02,864}
+${image ~/.conkycolors/icons/wan.png -s 22x22 -p 02,889}
+${image ~/.conkycolors/icons/up.png -s 14x14 -p 06,916}
+${image ~/.conkycolors/icons/down.png -s 14x14 -p 06,932}
+${image ~/.conkycolors/icons/top.png -s 14x14 -p 06,957}
+${image ~/.conkycolors/icons/bot.png -s 14x14 -p 06,969}
+
+${image ~/.conkycolors/icons/proc.png -s 28x28 -p 02,988}

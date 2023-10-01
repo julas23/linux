@@ -1,0 +1,642 @@
+#!/bin/bash
+# BrWeather Estações do ano
+# Criado por LeandroNKZ <leandronkz@gmail.com>
+# Se encontrar BUGs, ou erros no programa, favor reportar ao desenvolvedor
+# Acesse o site para maiores instruções:
+# http://brweatherproject.blogspot.com/
+# Distribuído sob licença GPLv3
+
+YEAR=`date +%Y`
+DATA0=`date +%d`
+
+##Outono
+OUTD=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f2 -d'#'`
+OUTH=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f3 -d'#'`
+##Inverno
+INVD=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f4 -d'#'`
+INVH=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f5 -d'#'`
+##Primavera
+PRID=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f6 -d'#'`
+PRIH=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f7 -d'#'`
+##Verão
+VERD=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f8 -d'#'`
+VERH=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f9 -d'#'`
+
+
+##Funções
+function MAR(){
+DATA1=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f2 -d'#' | cut -f1 -d' '`
+HORA0=`date +%R | sed s/://g`
+HORA1=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f3 -d'#' | sed s/://g`
+if [ $DATA0 -lt $DATA1 ]
+then
+	SEASON1="Ver"
+	SEASON1T="Verão"
+	SEASON1D=$VERD
+	SEASON1H=$VERH
+	SEASON2="Out"
+	SEASON2T="Outono"
+	SEASON2D=$OUTD
+	SEASON2H=$OUTH
+	SEASON3="Inv"
+	SEASON3T="Inverno"
+	SEASON3D=$INVD
+	SEASON3H=$INVH
+	SEASON4="Pri"
+	SEASON4T="Primavera"
+	SEASON4D=$PRID
+	SEASON4H=$PRIH
+elif [ $DATA0 -gt $DATA1 ]
+then
+	SEASON1="Out"
+	SEASON1T="Outono"
+	SEASON1D=$OUTD
+	SEASON1H=$OUTH
+	SEASON2="Inv"
+	SEASON2T="Inverno"
+	SEASON2D=$INVD
+	SEASON2H=$INVH
+	SEASON3="Pri"
+	SEASON3T="Primavera"
+	SEASON3D=$PRID
+	SEASON3H=$PRIH
+	SEASON4="Ver"
+	SEASON4T="Verão"
+	SEASON4D=$VERD
+	SEASON4H=$VERH
+elif [ $DATA0 -eq $DATA1 ]
+then
+	if [ $HORA0 -lt $HORA1 ]
+	then
+		SEASON1="Ver"
+		SEASON1T="Verão"
+		SEASON1D=$VERD
+		SEASON1H=$VERH
+		SEASON2="Out"
+		SEASON2T="Outono"
+		SEASON2D=$OUTD
+		SEASON2H=$OUTH
+		SEASON3="Inv"
+		SEASON3T="Inverno"
+		SEASON3D=$INVD
+		SEASON3H=$INVH
+		SEASON4="Pri"
+		SEASON4T="Primavera"
+		SEASON4D=$PRID
+		SEASON4H=$PRIH
+	elif [ $HORA0 -gt $HORA1 ]
+	then
+		SEASON1="Out"
+		SEASON1T="Outono"
+		SEASON1D=$OUTD
+		SEASON1H=$OUTH
+		SEASON2="Inv"
+		SEASON2T="Inverno"
+		SEASON2D=$INVD
+		SEASON2H=$INVH
+		SEASON3="Pri"
+		SEASON3T="Primavera"
+		SEASON3D=$PRID
+		SEASON3H=$PRIH
+		SEASON4="Ver"
+		SEASON4T="Verão"
+		SEASON4D=$VERD
+		SEASON4H=$VERH
+	elif [ $HORA0 -eq $HORA1 ]
+	then
+		SEASON1="Out"
+		SEASON1T="Outono"
+		SEASON1D=$OUTD
+		SEASON1H=$OUTH
+		SEASON2="Inv"
+		SEASON2T="Inverno"
+		SEASON2D=$INVD
+		SEASON2H=$INVH
+		SEASON3="Pri"
+		SEASON3T="Primavera"
+		SEASON3D=$PRID
+		SEASON3H=$PRIH
+		SEASON4="Ver"
+		SEASON4T="Verão"
+		SEASON4D=$VERD
+		SEASON4H=$VERH
+	fi
+fi
+}
+
+function JUN(){
+DATA1=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f4 -d'#' | cut -f1 -d' '`
+HORA0=`date +%R | sed s/://g`
+HORA1=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f5 -d'#' | sed s/://g`
+if [ $DATA0 -lt $DATA1 ]
+then
+	SEASON1="Out"
+	SEASON1T="Outono"
+	SEASON1D=$OUTD
+	SEASON1H=$OUTH
+	SEASON2="Inv"
+	SEASON2T="Inverno"
+	SEASON2D=$INVD
+	SEASON2H=$INVH
+	SEASON3="Pri"
+	SEASON3T="Primavera"
+	SEASON3D=$PRID
+	SEASON3H=$PRIH
+	SEASON4="Ver"
+	SEASON4T="Verão"
+	SEASON4D=$VERD
+	SEASON4H=$VERH
+elif [ $DATA0 -gt $DATA1 ]
+then
+	SEASON1="Inv"
+	SEASON1T="Inverno"
+	SEASON1D=$INVD
+	SEASON1H=$INVH
+	SEASON2="Pri"
+	SEASON2T="Primavera"
+	SEASON2D=$PRID
+	SEASON2H=$PRIH
+	SEASON3="Ver"
+	SEASON3T="Verão"
+	SEASON3D=$VERD
+	SEASON3H=$VERH
+	SEASON4="Out"
+	SEASON4T="Outono"
+	SEASON4D=$OUTD
+	SEASON4H=$OUTH
+elif [ $DATA0 -eq $DATA1 ]
+then
+	if [ $HORA0 -lt $HORA1 ]
+	then
+		SEASON1="Out"
+		SEASON1T="Outono"
+		SEASON1D=$OUTD
+		SEASON1H=$OUTH
+		SEASON2="Inv"
+		SEASON2T="Inverno"
+		SEASON2D=$INVD
+		SEASON2H=$INVH
+		SEASON3="Pri"
+		SEASON3T="Primavera"
+		SEASON3D=$PRID
+		SEASON3H=$PRIH
+		SEASON4="Ver"
+		SEASON4T="Verão"
+		SEASON4D=$VERD
+		SEASON4H=$VERH
+	elif [ $HORA0 -gt $HORA1 ]
+	then
+		SEASON1="Inv"
+		SEASON1T="Inverno"
+		SEASON1D=$INVD
+		SEASON1H=$INVH
+		SEASON2="Pri"
+		SEASON2T="Primavera"
+		SEASON2D=$PRID
+		SEASON2H=$PRIH
+		SEASON3="Ver"
+		SEASON3T="Verão"
+		SEASON3D=$VERD
+		SEASON3H=$VERH
+		SEASON4="Out"
+		SEASON4T="Outono"
+		SEASON4D=$OUTD
+		SEASON4H=$OUTH
+	elif [ $HORA0 -eq $HORA1 ]
+	then
+		SEASON1="Inv"
+		SEASON1T="Inverno"
+		SEASON1D=$INVD
+		SEASON1H=$INVH
+		SEASON2="Pri"
+		SEASON2T="Primavera"
+		SEASON2D=$PRID
+		SEASON2H=$PRIH
+		SEASON3="Ver"
+		SEASON3T="Verão"
+		SEASON3D=$VERD
+		SEASON3H=$VERH
+		SEASON4="Out"
+		SEASON4T="Outono"
+		SEASON4D=$OUTD
+		SEASON4H=$OUTH
+	fi
+fi
+}
+
+function SET(){
+DATA1=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f6 -d'#' | cut -f1 -d' '`
+HORA0=`date +%R | sed s/://g`
+HORA1=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f7 -d'#' | sed s/://g`
+if [ $DATA0 -lt $DATA1 ]
+then
+	SEASON1="Inv"
+	SEASON1T="Inverno"
+	SEASON1D=$INVD
+	SEASON1H=$INVH
+	SEASON2="Pri"
+	SEASON2T="Primavera"
+	SEASON2D=$PRID
+	SEASON2H=$PRIH
+	SEASON3="Ver"
+	SEASON3T="Verão"
+	SEASON3D=$VERD
+	SEASON3H=$VERH
+	SEASON4="Out"
+	SEASON4T="Outono"
+	SEASON4D=$OUTD
+	SEASON4H=$OUTH
+elif [ $DATA0 -gt $DATA1 ]
+then
+	SEASON1="Pri"
+	SEASON1T="Primavera"
+	SEASON1D=$PRID
+	SEASON1H=$PRIH
+	SEASON2="Ver"
+	SEASON2T="Verão"
+	SEASON2D=$VERD
+	SEASON2H=$VERH
+	SEASON3="Out"
+	SEASON3T="Outono"
+	SEASON3D=$OUTD
+	SEASON3H=$OUTH
+	SEASON4="Inv"
+	SEASON4T="Inverno"
+	SEASON4D=$INVD
+	SEASON4H=$INVH
+elif [ $DATA0 -eq $DATA1 ]
+then
+	if [ $HORA0 -lt $HORA1 ]
+	then
+		SEASON1="Inv"
+		SEASON1T="Inverno"
+		SEASON1D=$INVD
+		SEASON1H=$INVH
+		SEASON2="Pri"
+		SEASON2T="Primavera"
+		SEASON2D=$PRID
+		SEASON2H=$PRIH
+		SEASON3="Ver"
+		SEASON3T="Verão"
+		SEASON3D=$VERD
+		SEASON3H=$VERH
+		SEASON4="Out"
+		SEASON4T="Outono"
+		SEASON4D=$OUTD
+		SEASON4H=$OUTH
+	elif [ $HORA0 -gt $HORA1 ]
+	then
+		SEASON1="Pri"
+		SEASON1T="Primavera"
+		SEASON1D=$PRID
+		SEASON1H=$PRIH
+		SEASON2="Ver"
+		SEASON2T="Verão"
+		SEASON2D=$VERD
+		SEASON2H=$VERH
+		SEASON3="Out"
+		SEASON3T="Outono"
+		SEASON3D=$OUTD
+		SEASON3H=$OUTH
+		SEASON4="Inv"
+		SEASON4T="Inverno"
+		SEASON4D=$INVD
+		SEASON4H=$INVH
+	elif [ $HORA0 -eq $HORA1 ]
+	then
+		SEASON1="Pri"
+		SEASON1T="Primavera"
+		SEASON1D=$PRID
+		SEASON1H=$PRIH
+		SEASON2="Ver"
+		SEASON2T="Verão"
+		SEASON2D=$VERD
+		SEASON2H=$VERH
+		SEASON3="Out"
+		SEASON3T="Outono"
+		SEASON3D=$OUTD
+		SEASON3H=$OUTH
+		SEASON4="Inv"
+		SEASON4T="Inverno"
+		SEASON4D=$INVD
+		SEASON4H=$INVH
+	fi
+fi
+}
+
+function DEZ(){
+DATA1=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f8 -d'#' | cut -f1 -d' '`
+HORA0=`date +%R | sed s/://g`
+HORA1=`cat $DIRNAME/doc/seasons | grep $YEAR | cut -f9 -d'#' | sed s/://g`
+if [ $DATA0 -lt $DATA1 ]
+then
+	SEASON1="Pri"
+	SEASON1T="Primavera"
+	SEASON1D=$PRID
+	SEASON1H=$PRIH
+	SEASON2="Ver"
+	SEASON2T="Verão"
+	SEASON2D=$VERD
+	SEASON2H=$VERH
+	SEASON3="Out"
+	SEASON3T="Outono"
+	SEASON3D=$OUTD
+	SEASON3H=$OUTH
+	SEASON4="Inv"
+	SEASON4T="Inverno"
+	SEASON4D=$INVD
+	SEASON4H=$INVH
+elif [ $DATA0 -gt $DATA1 ]
+then
+	SEASON1="Ver"
+	SEASON1T="Verão"
+	SEASON1D=$VERD
+	SEASON1H=$VERH
+	SEASON2="Out"
+	SEASON2T="Outono"
+	SEASON2D=$OUTD
+	SEASON2H=$OUTH
+	SEASON3="Inv"
+	SEASON3T="Inverno"
+	SEASON3D=$INVD
+	SEASON3H=$INVH
+	SEASON4="Pri"
+	SEASON4T="Primavera"
+	SEASON4D=$PRID
+	SEASON4H=$PRIH
+elif [ $DATA0 -eq $DATA1 ]
+then
+	if [ $HORA0 -lt $HORA1 ]
+	then
+		SEASON1="Pri"
+		SEASON1T="Primavera"
+		SEASON1D=$PRID
+		SEASON1H=$PRIH
+		SEASON2="Ver"
+		SEASON2T="Verão"
+		SEASON2D=$VERD
+		SEASON2H=$VERH
+		SEASON3="Out"
+		SEASON3T="Outono"
+		SEASON3D=$OUTD
+		SEASON3H=$OUTH
+		SEASON4="Inv"
+		SEASON4T="Inverno"
+		SEASON4D=$INVD
+		SEASON4H=$INVH
+	elif [ $HORA0 -gt $HORA1 ]
+	then
+		SEASON1="Ver"
+		SEASON1T="Verão"
+		SEASON1D=$VERD
+		SEASON1H=$VERH
+		SEASON2="Out"
+		SEASON2T="Outono"
+		SEASON2D=$OUTD
+		SEASON2H=$OUTH
+		SEASON3="Inv"
+		SEASON3T="Inverno"
+		SEASON3D=$INVD
+		SEASON3H=$INVH
+		SEASON4="Pri"
+		SEASON4T="Primavera"
+		SEASON4D=$PRID
+		SEASON4H=$PRIH
+	elif [ $HORA0 -eq $HORA1 ]
+	then
+		SEASON1="Ver"
+		SEASON1T="Verão"
+		SEASON1D=$VERD
+		SEASON1H=$VERH
+		SEASON2="Out"
+		SEASON2T="Outono"
+		SEASON2D=$OUTD
+		SEASON2H=$OUTH
+		SEASON3="Inv"
+		SEASON3T="Inverno"
+		SEASON3D=$INVD
+		SEASON3H=$INVH
+		SEASON4="Pri"
+		SEASON4T="Primavera"
+		SEASON4D=$PRID
+		SEASON4H=$PRIH
+	fi
+fi
+}
+
+
+##Estação atual
+case `date +%b` in
+"Jan"|"jan")
+	SEASON1="Ver"
+	SEASON1T="Verão"
+	SEASON1D=$VERD
+	SEASON1H=$VERH
+	SEASON2="Out"
+	SEASON2T="Outono"
+	SEASON2D=$OUTD
+	SEASON2H=$OUTH
+	SEASON3="Inv"
+	SEASON3T="Inverno"
+	SEASON3D=$INVD
+	SEASON3H=$INVH
+	SEASON4="Pri"
+	SEASON4T="Primavera"
+	SEASON4D=$PRID
+	SEASON4H=$PRIH
+;;
+"Fev"|"fev")
+	SEASON1="Ver"
+	SEASON1T="Verão"
+	SEASON1D=$VERD
+	SEASON1H=$VERH
+	SEASON2="Out"
+	SEASON2T="Outono"
+	SEASON2D=$OUTD
+	SEASON2H=$OUTH
+	SEASON3="Inv"
+	SEASON3T="Inverno"
+	SEASON3D=$INVD
+	SEASON3H=$INVH
+	SEASON4="Pri"
+	SEASON4T="Primavera"
+	SEASON4D=$PRID
+	SEASON4H=$PRIH
+;;
+"Mar"|"mar")
+	MAR
+;;
+"Abr"|"abr")
+	SEASON1="Out"
+	SEASON1T="Outono"
+	SEASON1D=$OUTD
+	SEASON1H=$OUTH
+	SEASON2="Inv"
+	SEASON2T="Inverno"
+	SEASON2D=$INVD
+	SEASON2H=$INVH
+	SEASON3="Pri"
+	SEASON3T="Primavera"
+	SEASON3D=$PRID
+	SEASON3H=$PRIH
+	SEASON4="Ver"
+	SEASON4T="Verão"
+	SEASON4D=$VERD
+	SEASON4H=$VERH
+;;
+"Mai"|"mai")
+	SEASON1="Out"
+	SEASON1T="Outono"
+	SEASON1D=$OUTD
+	SEASON1H=$OUTH
+	SEASON2="Inv"
+	SEASON2T="Inverno"
+	SEASON2D=$INVD
+	SEASON2H=$INVH
+	SEASON3="Pri"
+	SEASON3T="Primavera"
+	SEASON3D=$PRID
+	SEASON3H=$PRIH
+	SEASON4="Ver"
+	SEASON4T="Verão"
+	SEASON4D=$VERD
+	SEASON4H=$VERH
+;;
+"Jun"|"jun")
+	JUN
+;;
+"Jul"|"jul")
+	SEASON1="Inv"
+	SEASON1T="Inverno"
+	SEASON1D=$INVD
+	SEASON1H=$INVH
+	SEASON2="Pri"
+	SEASON2T="Primavera"
+	SEASON2D=$PRID
+	SEASON2H=$PRIH
+	SEASON3="Ver"
+	SEASON3T="Verão"
+	SEASON3D=$VERD
+	SEASON3H=$VERH
+	SEASON4="Out"
+	SEASON4T="Outono"
+	SEASON4D=$OUTD
+	SEASON4H=$OUTH
+;;
+"Ago"|"ago")
+	SEASON1="Inv"
+	SEASON1T="Inverno"
+	SEASON1D=$INVD
+	SEASON1H=$INVH
+	SEASON2="Pri"
+	SEASON2T="Primavera"
+	SEASON2D=$PRID
+	SEASON2H=$PRIH
+	SEASON3="Ver"
+	SEASON3T="Verão"
+	SEASON3D=$VERD
+	SEASON3H=$VERH
+	SEASON4="Out"
+	SEASON4T="Outono"
+	SEASON4D=$OUTD
+	SEASON4H=$OUTH
+;;
+"Set"|"set")
+	SET
+;;
+"Out"|"out")
+	SEASON1="Pri"
+	SEASON1T="Primavera"
+	SEASON1D=$PRID
+	SEASON1H=$PRIH
+	SEASON2="Ver"
+	SEASON2T="Verão"
+	SEASON2D=$VERD
+	SEASON2H=$VERH
+	SEASON3="Out"
+	SEASON3T="Outono"
+	SEASON3D=$OUTD
+	SEASON3H=$OUTH
+	SEASON4="Inv"
+	SEASON4T="Inverno"
+	SEASON4D=$INVD
+	SEASON4H=$INVH
+;;
+"Nov"|"nov")
+	SEASON1="Pri"
+	SEASON1T="Primavera"
+	SEASON1D=$PRID
+	SEASON1H=$PRIH
+	SEASON2="Ver"
+	SEASON2T="Verão"
+	SEASON2D=$VERD
+	SEASON2H=$VERH
+	SEASON3="Out"
+	SEASON3T="Outono"
+	SEASON3D=$OUTD
+	SEASON3H=$OUTH
+	SEASON4="Inv"
+	SEASON4T="Inverno"
+	SEASON4D=$INVD
+	SEASON4H=$INVH
+;;
+"Dez"|"dez")
+	DEZ
+;;
+esac
+
+##Opções
+case $1 in
+"--seasons=1") echo $SEASON1
+;;
+"--seasons=1T") echo $SEASON1T
+;;
+"--seasons=1D") echo $SEASON1D
+;;
+"--seasons=1H") echo $SEASON1H
+;;
+"--seasons=2") echo $SEASON2
+;;
+"--seasons=2T") echo $SEASON2T
+;;
+"--seasons=2D") echo $SEASON2D
+;;
+"--seasons=2H") echo $SEASON2H
+;;
+"--seasons=3") echo $SEASON3
+;;
+"--seasons=3T") echo $SEASON3T
+;;
+"--seasons=3D") echo $SEASON3D
+;;
+"--seasons=3H") echo $SEASON3H
+;;
+"--seasons=4") echo $SEASON4
+;;
+"--seasons=4T") echo $SEASON4T
+;;
+"--seasons=4D") echo $SEASON4D
+;;
+"--seasons=4H") echo $SEASON4H
+;;
+"--seasons=OUTD") echo $OUTD
+;;
+"--seasons=OUTH") echo $OUTH
+;;
+"--seasons=INVD") echo $INVD
+;;
+"--seasons=INVH") echo $INVH
+;;
+"--seasons=PRID") echo $PRID
+;;
+"--seasons=PRIH") echo $PRIH
+;;
+"--seasons=VERD") echo $VERD
+;;
+"--seasons=VERH") echo $VERH
+;;
+"--season"*) echo "opção inválida. O correto é --seasons"
+;;
+*) echo "Opção inválida"
+;;
+esac

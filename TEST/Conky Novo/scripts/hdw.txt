@@ -1,0 +1,5 @@
+Notebook Sony VAIO VGN-P698E
+Intel(R) Atom(TM) CPU Z530 
+Intel Corporation gma500_gfx
+2048 MB Onboard DDR2
+Solid State Device 128.0 GB

@@ -1,0 +1,12 @@
+nohup: ignorando entrada e anexando saída a "nohup.out"
+--2015-03-10 17:32:58--  http://img0.cptec.inpe.br/~rgrafico/icones_principais/tempo/maior/pc.gif
+Resolvendo img0.cptec.inpe.br (img0.cptec.inpe.br)... 150.163.141.175
+Conectando-se a img0.cptec.inpe.br (img0.cptec.inpe.br)|150.163.141.175|:80... conectado.
+A requisição HTTP foi enviada, aguardando resposta... 200 OK
+Tamanho: 3675 (3,6K) [image/gif]
+Salvando em: "/home/juliano/.conkycolors/icons/hoje.gif"
+
+     0K ...                                                   100% 46,8M=0s
+
+2015-03-10 17:32:59 (46,8 MB/s) - "/home/juliano/.conkycolors/icons/hoje.gif" salvo [3675/3675]
+

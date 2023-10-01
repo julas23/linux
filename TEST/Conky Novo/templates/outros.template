@@ -1,0 +1,4 @@
+${font Verana:style=Bold:size=9}To Do List
+${font :size=7:style=Bold}${color1}${execi 30 cat /julas/Documentos/todo.txt}${color}${font}
+$stippled_hr${if_running amarokapp}
+Tocando:$alignr ${execi 1 sh ~/.conkycolors/camarok.sh artist} - ${execi 100 sh ~/.conkycolors/camarok.sh title}$endif

@@ -1,0 +1,667 @@
+#!/bin/bash
+# BrWeather Modo INPE
+# Criado por LeandroNKZ <leandronkz@gmail.com>
+# Se encontrar BUGs, ou erros no programa, favor reportar ao desenvolvedor
+# Acesse o site para maiores instruções:
+# http://brweatherproject.blogspot.com/
+# Distribuído sob licença GPLv3
+
+
+NC5=`grep -m5 'title="Clique sobre o ícone para ver a legenda"></a></div>' ~/.brweather/cache/cache | cut -f12 -d'/' | cut -f1 -d'.' | tail -n1`
+NC6=`grep -m6 'title="Clique sobre o ícone para ver a legenda"></a></div>' ~/.brweather/cache/cache | cut -f12 -d'/' | cut -f1 -d'.' | tail -n1`
+NC7=`grep -m7 'title="Clique sobre o ícone para ver a legenda"></a></div>' ~/.brweather/cache/cache | cut -f12 -d'/' | cut -f1 -d'.' | tail -n1`
+
+
+# Previsão do tempo para o quinto dia
+case $NC5 in
+"ec")
+  C5T="Encoberto com chuvas isoladas"
+  C5I="h"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ec.png $* }"
+;;
+"ci")
+  C5T="Chuvas isoladas"
+  C5I="g"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ci.png $* }"
+;;
+"c")
+  C5T="Chuva"
+  C5I="i"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"in")
+  C5T="Instável"
+  C5I="g"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/in.png $* }"
+;;
+"pp")
+  C5T="Poss. pancadas de chuva"
+  C5I="k"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pp.png $* }"
+;;
+"cm")
+  C5T="Chuva pela manhã"
+  C5I="g"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cm.png $* }"
+;;
+"C5")
+  C5T="Chuva à noite"
+  C5I="G"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/C5.png $* }"
+;;
+"pt")
+  C5T="Panc. de chuva à tarde"
+  C5I="k"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pt.png $* }"
+;;
+"pm")
+  C5T="Panc. de chuva pela manhã"
+  C5I="k"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pm.png $* }"
+;;
+"np")
+  C5T="Nublado e panc. de chuva"
+  C5I="k"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/np.png $* }"
+;;
+"pc")
+  C5T="Pancadas de chuva"
+  C5I="k"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pc.png $* }"
+;;
+"pn")
+  C5T="Parcialmente nublado"
+  C5I="d"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pn.png $* }"
+;;
+"cv")
+  C5T="Chuvisco"
+  C5I="h"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"ch")
+  C5T="Chuvoso"
+  C5I="i"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"t")
+  C5T="Tempestade"
+  C5I="m"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"ps")
+  C5T="Predomínio de Sol"
+  C5I="c"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ps.png $* }"
+;;
+"e")
+  C5T="Encoberto"
+  C5I="e"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/e.png $* }"
+;;
+"n")
+  C5T="Nublado"
+  C5I="d"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/n.png $* }"
+;;
+"cl")
+  C5T="Céu claro"
+  C5I="a"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cl.png $* }"
+;;
+"nv")
+  C5T="Nevoeiro"
+  C5I="b"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"g")
+  C5T="Geada"
+  C5I="r"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/g.png $* }"
+;;
+"ne")
+  C5T="Neve"
+  C5I="q"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"nd")
+  C5T="Não definido."
+  C5I="E"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+"pnt")
+  C5T="Panc. de chuva à noite"
+  C5I="K"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pnt.png $* }"
+;;
+"psc")
+  C5T="Poss. de chuva"
+  C5I="g"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/psc.png $* }"
+;;
+"pcm")
+  C5T="Poss. de chuva pela manhã"
+  C5I="g"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pcm.png $* }"
+;;
+"pct")
+  C5T="Poss. de chuva à tarde"
+  C5I="g"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pct.png $* }"
+;;
+"pC5")
+  C5T="Poss. de chuva à noite"
+  C5I="G"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pC5.png $* }"
+;;
+"npt")
+  C5T="Nublado com panc. à tarde"
+  C5I="k"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/npt.png $* }"
+;;
+"npn")
+  C5T="Nublado com panc. à noite"
+  C5I="K"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/npn.png $* }"
+;;
+"nC5")
+  C5T="Nublado com poss. de chuva à noite"
+  C5I="G"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nC5.png $* }"
+;;
+"nct")
+  C5T="Nublado com poss. de chuva à tarde"
+  C5I="g"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nct.png $* }"
+;;
+"ncm")
+  C5T="Nublado com poss. de chuva pela manhã"
+  C5I="g"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ncm.png $* }"
+;;
+"npm")
+  C5T="Nublado com panc. de chuva pela manhã"
+  C5I="k"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/npm.png $* }"
+;;
+"npp")
+  C5T="Nublado com poss. de chuva"
+  C5I="g"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/npp.png $* }"
+;;
+"vn")
+  C5T="Variação de nebulosidade"
+  C5I="c"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/vn.png $* }"
+;;
+"ct")
+  C5T="Chuva à tarde"
+  C5I="g"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ct.png $* }"
+;;
+"ppn")
+  C5T="Poss. de panc. de chuva à noite"
+  C5I="K"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ppn.png $* }"
+;;
+"ppt")
+  C5T="Poss. de panc. de chuva à tarde"
+  C5I="k"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ppt.png $* }"
+;;
+"ppm")
+  C5T="Poss. de panc. de chuva pela manhã"
+  C5I="k"
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ppm.png $* }"
+;;
+*)
+  echo "Erro." & echo "$ERROCACHE" > ~/.brweather/log 
+  C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+esac
+
+
+
+# Previsão do tempo para o sexto dia
+case $NC6 in
+"ec")
+  C6T="Encoberto com chuvas isoladas"
+  C6I="h"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ec.png $* }"
+;;
+"ci")
+  C6T="Chuvas isoladas"
+  C6I="g"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ci.png $* }"
+;;
+"c")
+  C6T="Chuva"
+  C6I="i"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"in")
+  C6T="Instável"
+  C6I="g"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/in.png $* }"
+;;
+"pp")
+  C6T="Poss. pancadas de chuva"
+  C6I="k"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pp.png $* }"
+;;
+"cm")
+  C6T="Chuva pela manhã"
+  C6I="g"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cm.png $* }"
+;;
+"C6")
+  C6T="Chuva à noite"
+  C6I="G"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/C6.png $* }"
+;;
+"pt")
+  C6T="Panc. de chuva à tarde"
+  C6I="k"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pt.png $* }"
+;;
+"pm")
+  C6T="Panc. de chuva pela manhã"
+  C6I="k"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pm.png $* }"
+;;
+"np")
+  C6T="Nublado e panc. de chuva"
+  C6I="k"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/np.png $* }"
+;;
+"pc")
+  C6T="Pancadas de chuva"
+  C6I="k"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pc.png $* }"
+;;
+"pn")
+  C6T="Parcialmente nublado"
+  C6I="d"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pn.png $* }"
+;;
+"cv")
+  C6T="Chuvisco"
+  C6I="h"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"ch")
+  C6T="Chuvoso"
+  C6I="i"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"t")
+  C6T="Tempestade"
+  C6I="m"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"ps")
+  C6T="Predomínio de Sol"
+  C6I="c"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ps.png $* }"
+;;
+"e")
+  C6T="Encoberto"
+  C6I="e"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/e.png $* }"
+;;
+"n")
+  C6T="Nublado"
+  C6I="d"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/n.png $* }"
+;;
+"cl")
+  C6T="Céu claro"
+  C6I="a"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cl.png $* }"
+;;
+"nv")
+  C6T="Nevoeiro"
+  C6I="b"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"g")
+  C6T="Geada"
+  C6I="r"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/g.png $* }"
+;;
+"ne")
+  C6T="Neve"
+  C6I="q"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"nd")
+  C6T="Não definido."
+  C6I="E"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+"pnt")
+  C6T="Panc. de chuva à noite"
+  C6I="K"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pnt.png $* }"
+;;
+"psc")
+  C6T="Poss. de chuva"
+  C6I="g"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/psc.png $* }"
+;;
+"pcm")
+  C6T="Poss. de chuva pela manhã"
+  C6I="g"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pcm.png $* }"
+;;
+"pct")
+  C6T="Poss. de chuva à tarde"
+  C6I="g"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pct.png $* }"
+;;
+"pC6")
+  C6T="Poss. de chuva à noite"
+  C6I="G"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pC6.png $* }"
+;;
+"npt")
+  C6T="Nublado com panc. à tarde"
+  C6I="k"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/npt.png $* }"
+;;
+"npn")
+  C6T="Nublado com panc. à noite"
+  C6I="K"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/npn.png $* }"
+;;
+"nC6")
+  C6T="Nublado com poss. de chuva à noite"
+  C6I="G"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nC6.png $* }"
+;;
+"nct")
+  C6T="Nublado com poss. de chuva à tarde"
+  C6I="g"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nct.png $* }"
+;;
+"ncm")
+  C6T="Nublado com poss. de chuva pela manhã"
+  C6I="g"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ncm.png $* }"
+;;
+"npm")
+  C6T="Nublado com panc. de chuva pela manhã"
+  C6I="k"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/npm.png $* }"
+;;
+"npp")
+  C6T="Nublado com poss. de chuva"
+  C6I="g"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/npp.png $* }"
+;;
+"vn")
+  C6T="Variação de nebulosidade"
+  C6I="c"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/vn.png $* }"
+;;
+"ct")
+  C6T="Chuva à tarde"
+  C6I="g"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ct.png $* }"
+;;
+"ppn")
+  C6T="Poss. de panc. de chuva à noite"
+  C6I="K"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ppn.png $* }"
+;;
+"ppt")
+  C6T="Poss. de panc. de chuva à tarde"
+  C6I="k"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ppt.png $* }"
+;;
+"ppm")
+  C6T="Poss. de panc. de chuva pela manhã"
+  C6I="k"
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ppm.png $* }"
+;;
+*)
+  echo "Erro." & echo "$ERROCACHE" > ~/.brweather/log 
+  C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+esac
+
+
+
+
+# Previsão do tempo para o sétimo dia
+case $NC7 in
+"ec")
+  C7T="Encoberto com chuvas isoladas"
+  C7I="h"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ec.png $* }"
+;;
+"ci")
+  C7T="Chuvas isoladas"
+  C7I="g"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ci.png $* }"
+;;
+"c")
+  C7T="Chuva"
+  C7I="i"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"in")
+  C7T="Instável"
+  C7I="g"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/in.png $* }"
+;;
+"pp")
+  C7T="Poss. pancadas de chuva"
+  C7I="k"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pp.png $* }"
+;;
+"cm")
+  C7T="Chuva pela manhã"
+  C7I="g"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cm.png $* }"
+;;
+"C7")
+  C7T="Chuva à noite"
+  C7I="G"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/C7.png $* }"
+;;
+"pt")
+  C7T="Panc. de chuva à tarde"
+  C7I="k"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pt.png $* }"
+;;
+"pm")
+  C7T="Panc. de chuva pela manhã"
+  C7I="k"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pm.png $* }"
+;;
+"np")
+  C7T="Nublado e panc. de chuva"
+  C7I="k"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/np.png $* }"
+;;
+"pc")
+  C7T="Pancadas de chuva"
+  C7I="k"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pc.png $* }"
+;;
+"pn")
+  C7T="Parcialmente nublado"
+  C7I="d"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pn.png $* }"
+;;
+"cv")
+  C7T="Chuvisco"
+  C7I="h"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"ch")
+  C7T="Chuvoso"
+  C7I="i"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"t")
+  C7T="Tempestade"
+  C7I="m"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"ps")
+  C7T="Predomínio de Sol"
+  C7I="c"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ps.png $* }"
+;;
+"e")
+  C7T="Encoberto"
+  C7I="e"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/e.png $* }"
+;;
+"n")
+  C7T="Nublado"
+  C7I="d"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/n.png $* }"
+;;
+"cl")
+  C7T="Céu claro"
+  C7I="a"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cl.png $* }"
+;;
+"nv")
+  C7T="Nevoeiro"
+  C7I="b"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"g")
+  C7T="Geada"
+  C7I="r"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/g.png $* }"
+;;
+"ne")
+  C7T="Neve"
+  C7I="q"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"nd")
+  C7T="Não definido."
+  C7I="E"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+"pnt")
+  C7T="Panc. de chuva à noite"
+  C7I="K"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pnt.png $* }"
+;;
+"psc")
+  C7T="Poss. de chuva"
+  C7I="g"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/psc.png $* }"
+;;
+"pcm")
+  C7T="Poss. de chuva pela manhã"
+  C7I="g"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pcm.png $* }"
+;;
+"pct")
+  C7T="Poss. de chuva à tarde"
+  C7I="g"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pct.png $* }"
+;;
+"pC7")
+  C7T="Poss. de chuva à noite"
+  C7I="G"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/pC7.png $* }"
+;;
+"npt")
+  C7T="Nublado com panc. à tarde"
+  C7I="k"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/npt.png $* }"
+;;
+"npn")
+  C7T="Nublado com panc. à noite"
+  C7I="K"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/npn.png $* }"
+;;
+"nC7")
+  C7T="Nublado com poss. de chuva à noite"
+  C7I="G"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nC7.png $* }"
+;;
+"nct")
+  C7T="Nublado com poss. de chuva à tarde"
+  C7I="g"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nct.png $* }"
+;;
+"ncm")
+  C7T="Nublado com poss. de chuva pela manhã"
+  C7I="g"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ncm.png $* }"
+;;
+"npm")
+  C7T="Nublado com panc. de chuva pela manhã"
+  C7I="k"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/npm.png $* }"
+;;
+"npp")
+  C7T="Nublado com poss. de chuva"
+  C7I="g"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/npp.png $* }"
+;;
+"vn")
+  C7T="Variação de nebulosidade"
+  C7I="c"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/vn.png $* }"
+;;
+"ct")
+  C7T="Chuva à tarde"
+  C7I="g"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ct.png $* }"
+;;
+"ppn")
+  C7T="Poss. de panc. de chuva à noite"
+  C7I="K"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ppn.png $* }"
+;;
+"ppt")
+  C7T="Poss. de panc. de chuva à tarde"
+  C7I="k"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ppt.png $* }"
+;;
+"ppm")
+  C7T="Poss. de panc. de chuva pela manhã"
+  C7I="k"
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ppm.png $* }"
+;;
+*)
+  echo "Erro." & echo "$ERROCACHE" > ~/.brweather/log 
+  C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+esac
+
+
+case $1 in
+"--imagem"*"=C5") echo $C5
+;;
+"--imagem"*"=C6") echo $C6
+;;
+"--imagem"*"=C7") echo $C7
+;;
+"--option=C5T") echo $C5T
+;;
+"--option=C5I") echo $C5I
+;;
+"--option=C6T") echo $C6T
+;;
+"--option=C6I") echo $C6I
+;;
+"--option=C7T") echo $C7T
+;;
+"--option=C7I") echo $C7I
+;;
+"--option"* ) echo "Opção inválida.
+Experimente --help para mais informações."
+;;
+esac

@@ -1,0 +1,13 @@
+${font :style=Bold}WI-FI${font} ${hr 2}
+
+         Signal: ${wireless_link_qual wlan0}% ${alignr}${wireless_link_bar 8,60 wlan0}
+
+         Local Ip: ${alignr}${addr wlan0}
+
+         Ip externo: ${alignr}${execi 10800 ~/.conkycolors/bin/conkyIp}
+
+         Up: ${upspeed wlan0} ${alignr}${upspeedgraph wlan0 8,60 000000 000000}
+         Down: ${downspeed wlan0} ${alignr}${downspeedgraph wlan0 8,60 000000 000000}
+
+         Upload: ${alignr}${totalup wlan0}
+         Download: ${alignr}${totaldown wlan0}

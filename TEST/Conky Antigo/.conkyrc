@@ -1,0 +1,110 @@
+# Default Fonts
+use_xft yes
+xftfont Ubuntu:size=10
+override_utf8_locale yes
+
+# Performance Settings
+update_interval 1
+total_run_times 0
+double_buffer yes
+no_buffers yes
+net_avg_samples 2
+text_buffer_size 4096
+
+# Window Settings
+# own_window_class Conky
+own_window yes
+own_window_transparent yes
+own_window_type normal
+own_window_argb_visual yes
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+
+# Window border
+draw_borders no
+draw_shades no
+
+# Default Color
+default_color E0DFDE
+
+# Color Title
+color0 FAFAFA #Titulo DD3A21
+color1 FF3030 #Vermelho
+color2 FF7F00 #laranja
+color3 FFD700 #ouro
+color4 FFFF00 #amarelo
+color5 EEE8AA #creme
+color6 FFFFFF #branco
+color7 009ACD #azul
+color8 B0E2FF #azulclaro
+color9 00FF7F #verde
+
+# Size and position
+minimum_size 100 100
+gap_x 5
+gap_y 24
+alignment top_right
+
+TEXT
+# S O F T W A R E
+${font DejaVu Sans:bold:size=12}${color0}Software${font}${color}${stippled_hr}
+Kernel:${GOTO 120}${color5}${sysname} ${kernel} ${machine}${color}
+Host:${GOTO 120}${color5}${execpi 9000 whoami}@${nodename}${color}
+Uptime:${GOTO 120}${color5}${uptime}${color}
+Threads:${GOTO 120}${color5}${running_threads} de ${threads}${color}
+Load:${GOTO 120}${color5}${loadavg}${color}
+Text Buffer:${GOTO 120}${color4}${entropy_perc}%${color} (${color4}${entropy_avail}${color} of ${color4}${entropy_poolsize}${color})
+
+# P R O C E S S O S
+${font DejaVu Sans:bold:size=12}${color0}Processos${font}${color}${stippled_hr}
+Rodando: ${color4}$running_processes${color} de ${color4}$processes${color}${GOTO 166}PID${GOTO 246}CPU%${GOTO 306}MEM%
+${color1} ${top name 1} ${GOTO 166}${top pid 1} ${GOTO 246}${top cpu 1}%${GOTO 306}${top mem 1}%${color}
+${color2} ${top name 2} ${GOTO 166}${top pid 2} ${GOTO 246}${top cpu 2}%${GOTO 306}${top mem 2}%${color}
+${color3} ${top name 3} ${GOTO 166}${top pid 3} ${GOTO 246}${top cpu 3}%${GOTO 306}${top mem 3}%${color}
+${color4} ${top name 4} ${GOTO 166}${top pid 4} ${GOTO 246}${top cpu 4}%${GOTO 306}${top mem 4}%${color}
+${color5} ${top name 5} ${GOTO 166}${top pid 5} ${GOTO 246}${top cpu 5}%${GOTO 306}${top mem 5}%${color}
+${color6} ${top name 6} ${GOTO 166}${top pid 6} ${GOTO 246}${top cpu 6}%${GOTO 306}${top mem 6}%${color}
+
+# H A R D W A R E
+${font DejaVu Sans:bold:size=12}${color0}Hardware${font}${color}${stippled_hr}
+#${pre_exec ~/.conkycolors/scripts/hdw.sh}
+Placa-Mae:${GOTO 75}${color3}${exec ~/.conkycolors/scripts/hdw.sh |grep Mae |awk '{print $2}'}${color}
+MoBoard:${GOTO 75}${color3}${pre_exec ~/.conkycolors/scripts/mobo.sh |awk 'ORS=NR%5?" | ":"\n"'}${color}
+VGA PCIe:${GOTO 75}${color3}${exec ~/.conkycolors/scripts/hdw.sh |grep Vid |cut -c 8-25}${color}
+Memoria:${GOTO 75}${color3}${exec ~/.conkycolors/scripts/hdw.sh |grep Mem |awk '{print $2,$3,$4,$5}'}${color}${GOTO 250}${membar 10,80}
+Processor:${GOTO 75}${color3}${exec ~/.conkycolors/scripts/hdw.sh |grep Proc |cut -c 14-39}${color}
+Temperatura: ${color4}${execpi 10000 sensors |grep "CPU Tem" |cut -c 21-27}${GOTO 180}${color}Rotacao: ${color4}${execpi 10001 sensors |grep "CPU FAN" |cut -c 20-27}${color}
+${cpugraph 20,340 000000 4682B4}
+${voffset -43}
+${GOTO 10}Consumo Total da CPU [${color4}$cpu%${color}]
+${cpubar cpu0 16,145}${GOTO 200}${cpubar cpu1 16,145}
+${voffset -20}
+${GOTO 10}${color2}CPU 0:${GOTO 60}${cpu cpu0}%${GOTO 95}${freq_g 0}GHz${color}${GOTO 205}${color2}CPU 1:${GOTO 255}${cpu cpu1}%${GOTO 292}${freq_g 1}GHz${color}
+${cpubar cpu2 16,145}${GOTO 200}${cpubar cpu3 16,145}
+${voffset -20}
+${GOTO 10}${color2}CPU 2:${GOTO 60}${cpu cpu2}%${GOTO 95}${freq_g 2}GHz${color}${GOTO 205}${color2}CPU 3:${GOTO 255}${cpu cpu3}%${GOTO 292}${freq_g 3}GHz${color}
+${cpubar cpu4 16,145}${GOTO 200}${cpubar cpu5 16,145}
+${voffset -20}
+${GOTO 10}${color2}CPU 4:${GOTO 60}${cpu cpu4}%${GOTO 95}${freq_g 4}GHz${color}${GOTO 205}${color2}CPU 5:${GOTO 255}${cpu cpu5}%${GOTO 292}${freq_g 5}GHz${color}
+
+# D I S C O S
+${font DejaVu Sans:bold:size=12}${color0}Discos${font}${color}${stippled_hr}
+${color3}${diskiograph /dev/sda  10,50}${GOTO 90}/dev/sda${GOTO 180}${diskio /dev/sda}${color}
+Sistema:${GOTO 135}${fs_used /}${GOTO 220}${fs_bar 10,125 /}
+Swap:${GOTO 135}${swap}${GOTO 220}${swapbar 10,125}
+${color3}${diskiograph /dev/sdb  10,50}${GOTO 90}/dev/sdb${GOTO 180}${diskio /dev/sdb}${color}
+Home:${GOTO 135}${fs_used /home}${GOTO 220}${fs_bar 10,125 /home}
+${color3}${diskiograph /dev/sdc  10,50}${GOTO 90}/dev/sdc${GOTO 180}${diskio /dev/sdc}${color}
+Backup:${GOTO 135}${fs_used /BKP}${GOTO 220}${fs_bar 10,125 /BKP}
+
+# N E T W O R K
+${font DejaVu Sans:bold:size=12}${color0}Network [${gw_iface}]${font}${color}${stippled_hr}
+Local IP: ${GOTO 70}${color3}${addr eth0}${color}
+Wireless : ${GOTO 70}${color3}${gw_ip}${GOTO 170}${wireless_essid wlan0}${GOTO 230}${wireless_link_qual_perc  wlan0}%${GOTO 270}${wireless_link_bar 5,50 wlan0}${color}
+Public IP: ${GOTO 70}${color3}${execi 10000 ~/.conkycolors/scripts/ip.sh}${color}
+${GOTO 45}Up Speed/Total ${GOTO 210}Down Speed Total
+${GOTO 20}${upspeedgraph eth0 20,150 00FF7F FF3030}${GOTO 190}${downspeedgraph eth0 20,150 FF3030 00FF7F}
+${voffset -44}
+${color3}${GOTO 45}${upspeed eth0}${GOTO 110}${totalup eth0}${GOTO 215}${downspeed eth0}${GOTO 280}${totaldown eth0}${color}
+${voffset -10}
+${font Verana:style=Bold:size=9}To Do List${stippled_hr}
+${GOTO 16}${font Liberation Mono:bold:size=8}${color5}${execi 30 cat /home/juliano/todo.txt}${color}

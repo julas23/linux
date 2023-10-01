@@ -1,0 +1,9 @@
+# P R O C E S S O S
+${font DejaVu Sans:bold:size=12}${color0}Processos${font}${color}
+Rodando: ${color4}$running_processes${color} de ${color4}$processes${color}${GOTO 166}PID${GOTO 246}CPU%${GOTO 306}MEM%
+${color1} ${top name 1} ${GOTO 166}${top pid 1} ${GOTO 246}${top cpu 1}%${GOTO 306}${top mem 1}%${color}
+${color2} ${top name 2} ${GOTO 166}${top pid 2} ${GOTO 246}${top cpu 2}%${GOTO 306}${top mem 2}%${color}
+${color3} ${top name 3} ${GOTO 166}${top pid 3} ${GOTO 246}${top cpu 3}%${GOTO 306}${top mem 3}%${color}
+${color4} ${top name 4} ${GOTO 166}${top pid 4} ${GOTO 246}${top cpu 4}%${GOTO 306}${top mem 4}%${color}
+${color5} ${top name 5} ${GOTO 166}${top pid 5} ${GOTO 246}${top cpu 5}%${GOTO 306}${top mem 5}%${color}
+${color6} ${top name 6} ${GOTO 166}${top pid 6} ${GOTO 246}${top cpu 6}%${GOTO 306}${top mem 6}%${color}

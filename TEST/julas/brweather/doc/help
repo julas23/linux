@@ -1,0 +1,246 @@
+
+Arquivo de ajuda do BrWeather
+Escrito por LeandroNKZ 
+
+Opções
+
+Do programa:
+--version
+	Versão do programa
+
+--autor
+	Autor do programa
+
+--help
+	Menu de ajuda
+
+--man
+	Manpage
+
+--clean-cache
+	Limpa cache de previsões e logs (útil quando ocorrerem problemas)
+
+--total-images
+	Quantidade de opções de imagens
+
+--help-default
+	Exibe opções do serviço nacional (default)
+
+--help-open
+	Exibe opções do serviço Open Weather
+
+--mode
+	Retorna o modo que está ativo (INPE, OPEN ou HÍBRIDO)
+
+
+Imagens
+
+Para adicionar imagens, adicione no seu conkyrc:
+${execpi (segundos) brweather --imagem(numero de 1 a 7)=C(dia: N ou 1-7) -p (posição) -s 60x60 (tamanho)}
+
+Importante: Para o intervalo em segundos, é recomendável utilizar 1 hora (3600s) ou, no
+máximo 30 min (1800s). Abaixo disso é desnecessário, pois os dados do site são 
+atualizados apenas de hora em hora.
+
+Exs.: 
+${execpi 3600 brweather --imagem1=CN -p 100,90 -s 60x60}
+${execpi 3600 brweather --imagem1=C2 -p 70,200 -s 90x90}
+${execpi 3600 brweather --imagem1=C4 -p 165,160 -s 30x30}
+
+
+
+Opções de imagens:
+
+--imagem(Numero)=CN
+	Exibe a condição atual
+
+--imagem(numero)=C1
+	Previsão para o resto do dia
+
+--imagem(numero)=C2
+	Previsão para amanhã (segundo dia)
+
+--imagem(numero)=C3
+	Previsão para o terceiro dia
+
+--imagem(numero)=C4
+	Previsão para o quarto dia
+
+--imagem(numero)=C5
+	Previsão para o quinto dia
+
+--imagem(numero)=C6
+	Previsão para o sexto dia
+
+--imagem(numero)=C7
+	Previsão para o sétimo dia
+
+
+Para saber quais variáveis utilizar no lugar de "(numero)", digite:
+
+brweather --total-images
+
+
+Fases da Lua
+A função Fases da Lua possui as seguintes opções:
+
+--option=LUA1
+	Exibe o nome da fase atual da Lua, de modo abreviado. Ex.: Min, Che, etc.
+
+--option=LUA1T
+	Exibe o nome da fase atual da Lua. Ex.: Minguante, Cheia, etc.
+
+--option=LUA2
+	Exibe o nome da próxima fase da Lua, de modo abreviado
+
+--option=LUA2T
+	Exibe o nome completo da próxima fase da Lua
+
+--option=LUA3
+	Exibe o nome da terceira fase da Lua, de modo abreviado
+
+--option=LUA3T
+	Exibe o nome completo da terceira fase da Lua
+
+--option=LUA4
+	Exibe o nome da quarta fase da Lua, de modo abreviado
+
+--option=LUA4T
+	Exibe o nome completo da quarta fase da Lua
+
+--option=LUA1D
+	Exibe a data de hoje
+
+--option=LUA2D
+	Exibe (com data) quando será a próxima mudança da fase
+
+--option=LUA3D
+	Exibe quando será a terceira mudança de fase
+
+--option=LUA4D
+	Exibe quando será a quarta mudança de fase
+
+--option=LUA1I
+	Mostra, em imagem e em tempo real, a fase atual da Lua
+
+--option=LUA2I
+	Mostra em uma imagem, qual será a próxima fase da Lua
+
+--option=LUA3I
+	Mostra qual será a terceira fase da Lua
+
+--option=LUA4I
+	Mostra qual será a quarta fase da Lua
+
+--option=LUA1F
+	Mostra, em um ícone* e em tempo real, a fase atual da Lua
+
+--option=LUA1f
+	Uma variação da opção acima
+
+--option=LUA2F
+	Mostra em um ícone*, qual a próxima fase da Lua
+
+--option=LUA2f
+	Uma variação da opção acima
+
+--option=LUA3F
+	Mostra a terceira fase da Lua no formato de ícone*
+
+--option=LUA3f
+	Uma variação da opção acima
+
+--option=LUA4F
+	Mostra, no formato de ícone*, a quarta fase da Lua
+
+--option=LUA4f
+	Uma variação da opção acima
+
+*Necessário o uso da fonte "Moon Phases"
+
+
+Estações do ano
+
+--seasons=1T
+	Mostra a estação do ano atual
+
+--seasons=1
+	Mostra a estação do ano atual, no formato abreviado. Ex.: Pri, Ver, Out e Inv.
+
+--seasons=1D
+	Mostra a data do início da estação atual
+
+--seasons=1H
+	Mostra a hora (no formato HH:MM:SS) do início da estação atual
+
+--seasons=2T
+	Mostra a próxima estação do ano
+
+--seasons=2
+	Mostra a próxima estação do ano, no formato abreviado. Ex.: Pri, Ver, Out e Inv.
+
+--seasons=2D
+	Mostra a data do início da próxima estação
+
+--seasons=2H
+	Mostra a hora (no formato HH:MM:SS) do início da próxima estação
+
+--seasons=3T
+	Mostra a terceira estação do ano
+
+--seasons=3
+	Mostra a terceira estação do ano, no formato abreviado. Ex.: Pri, Ver, Out e Inv.
+
+--seasons=3D
+	Mostra a data do início da terceira estação
+
+--seasons=3H
+	Mostra a hora (no formato HH:MM:SS) do início da terceira estação
+
+--seasons=4T
+	Mostra a quarta estação do ano
+
+--seasons=4
+	Mostra a quarta estação do ano, no formato abreviado. Ex.: Pri, Ver, Out e Inv.
+
+--seasons=4D
+	Mostra a data do início da quarta estação
+
+--seasons=4H
+	Mostra a hora (no formato HH:MM:SS) do início da quarta estação
+
+--seasons=OUTD
+	Data de início do próximo Outono
+
+--seasons=OUTH
+	Hora de início do próximo Outono
+
+--seasons=INVD
+	Data de início do próximo Inverno
+
+--seasons=INVH
+	Hora de início do próximo Inverno
+
+--seasons=PRID
+	Data de início da próxima Primavera
+
+--seasons=PRIH
+	Hora de início da próxima Primavera
+
+--seasons=VERD
+	Data de início do próximo Verão
+
+--seasons=VERH
+	Hora de início do próximo Verão
+
+
+Para informações sobre os serviços e suas opções digite:
+
+brweather --help-open
+brweather --help-default
+
+Para maiores informações, consulte o manual, digitando a opção:
+brweather --man
+
+Ou visite o blog oficial do projeto:
+http://brweatherproject.blogspot.com/

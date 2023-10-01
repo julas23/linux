@@ -1,0 +1,11 @@
+# D I S C O S
+${font DejaVu Sans:bold:size=12}${color0}Disks 3 [80-500-1000]${font}${color}
+${color3}${diskiograph /dev/sda  10,50}${GOTO 90}/dev/sda${GOTO 180}${diskio /dev/sda}${color}
+Windows:${GOTO 135}${fs_used /windows}${GOTO 220}${fs_bar 10,125 /windows}
+Jogos:${GOTO 135}${fs_used /jogos}${GOTO 220}${fs_bar 10,125 /jogos}
+${color3}${diskiograph /dev/sdb  10,50}${GOTO 90}/dev/sdb${GOTO 180}${diskio /dev/sdb}${color}
+System:${GOTO 135}${fs_used /}${GOTO 220}${fs_bar 10,125 /}
+Home:${GOTO 135}${fs_used /home}${GOTO 220}${fs_bar 10,125 /home}
+Swap:${GOTO 135}${swap}${GOTO 220}${swapbar 10,125}
+${color3}${diskiograph /dev/sdc  10,50}${GOTO 90}/dev/sdc${GOTO 180}${diskio /dev/sdc}${color}
+Julas:${GOTO 135}${fs_used /julas}${GOTO 220}${fs_bar 10,125 /julas}

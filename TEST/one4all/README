@@ -1,0 +1,15 @@
+one4all README
+
+This is a one LUA script to run all LUA scripts.
+You don't need to know LUA or scripting to merge different scripts to have them all working for you.
+Only thing you must to do is to copy what you want from "modules/available" directory to "modules/active" directory, and then configure every one module in "modules/active" directory for you needs.
+
+Couple of rules thought:
+1) You must start this Conky LUA by "one4all-start.sh" - just type it in terminal or add it to session startup;
+2) You may copy this same module from "modules/available" to "modules/active" directory as many time as you wish - just change it's filename;
+3) Characters allowed in module names are letters ("[a-zA-Z]"), numbers ("[0-9]"), dot (".") and underscore ("_");
+3) Module filename must have ".module" extension;
+3) You allowed to change settings part of module only - if you change anything else it may break;
+
+Have a fun.
+

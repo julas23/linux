@@ -1,0 +1,95 @@
+#!/bin/bash
+# BrWeather
+# Criado por LeandroNKZ <leandronkz@gmail.com>
+# Se encontrar BUGs, ou erros no programa, favor reportar ao desenvolvedor
+# Acesse o site para maiores instruções:
+# http://brweatherproject.blogspot.com/
+# Distribuído sob licença GPLv3
+
+ALT=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/min\042/){print$(i+1)}}}')
+AHT=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/max\042/){print$(i+1)}}}')
+APA=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/pressure\042/){print$(i+1)}}}')
+AUM=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/humidity\042/){print$(i+1)}}}')
+AWS=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/speed\042/){print$(i+1)}}}')
+ACA=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/"clouds\042/){print$(i+1)}}}')
+
+D3=$(grep -m1 $(date -d "2 day" "+%a") ~/.brweather/cache/open2 | tail -n1)
+DAY3=$(echo $D3 | cut -f2 -d':')
+
+D4=$(grep -m1 $(date -d "3 day" "+%a") ~/.brweather/cache/open2 | tail -n1)
+DAY4=$(echo $D4 | cut -f2 -d':')
+
+D5=$(grep -m1 $(date -d "4 day" "+%a") ~/.brweather/cache/open2 | tail -n1)
+DAY5=$(echo $D5 | cut -f2 -d':')
+
+D6=$(grep -m1 $(date -d "5 day" "+%a") ~/.brweather/cache/open2 | tail -n1)
+DAY6=$(echo $D6 | cut -f2 -d':')
+
+D7=$(grep -m5 $(date -d "6 day" "+%a") ~/.brweather/cache/open2 | tail -n1)
+DAY7=$(echo $D7 | cut -f2 -d':')
+
+case $1 in
+"--option=Day3") echo $DAY3
+;;
+"--option=LT3") printf "%.0f\n" $(echo $D3 | $ALT | sed 's/\./,/ ; s/}//g')
+;;
+"--option=HT3") printf "%.0f\n" $(echo $D3 | $AHT | sed 's/\./,/ ; s/}//g')
+;;
+"--option=PA3") echo $D3 | $APA | sed 's/}//g'
+;;
+"--option=umid3") echo $D3 | $AUM | sed 's/}//g'
+;;
+"--option=CLD3") echo $D3 | $ACA | sed 's/}//g'
+;;
+"--option=Day4") echo $DAY4
+;;
+"--option=LT4") printf "%.0f\n" $(echo $D4 | $ALT | sed 's/\./,/ ; s/}//g')
+;;
+"--option=HT4") printf "%.0f\n" $(echo $D4 | $AHT | sed 's/\./,/ ; s/}//g')
+;;
+"--option=PA4") echo $D4 | $APA | sed 's/}//g'
+;;
+"--option=umid4") echo $D4 | $AUM | sed 's/}//g'
+;;
+"--option=CLD4") echo $D4 | $ACA | sed 's/}//g'
+;;
+"--option=Day5") echo $DAY5
+;;
+"--option=LT5") printf "%.0f\n" $(echo $D5 | $ALT | sed 's/\./,/ ; s/}//g')
+;;
+"--option=HT5") printf "%.0f\n" $(echo $D5 | $AHT | sed 's/\./,/ ; s/}//g')
+;;
+"--option=PA5") echo $D5 | $APA | sed 's/}//g'
+;;
+"--option=umid5") echo $D5 | $AUM | sed 's/}//g'
+;;
+"--option=CLD5") echo $D5 | $ACA | sed 's/}//g'
+;;
+"--option=Day6") echo $DAY6
+;;
+"--option=LT6") printf "%.0f\n" $(echo $D6 | $ALT | sed 's/\./,/ ; s/}//g')
+;;
+"--option=HT6") printf "%.0f\n" $(echo $D6 | $AHT | sed 's/\./,/ ; s/}//g')
+;;
+"--option=PA6") echo $D6 | $APA | sed 's/}//g'
+;;
+"--option=umid6") echo $D6 | $AUM | sed 's/}//g'
+;;
+"--option=CLD6") echo $D6 | $ACA | sed 's/}//g'
+;;
+"--option=Day7") echo $DAY7
+;;
+"--option=LT7") printf "%.0f\n" $(echo $D7 | $ALT | sed 's/\./,/ ; s/}//g')
+;;
+"--option=HT7") printf "%.0f\n" $(echo $D7 | $AHT | sed 's/\./,/ ; s/}//g')
+;;
+"--option=PA7") echo $D7 | $APA | sed 's/}//g'
+;;
+"--option=umid7") echo $D7 | $AUM | sed 's/}//g'
+;;
+"--option=CLD7") echo $D7 | $ACA | sed 's/}//g ; s/]//g'
+;;
+"--option"*) echo "Opção inválida.
+Experimente --help para mais informações."
+;;
+esac

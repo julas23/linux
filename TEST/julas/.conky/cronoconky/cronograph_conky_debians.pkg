@@ -1,0 +1,223 @@
+#!/bin/bash
+#
+# _________        ____  ____________         _______ ___________________
+# ______  /__________  |/ /___  ____/________ ___    |__  ____/___  ____/
+# _  __  / __  ___/__    / ______ \  ___  __ \__  /| |_  /     __  __/
+# / /_/ /  _  /    _    |   ____/ /  __  /_/ /_  ___ |/ /___   _  /___
+# \__,_/   /_/     /_/|_|  /_____/   _  .___/ /_/  |_|\____/   /_____/
+#                                    /_/           drxspace@gmail.com
+#
+
+WIZDIR="$(cd "$(dirname "$0")" && pwd)"
+
+CONKYDIR=/opt
+CRONODIR="cronograph_blk"
+CRONOFONTSDIR="/usr/share/fonts/truetype/ttf-cronograph"
+
+THISAPPNAME="Cronograph Station BLK"
+THISAPPVER=$(cat "${WIZDIR}"/"${CRONODIR}"/.version)
+THISAPPBLD=$(cat "${WIZDIR}"/"${CRONODIR}"/.build)
+
+okay () {
+	local okay_x_col=$(($(tput cols)-8))
+	echo -e "\r\033[${okay_x_col}C\e[104;97m[  OK  ]\e[0m"
+}
+
+error () {
+	local okay_x_col=$(($(tput cols)-8))
+	echo -e "\r\033[${okay_x_col}C\e[101;97m[ ERR  ]\e[0m"
+}
+
+installApp () {
+	case $1 in
+	-i) # Install
+		echo -e "\nInstalling “${THISAPPNAME}”"
+		echo -en "Coping directory "${WIZDIR}"/"${CRONODIR}" to "${CONKYDIR}"/"
+		sudo mkdir -p "${CONKYDIR}/"/"${CRONODIR}"/ 2>/dev/null && \
+			sudo cp -r "${WIZDIR}"/"${CRONODIR}"/ "${CONKYDIR}"/ 2>/dev/null && \
+			sudo chmod 0755 "${CONKYDIR}/"/"${CRONODIR}" 2>/dev/null && \
+		okay || error
+	;;
+	-r) # Reinstall
+		echo -en "\nShutting down conky..."
+		pkill -SIGTERM -o -x -f "^conky.*cronorc$" &>/dev/null && okay || error
+		echo -en "Removing directory "${CONKYDIR}"/"${CRONODIR}""
+		sudo rm -rf "${CONKYDIR}"/"${CRONODIR}"/ 2>/dev/null && okay || error
+		echo -en "Coping directory "${WIZDIR}"/"${CRONODIR}" to "${CONKYDIR}"/"
+		sudo cp -r "${WIZDIR}"/"${CRONODIR}"/ "${CONKYDIR}"/ 2>/dev/null && \
+			sudo chmod 0755 "${CONKYDIR}/"/"${CRONODIR}" 2>/dev/null && \
+		okay || error
+	;;
+	-u) # Upgrade
+		echo -en "Backing up previous version"
+		cd "${CONKYDIR}"/  && \
+			tar czf /tmp/"${CRONODIR}"_$(cat "${CONKYDIR}"/"${CRONODIR}"/.build).tar.gz "${CRONODIR}"/ &>/dev/null && \
+		okay || error
+		installApp -r
+	;;
+	esac
+}
+
+finale () {
+	case $1 in
+	0)
+		echo -e "\nThank you for using this wizard.
+Have fun, love and joy ...and don't forget... anything else...
+\033[1mput it on the weather\033[0m :-)" && sleep 6
+	;;
+	1|2|4)
+		echo -e "\nBye!" && sleep 1
+	;;
+	3)
+		echo -e "\nThere's an error in the installation process..." 1>&2 && sleep 4
+	;;
+	esac
+
+	exit $1
+}
+
+# MAIN script starts here
+clear
+
+echo -e "          \e[37;44m┌────────────────────────────────────────────────────────────────────────╖\e[0m          "
+echo -e "          \e[37;44m│                                                                        ║\e[0m          "
+echo -e "          \e[37;44m│                        \e[1;37;44m${THISAPPNAME^^}\e[0;37;44m                          ║\e[0m          "
+echo -e "          \e[37;44m│                           ver. \e[1;31;44m${THISAPPVER}-${THISAPPBLD}\e[0;37;44m                              ║\e[0m          "
+echo -e "          \e[37;44m│                                                                        ║\e[0m          "
+echo -e "          \e[37;44m│                         \e[1;33;44mINSTALLATION WIZARD\e[0;37;44m                            ║\e[0m          "
+echo -e "          \e[37;44m│                    \e[3;94;44mfor Debian based distribution\e[0;37;44m                       ║\e[0m          "
+echo -e "          \e[37;44m│                                                                        ║\e[0m          "
+echo -e "          \e[37;44m╘════════════════════════════════════════════════════════════════════════╝\e[0m          "
+tput sgr0 2>/dev/null
+
+echo -e "\nThis wizard will help you install the “${THISAPPNAME}”
+conky on your computer."
+read -p "Do you want to continue? [Y/n] " ANS
+[[ ${ANS:-Y} != [Yy] ]] && finale 1
+
+# Building needed packages list
+NeedPackages=""
+[[ -x $(which conky) ]] || NeedPackages="conky-all "
+[[ -x $(which curl) ]] || NeedPackages=$NeedPackages"curl "
+[[ -x $(which hddtemp) ]] || NeedPackages=$NeedPackages"hddtemp "
+# conky-all package includes lualib ...but
+#[[ -x $(which lua5.3) ]] || NeedPackages=$NeedPackages"lua5.3 "
+[[ -x $(which sensors) ]] || NeedPackages=$NeedPackages"lm-sensors"
+
+echo -e "\nFollowing processes requires root user privileges.
+Requesting now root access if we don't already have it..."
+sudo -v || finale 3
+
+if [[ $NeedPackages ]]; then
+	echo -e "\nFirst we need to install some packages.
+Packages that would be installed are: \033[1m$NeedPackages\033[0m"
+	read -p "Do you want to continue? [Y/n] " ANS
+	[[ ${ANS:-Y} != [Yy] ]] && finale 2
+	sudo echo -e "Installing needed packages. Please wait..." || finale 3
+	sudo apt-get -qq install --no-install-recommends $NeedPackages 2>/dev/null || finale 3
+fi
+
+# Setting the hddtemp service to run as daemon and start the daemon
+if [[ $(grep '^RUN_DAEMON.*"false"' /etc/default/hddtemp) ]]; then
+	echo -e "\nFor the HDD temperature meter to work we need to set the
+hddtemp service to run as daemon otherwise you'll get a N/A message."
+	read -p "Do you want to install the hddtemp service as daemon? [Y/n] " ANS
+	if [[ ${ANS:-Y} == [Yy] ]]; then
+		echo -en "Install the hddtemp service as daemon..."
+		{
+			sudo sed -i '/RUN_DAEMON/s/false/true/' /etc/default/hddtemp &>/dev/null;
+			sudo service hddtemp restart 2>/dev/null;
+		} && okay || error
+	fi
+fi
+
+# Reinstall or upgrade an already installed version
+if [[ -d "${CONKYDIR}"/"${CRONODIR}"/ ]]; then
+	if [[ ${THISAPPBLD} -eq $(cat "${CONKYDIR}"/"${CRONODIR}"/.build) ]]; then
+		echo -e "\nSeems that a build of this conky is already installed and it's current."
+		read -p "Do you want to reinstall it? [y/N] " ANS
+		[[ ${ANS:-N} != [yY] ]] && finale 4
+		installApp -r
+	elif [[ ${THISAPPBLD} -gt $(cat "${CONKYDIR}"/"${CRONODIR}"/.build) ]]; then
+		echo -e "\nSeems that an older build of this conky is already installed.
+If you choose to upgrade your version, the previous version will be
+backed up to a file called “${CRONODIR}_$(cat "${CONKYDIR}"/"${CRONODIR}"/.build).tar.gz” and placed
+inside the /tmp directory."
+		read -p "Do you want to upgrade your version? [Y/n] " ANS
+		[[ ${ANS:-Y} != [Yy] ]] && finale 5
+		installApp -u
+	fi
+else # New installation
+	installApp -i
+fi
+
+### ADDITIONAL TASKS
+
+# Configuring temperature
+echo -e "\nChoose the desired output unit of all the objects displaying a temperature.
+Parameters are either “celsius” or “fahrenheit”.
+The default unit is degree Celsius."
+read -p "Celsius or Fahrenheit? [C/f] " ANS
+echo -en "Setting the temperature unit..."
+if [[ ${ANS:-C} == [Ff] ]]; then
+	{
+		sudo sed -i 's/^--temperature_unit/temperature_unit/' "${CONKYDIR}"/"${CRONODIR}"/cronorc 2>/dev/null;
+		sudo sed -i 's/^#temperature_unit/temperature_unit/' "${CONKYDIR}"/"${CRONODIR}"/yahooweather/forecasts.sh 2>/dev/null;
+	} && okay || error
+fi
+
+# Installing application's icon...
+echo -en "\nInstaling the “${THISAPPNAME}” icon..."
+sudo cp -f "${WIZDIR}"/icons/cronograph256x256.png /usr/share/pixmaps/cronograph.png 2>/dev/null && okay || error
+
+# Installing needed truetype weather fonts... anyway
+#if [[ -z $(fc-list | grep ConkyWeather) ]]; then
+echo -e "\nFor this conky to work properly we have to install some truetype fonts."
+echo -en "Coping fonts. Please wait..."
+sudo mkdir -p "${CRONOFONTSDIR}/" && sudo chmod 0755 "${CRONOFONTSDIR}/" && \
+	sudo cp -f "${WIZDIR}"/ttf-cronograph/* "${CRONOFONTSDIR}/" 2>/dev/null && \
+okay || error
+if [[ ! -f "$HOME"/.config/fontconfig/fonts.conf ]] && [[ ! -f "$HOME"/.fonts.conf ]]; then
+	echo -e "\nFont configuration files aren't present."
+	echo -e "For this conky to show its elements aligned in the right position
+we should provide one."
+	read -p "Do you want to create a font configuration file? [Y/n] " ANS
+	[[ ${ANS:-Y} == [Yy] ]] && {
+		echo -en "Creating font configuration file. Please wait..."
+		mkdir -p "$HOME"/.config/fontconfig/ && chmod 0755 "$HOME"/.config/fontconfig/ && \
+			cp -f "${WIZDIR}"/fontconfig/fonts.conf "$HOME"/.config/fontconfig/ 2>/dev/null && \
+		okay || error
+	}
+fi
+echo -en "Building font information cache files. Please wait..."
+fc-cache "${CRONOFONTSDIR}" &>/dev/null && okay || error
+#fi
+
+# Creating links for commands to control the conky
+echo -en "Creating links for commands to control the conky...";
+{
+	sudo ln -fs /opt/cronograph_blk/start_crono.sh /usr/local/bin/start_crono 2>/dev/null;
+	sudo ln -fs /opt/cronograph_blk/restart_crono.sh /usr/local/bin/restart_crono 2>/dev/null;
+	sudo ln -fs /opt/cronograph_blk/stop_crono.sh /usr/local/bin/stop_crono 2>/dev/null;
+} && okay || error
+
+# Add this conky to the Startup Applications list
+echo -en "\nCopying “${THISAPPNAME}” to the Applications directory..."
+{ [[ -d /usr/share/applications/ ]] && sudo cp -f "${WIZDIR}"/cronograph_conky.desktop /usr/share/applications 2>/dev/null && okay; } || error
+
+echo -e "\nIt's essential to add this conky to the Startup Applications list
+in order to start automatically each time we login to our system."
+read -p "Do you want to add this conky to the Startup Applications list? [Y/n] " ANS
+[[ ${ANS:-Y} == [Yy] ]] && {
+	echo -en "Setting “${THISAPPNAME}” as a Startup Application...";
+	mkdir -p "$HOME"/.config/autostart/ && chmod 0755 "$HOME"/.config/autostart/ && \
+		cp -f "${WIZDIR}"/cronograph_conky.desktop "$HOME"/.config/autostart/cronograph_conky.desktop 2>/dev/null && \
+	okay || error
+}
+
+# Cleaning up old messy
+[[ -f /etc/xdg/autostart/cronograph_conky.desktop ]] && sudo rm -f /etc/xdg/autostart/cronograph_conky.desktop
+
+echo -e "\nIt's \033[1mhighly recommended\033[0m to logout and log back in." && sleep 2
+
+finale 0

@@ -1,0 +1,488 @@
+#!/bin/bash
+# BRWeather - Fases da lua
+# Criado por LeandroNKZ <leandronkz@gmail.com>
+# Se encontrar BUGs, ou erros no programa, favor reportar ao desenvolvedor
+# Acesse o site para maiores instruções:
+# http://brweatherproject.blogspot.com/
+# Distribuído sob licença GPLv3
+
+#Ano atual
+YEAR=`date "+%Y"`
+
+#Mensagem de erro
+ERRO(){ 
+LOG=`date "+%A %d/%m/%Y %H:%M:%S"`
+echo "Erro."
+echo "Log $LOG COD#`date +%s`
+
+Falha no utilitário moon
+O ano $YEAR não consta no bando de dados. 
+Contate o desenvolvedor pelo e-mail abaixo:
+leandronkz@gmail.com" > ~/.brweather/log
+exit 1
+}
+
+cat $DIRNAME/doc/luas/$YEAR &>/dev/null || ERRO
+
+#Dados
+DATE=`date "+%d %h"`
+LUA=`grep -i "$DATE" $DIRNAME/doc/luas/$YEAR | cut -f2 -d'#'`
+
+#Imagens
+IMAGE=`echo '${image'`
+
+#Lua 1 (hoje)
+case $LUA in
+"0NO")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/0.png $*}"`
+	LUA1T=`echo "Nova"`
+	LUA1=`echo "Nov"`
+	LUA1F=`echo " "`
+	LUA1f=`echo " "`
+;;
+"1NO")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/1.png $*}"`
+	LUA1T=`echo "Nova"`
+	LUA1=`echo "Nov"`
+	LUA1F=`echo " "`
+	LUA1f=`echo " "`
+;;
+"2NO")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/2.png $*}"`
+	LUA1T=`echo "Nova"`
+	LUA1=`echo "Nov"`
+	LUA1F=`echo "A"`
+	LUA1f=`echo "a"`
+;;
+"3NO")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/3.png $*}"`
+	LUA1T=`echo "Nova"`
+	LUA1=`echo "Nov"`
+	LUA1F=`echo "B"`
+	LUA1f=`echo "b"`
+;;
+"4NO")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/4.png $*}"`
+	LUA1T=`echo "Nova"`
+	LUA1=`echo "Nov"`
+	LUA1F=`echo "C"`
+	LUA1f=`echo "c"`
+;;
+"5NO")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/5.png $*}"`
+	LUA1T=`echo "Nova"`
+	LUA1=`echo "Nov"`
+	LUA1F=`echo "D"`
+	LUA1f=`echo "d"`
+;;
+"6NO")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/6.png $*}"`
+	LUA1T=`echo "Nova"`
+	LUA1=`echo "Nov"`
+	LUA1F=`echo "D"`
+	LUA1f=`echo "d"`
+;;
+"7NO")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/7.png $*}"`
+	LUA1T=`echo "Nova"`
+	LUA1=`echo "Nov"`
+	LUA1F=`echo "E"`
+	LUA1f=`echo "e"`
+;;
+"8NO")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/8.png $*}"`
+	LUA1T=`echo "Nova"`
+	LUA1=`echo "Nov"`
+	LUA1F=`echo "E"`
+	LUA1f=`echo "e"`
+;;
+"0CR")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/2CR/0.png $*}"`
+	LUA1T=`echo "Crescente"`
+	LUA1=`echo "Cre"`
+	LUA1F=`echo "F"`
+	LUA1f=`echo "f"`
+;;
+"1CR")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/2CR/1.png $*}"`
+	LUA1T=`echo "Crescente"`
+	LUA1=`echo "Cre"`
+	LUA1F=`echo "G"`
+	LUA1f=`echo "g"`
+;;
+"2CR")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/2CR/2.png $*}"`
+	LUA1T=`echo "Crescente"`
+	LUA1=`echo "Cre"`
+	LUA1F=`echo "G"`
+	LUA1f=`echo "g"`
+;;
+"3CR")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/2CR/3.png $*}"`
+	LUA1T=`echo "Crescente"`
+	LUA1=`echo "Cre"`
+	LUA1F=`echo "H"`
+	LUA1f=`echo "h"`
+;;
+"4CR")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/2CR/4.png $*}"`
+	LUA1T=`echo "Crescente"`
+	LUA1=`echo "Cre"`
+	LUA1F=`echo "H"`
+	LUA1f=`echo "h"`
+;;
+"5CR")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/2CR/5.png $*}"`
+	LUA1T=`echo "Crescente"`
+	LUA1=`echo "Cre"`
+	LUA1F=`echo "I"`
+	LUA1f=`echo "i"`
+;;
+"6CR")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/2CR/6.png $*}"`
+	LUA1T=`echo "Crescente"`
+	LUA1=`echo "Cre"`
+	LUA1F=`echo "J"`
+	LUA1f=`echo "j"`
+;;
+"7CR")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/2CR/7.png $*}"`
+	LUA1T=`echo "Crescente"`
+	LUA1=`echo "Cre"`
+	LUA1F=`echo "K"`
+	LUA1f=`echo "k"`
+;;
+"8CR")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/2CR/8.png $*}"`
+	LUA1T=`echo "Crescente"`
+	LUA1=`echo "Cre"`
+	LUA1F=`echo "L"`
+	LUA1f=`echo "l"`
+;;
+"0CH")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/3CH/0.png $*}"`
+	LUA1T=`echo "Cheia"`
+	LUA1=`echo "Che"`
+	LUA1F=`echo "M"`
+	LUA1f=`echo "m"`
+;;
+"1CH")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/3CH/1.png $*}"`
+	LUA1T=`echo "Cheia"`
+	LUA1=`echo "Che"`
+	LUA1F=`echo "N"`
+	LUA1f=`echo "n"`
+;;
+"2CH")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/3CH/2.png $*}"`
+	LUA1T=`echo "Cheia"`
+	LUA1=`echo "Che"`
+	LUA1F=`echo "O"`
+	LUA1f=`echo "o"`
+;;
+"3CH")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/3CH/3.png $*}"`
+	LUA1T=`echo "Cheia"`
+	LUA1=`echo "Che"`
+	LUA1F=`echo "O"`
+	LUA1f=`echo "o"`
+;;
+"4CH")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/3CH/4.png $*}"`
+	LUA1T=`echo "Cheia"`
+	LUA1=`echo "Che"`
+	LUA1F=`echo "P"`
+	LUA1f=`echo "p"`
+;;
+"5CH")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/3CH/5.png $*}"`
+	LUA1T=`echo "Cheia"`
+	LUA1=`echo "Che"`
+	LUA1F=`echo "Q"`
+	LUA1f=`echo "q"`
+;;
+"6CH")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/3CH/6.png $*}"`
+	LUA1T=`echo "Cheia"`
+	LUA1=`echo "Che"`
+	LUA1F=`echo "R"`
+	LUA1f=`echo "r"`
+;;
+"7CH")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/3CH/7.png $*}"`
+	LUA1T=`echo "Cheia"`
+	LUA1=`echo "Che"`
+	LUA1F=`echo "S"`
+	LUA1f=`echo "s"`
+;;
+"8CH")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/3CH/8.png $*}"`
+	LUA1T=`echo "Cheia"`
+	LUA1=`echo "Che"`
+	LUA1F=`echo "S"`
+	LUA1f=`echo "s"`
+;;
+"0MI")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/4MI/0.png $*}"`
+	LUA1T=`echo "Minguante"`
+	LUA1=`echo "Min"`
+	LUA1F=`echo "T"`
+	LUA1f=`echo "t"`
+;;
+"1MI")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/4MI/1.png $*}"`
+	LUA1T=`echo "Minguante"`
+	LUA1=`echo "Min"`
+	LUA1F=`echo "U"`
+	LUA1f=`echo "u"`
+;;
+"2MI")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/4MI/2.png $*}"`
+	LUA1T=`echo "Minguante"`
+	LUA1=`echo "Min"`
+	LUA1F=`echo "V"`
+	LUA1f=`echo "v"`
+;;
+"3MI")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/4MI/3.png $*}"`
+	LUA1T=`echo "Minguante"`
+	LUA1=`echo "Min"`
+	LUA1F=`echo "W"`
+	LUA1f=`echo "w"`
+;;
+"4MI")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/4MI/4.png $*}"`
+	LUA1T=`echo "Minguante"`
+	LUA1=`echo "Min"`
+	LUA1F=`echo "X"`
+	LUA1f=`echo "x"`
+;;
+"5MI")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/4MI/5.png $*}"`
+	LUA1T=`echo "Minguante"`
+	LUA1=`echo "Min"`
+	LUA1F=`echo "Y"`
+	LUA1f=`echo "y"`
+;;
+"6MI")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/4MI/6.png $*}"`
+	LUA1T=`echo "Minguante"`
+	LUA1=`echo "Min"`
+	LUA1F=`echo "Y"`
+	LUA1f=`echo "y"`
+;;
+"7MI")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/4MI/7.png $*}"`
+	LUA1T=`echo "Minguante"`
+	LUA1=`echo "Min"`
+	LUA1F=`echo "Z"`
+	LUA1f=`echo "z"`
+;;
+"8MI")
+	LUA1I=`echo "$IMAGE $DIRNAME/imagens/moon/4MI/8.png $*}"`
+	LUA1T=`echo "Minguante"`
+	LUA1=`echo "Min"`
+	LUA1F=`echo "Z"`
+	LUA1f=`echo "z"`
+;;
+esac
+
+
+#Proximas fases
+case $LUA1T in
+"Nova")
+	LUAD2=`grep -A 30 "$DATE" $DIRNAME/doc/luas/$YEAR | grep "CR" | head -n1 | cut -f1 -d'#'`
+	LUA2T=`echo "Crescente"`
+	LUA2=`echo "Cre"`
+	LUAD3=`grep -A 30 "$DATE" $DIRNAME/doc/luas/$YEAR | grep "CH" | head -n1 | cut -f1 -d'#'`
+	LUA3T=`echo "Cheia"`
+	LUA3=`echo "Che"`
+	LUAD4=`grep -A 30 "$DATE" $DIRNAME/doc/luas/$YEAR | grep "MI" | head -n1 | cut -f1 -d'#'`
+	LUA4T=`echo "Minguante"`
+	LUA4=`echo "Min"`
+;;
+"Crescente")
+	LUAD2=`grep -A 30 "$DATE" $DIRNAME/doc/luas/$YEAR | grep "CH" | head -n1 | cut -f1 -d'#'`
+	LUA2T=`echo "Cheia"`
+	LUA2=`echo "Che"`
+	LUAD3=`grep -A 30 "$DATE" $DIRNAME/doc/luas/$YEAR | grep "MI" | head -n1 | cut -f1 -d'#'`
+	LUA3T=`echo "Minguante"`
+	LUA3=`echo "Min"`
+	LUAD4=`grep -A 30 "$DATE" $DIRNAME/doc/luas/$YEAR | grep "NO" | head -n1 | cut -f1 -d'#'`
+	LUA4T=`echo "Nova"`
+	LUA4=`echo "Nov"`
+;;
+"Cheia")
+	LUAD2=`grep -A 30 "$DATE" $DIRNAME/doc/luas/$YEAR | grep "MI" | head -n1 | cut -f1 -d'#'`
+	LUA2T=`echo "Minguante"`
+	LUA2=`echo "Min"`
+	LUAD3=`grep -A 30 "$DATE" $DIRNAME/doc/luas/$YEAR | grep "NO" | head -n1 | cut -f1 -d'#'`
+	LUA3T=`echo "Nova"`
+	LUA3=`echo "Nov"`
+	LUAD4=`grep -A 30 "$DATE" $DIRNAME/doc/luas/$YEAR | grep "CR" | head -n1 | cut -f1 -d'#'`
+	LUA4T=`echo "Crescente"`
+	LUA4=`echo "Cre"`
+;;
+"Minguante")
+	LUAD2=`grep -A 30 "$DATE" $DIRNAME/doc/luas/$YEAR | grep "NO" | head -n1 | cut -f1 -d'#'`
+	LUA2T=`echo "Nova"`
+	LUA2=`echo "Nov"`
+	LUAD3=`grep -A 30 "$DATE" $DIRNAME/doc/luas/$YEAR | grep "CR" | head -n1 | cut -f1 -d'#'`
+	LUA3T=`echo "Crescente"`
+	LUA3=`echo "Cre"`
+	LUAD4=`grep -A 30 "$DATE" $DIRNAME/doc/luas/$YEAR | grep "CH" | head -n1 | cut -f1 -d'#'`
+	LUA4T=`echo "Cheia"`
+	LUA4=`echo "Che"`
+;;
+esac
+
+#Imagens menores (próximas fases)
+case $LUA2T in
+"Nova")
+	LUAI2=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/0.png $* }"`
+	LUA2F=`echo " "`
+	LUA2f=`echo " "`
+;;
+"Crescente")
+	LUAI2=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/6.png $* }"`
+	LUA2F=`echo "E"`
+	LUA2f=`echo "e"`
+;;
+"Cheia")
+	LUAI2=`echo "$IMAGE $DIRNAME/imagens/moon/3CH/1.png $* }"`
+	LUA2F=`echo "M"`
+	LUA2f=`echo "m"`
+;;
+"Minguante")
+	LUAI2=`echo "$IMAGE $DIRNAME/imagens/moon/4MI/3.png $* }"`
+	LUA2F=`echo "V"`
+	LUA2f=`echo "v"`
+;;
+esac
+
+case $LUA3T in
+"Nova")
+	LUAI3=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/0.png $* }"`
+	LUA3F=`echo " "`
+	LUA3f=`echo " "`
+;;
+"Crescente")
+	LUAI3=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/6.png $* }"`
+	LUA3F=`echo "E"`
+	LUA3f=`echo "e"`
+;;
+"Cheia")
+	LUAI3=`echo "$IMAGE $DIRNAME/imagens/moon/3CH/1.png $* }"`
+	LUA3F=`echo "M"`
+	LUA3f=`echo "m"`
+;;
+"Minguante")
+	LUAI3=`echo "$IMAGE $DIRNAME/imagens/moon/4MI/3.png $* }"`
+	LUA3F=`echo "V"`
+	LUA3f=`echo "v"`
+;;
+esac
+
+case $LUA4T in
+"Nova")
+	LUAI4=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/0.png $* }"`
+	LUA4F=`echo " "`
+	LUA4f=`echo " "`
+;;
+"Crescente")
+	LUAI4=`echo "$IMAGE $DIRNAME/imagens/moon/1NO/6.png $* }"`
+	LUA4F=`echo "E"`
+	LUA4f=`echo "e"`
+;;
+"Cheia")
+	LUAI4=`echo "$IMAGE $DIRNAME/imagens/moon/3CH/1.png $* }"`
+	LUA4F=`echo "M"`
+	LUA4f=`echo "m"`
+;;
+"Minguante")
+	LUAI4=`echo "$IMAGE $DIRNAME/imagens/moon/4MI/3.png $* }"`
+	LUA4F=`echo "V"`
+	LUA4f=`echo "v"`
+;;
+esac
+
+
+
+# Opções
+case $1 in
+##Lua da hoje
+"--option=LUA1") echo $LUA1
+;;
+##Lua de hoje, por extenso
+"--option=LUA1T") echo $LUA1T
+;;
+##Próxima fase
+"--option=LUA2") echo $LUA2
+;;
+##Próxima fase, por extenso
+"--option=LUA2T") echo $LUA2T
+;;
+##Terceira fase
+"--option=LUA3") echo $LUA3
+;;
+##Terceira fase, por extenso
+"--option=LUA3T") echo $LUA3T
+;;
+##Quarta fase
+"--option=LUA4") echo $LUA4
+;;
+##Quarta fase, por extenso
+"--option=LUA4T") echo $LUA4T
+;;
+##Imagem Fase atual
+"--option=LUA1I") echo $LUA1I
+;;
+##Fase atual, ícone 1
+"--option=LUA1F") echo $LUA1F
+;;
+##Fase atual, ícone 2
+"--option=LUA1f") echo $LUA1f
+;;
+##Imagem segunda fase
+"--option=LUA2I") echo $LUAI2
+;;
+##Segunda fase, ícone 1
+"--option=LUA2F") echo $LUA2F
+;;
+##Segunda fase, ícone 2
+"--option=LUA2f") echo $LUA2f
+;;
+##Imagem, terceira fase
+"--option=LUA3I") echo $LUAI3
+;;
+##Terceira fase, ícone 1
+"--option=LUA3F") echo $LUA3F
+;;
+##Tercira fase, ícone 2
+"--option=LUA3f") echo $LUA3f
+;;
+##Imagem, quarta fase
+"--option=LUA4I") echo $LUAI4
+;;
+##Quarta fase, ícone 1
+"--option=LUA4F") echo $LUA4F
+;;
+##Quarta fase, ícone 2
+"--option=LUA4f") echo $LUA4f
+;;
+##Data de hoje
+"--option=LUA1D") echo "$DATE"
+;;
+##Data da segunda fase
+"--option=LUA2D") echo $LUAD2
+;;
+##Data da terceira fase
+"--option=LUA3D") echo $LUAD3
+;;
+##Data da quarta fase
+"--option=LUA4D") echo $LUAD4
+;;
+*) echo "Opção inválida
+Experimente --help para mais informações."
+;;
+esac

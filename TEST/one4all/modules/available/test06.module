@@ -1,0 +1,30 @@
+ -- test06.module
+ 
+ local modname = ...
+ local M = {}
+ _G[modname] = M
+ package.loaded[modname] = M
+ 
+ 
+ 
+ 
+ --[[
+ ###############################################################################
+ ###                            MODULE MAIN LOOP                             ###
+ ###############################################################################
+ --]]
+ function M.main()
+ 	local _test = " # "
+ 	one4all_cairo.draw_box(cr, 0, 0, 400, 100, 0, "0xffffff", 1)
+ 	cairo_set_source_rgba(cr, one4all_cairo.rgb2rgba(0x000000, 1))
+ 	cairo_move_to(cr, 200, 10)
+ 	cairo_line_to(cr, 200, 90)
+ 	cairo_move_to(cr, 10, 50)
+ 	cairo_line_to(cr, 390, 50)
+ 	cairo_stroke(cr)
+ 	one4all_cairo.print_text(cr, 200, 50, _test .. "align right, bottom" .. _test, 0xff0000, 1, "DejaVu Sans Mono", 12, "normal", "bold", "right", "bottom")
+ 	one4all_cairo.print_text(cr, 200, 50, _test .. "align right, top" .. _test, 0xff0000, 1, "DejaVu Sans Mono", 12, "normal", "bold", "right", "top")
+ 	one4all_cairo.print_text(cr, 200, 50, _test .. "align left, bottom" .. _test, 0xff0000, 1, "DejaVu Sans Mono", 12, "normal", "bold", "left", "bottom")
+ 	one4all_cairo.print_text(cr, 200, 50, _test .. "align left, top" .. _test, 0xff0000, 1, "DejaVu Sans Mono", 12, "normal", "bold", "left", "top")
+ end
+

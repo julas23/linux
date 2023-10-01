@@ -1,0 +1,128 @@
+conky.config = {
+	background = false,
+	update_interval = 1,
+	total_run_times = 0,
+	net_avg_samples = 2,
+	override_utf8_locale = true,
+	double_buffer = true,
+	no_buffers = true,
+	text_buffer_size = 4096,
+	imlib_cache_size = 0,
+	temperature_unit = 'celsius',
+	own_window = true,
+	own_window_type = 'panel',
+	own_window_transparent = true,
+	own_window_hints = 'below,undecorated,sticky,skip_taskbar,skip_pager',
+	own_window_argb_visual = false,
+	own_window_argb_value = 255,
+	border_inner_margin = 0,
+	border_outer_margin = 0,
+	show_graph_scale = false,
+	show_graph_range = false,
+	maximum_width = 280,
+	xinerama_head = 3,
+	alignment = 'top_right',
+	gap_x = 0,
+	gap_y = 0,
+	draw_shades = false,
+	draw_outline = false,
+	draw_borders = false,
+	draw_graph_borders = true,
+	use_xft = true,
+	xftalpha = 1,
+	uppercase = false,
+	if_up_strictness = 'address',
+	use_spacer = 'right'
+}
+
+conky.text = [[
+${alignr}${font Bitstream:pixelsize=48}${time %H:%M}${font}
+${alignr}${font Bitstream:pixelsize=16}${time %a %d %b %Y}${font}
+${voffset -50}${goto 80}${font Bitstream:pixelsize=18}${color red}${exec myconky tmx}${font}${color}
+${goto 80}${font Bitstream:pixelsize=18}${color lightblue}${exec myconky tmn}${font}${color}
+${voffset 20}${font Mono:size=12}${color yellow}${goto 0}${exec myconky nd1}${goto 105}${exec myconky nd2}${goto 220}${exec myconky nd3}${color}${font}
+
+${voffset 35}${font Mono:size=12}${color}${goto 0}Seg${goto 40}Ter${goto 80}Qua${goto 120}Qui${goto 157}Sex${goto 197}${color orange}Sab${goto 237}Dom${color}${font}
+${goto 0}${font Mono:size=16}${color white}${execpi 1601 myconky ca1 |sed -n 1p}${color}${color orange}${execpi 1611 myconky ca2 |sed -n 1p}${color}${font}
+${goto 0}${font Mono:size=16}${color white}${execpi 1602 myconky ca1 |sed -n 2p}${color}${color orange}${execpi 1612 myconky ca2 |sed -n 2p}${color}${font}
+${goto 0}${font Mono:size=16}${color white}${execpi 1603 myconky ca1 |sed -n 3p}${color}${color orange}${execpi 1613 myconky ca2 |sed -n 3p}${color}${font}
+${goto 0}${font Mono:size=16}${color white}${execpi 1604 myconky ca1 |sed -n 4p}${color}${color orange}${execpi 1614 myconky ca2 |sed -n 4p}${color}${font}
+${goto 0}${font Mono:size=16}${color white}${execpi 1605 myconky ca1 |sed -n 5p}${color}${color orange}${execpi 1615 myconky ca2 |sed -n 5p}${color}${font}
+${goto 0}${font Mono:size=16}${color white}${execpi 1606 myconky ca1 |sed -n 6p}${color}${color orange}${execpi 1616 myconky ca2 |sed -n 6p}${color}${font}
+
+
+${voffset -35}${font Bitstream:pixelsize=10}
+USER@HOST:			${goto 85}${color orange}${exec myconky use}${color}
+UPTIME:				${goto 85}${color orange}${exec myconky upt}${color}
+DISTRO:				${goto 85}${color orange}${exec myconky dis}${color}
+KERNEL:				${goto 85}${color orange}${exec myconky ker}${color}
+ENVIRONM:			${goto 85}${color orange}${exec myconky env}${color}
+MANAGER:			${goto 85}${color orange}${exec myconky win}${color}
+THEME:				${goto 85}${color orange}${exec myconky the}${color}
+RESOLUTION:			${goto 85}${color orange}${exec myconky res}${color}
+MOBO:				${goto 85}${color orange}${exec myconky mbb}${exec myconky mob}${goto 180}${exec myconky stp}${alignr}${exec myconky sfr}${color}
+CASE:				${goto 85}${color orange}Full Tower XL ${goto 180}${exec myconky gab}${alignr}${color lightblue}${exec myconky tfr}${color}
+GPU:				${goto 85}${color orange}${exec myconky gpu}${color red}${alignr}${exec myconky gtp}${color}
+CPU:				${goto 85}${color orange}${exec myconky cpu}${goto 180}${color}${color red}${alignr}${exec myconky ctp}${color}
+${goto 85}Load:	${goto 180}${color orange}${cpu cpu0}%${alignr}${color}${cpubar cpu0 10,50}${color}
+${goto 85}Speed:${goto 180}${color orange}${freq_g 0}Ghz${alignr}${color}${cpugraph cpu0 10,50 859900 DC322F scale -t}${color}
+RAM 8x:			${goto 85}${color orange}${exec myconky msi}${goto 180}${exec myconky msp}Mhz${alignr}${exec myconky mty}${color}
+Use Bytes:		${goto 85}${color orange}${mem}${goto 180}${memperc}%${color}
+Free Bytes:		${goto 85}${color orange}${memfree}${goto 180}${memmax}${color}
+${voffset -25}	${alignr}${membar 10,50}
+${alignr}${memgraph 10,50 859900 DC322F scale -t}
+\${goto 85}${color orange} ${fs_free /} ${color}${goto 180}${color orange}${fs_size /}${color}${alignr}${fs_bar 10,50 /}
+
+SSD:${goto 85}Read: ${diskio_read /dev/sda}${goto 180}Write: ${diskio_write /dev/sda} ${alignr}IOPs: ${diskio /dev/sda}
+${diskiograph /dev/sda 10,278 859900 DC322F scale -t}
+/home${goto 85}${color orange} ${fs_free /home} ${color}${goto 180}${color orange}${fs_size /home}${color}${alignr}${fs_bar 10,50 /home}
+NVMe Raid: ${goto 85}Read: ${diskio_read /dev/nvme0n1}${goto 180}Write: ${diskio_write /dev/nvme0n1} ${alignr}IOPs: ${diskio /dev/nvme0n1}
+${diskiograph /dev/nvme0n1 10,278 859900 DC322F scale -t}
+${if_existing /sys/class/net/enp7s0/operstate up}
+LAN:${goto 28}${color orange}${if_existing /proc/net/route enp7s0}${addr enp7s0}${else}Desconectado${endif}${color}${goto 120}WAN:${goto 152}${color orange}${if_existing /proc/net/route enp7s0}${exec myconky pip}${else}Offline${endif}${color}
+UP:${goto 20}${upspeedgraph enp7s0 10,58 859900 DC322F scale -t}${goto 85} ${upspeed enp7s0} ${goto 128}DL:${goto 148}${downspeedgraph enp7s0 10,58 859900 DC322F scale -t}${goto 205} ${downspeed enp7s0}
+${else}${endif}${if_existing /sys/class/net/wlp6s0/operstate up}
+WLAN:${goto 36}${color orange}${if_existing /proc/net/route wlp6s0}${addr wlp6s0}${else}Desconectado${endif}${color}${goto 120}WAN:${goto 152}${color orange}${if_existing /proc/net/route wlp6s0}${exec myconky pip}${else}Offline${endif}${color}
+UP:${goto 20}${upspeedgraph wlp6s0 10,58 859900 DC322F scale -t}${goto 85} ${upspeed wlp6s0} ${goto 128}DL:${goto 148}${downspeedgraph wlp6s0 10,58 859900 DC322F scale -t}${goto 205} ${downspeed wlp6s0}${endif}${font Courier:pixelsize=10}
+${goto 30}${color}____CPU____
+${goto 10}${color ffffff}${top pid 1}${goto 65}${top name 1}${goto 160}${top cpu 1}${goto 210}${top user 1}
+${goto 10}${color dddddd}${top pid 2}${goto 65}${top name 2}${goto 160}${top cpu 2}${goto 210}${top user 2}
+${goto 10}${color bbbbbb}${top pid 3}${goto 65}${top name 3}${goto 160}${top cpu 3}${goto 210}${top user 3}
+${goto 10}${color 999999}${top pid 4}${goto 65}${top name 4}${goto 160}${top cpu 4}${goto 210}${top user 4}
+${goto 10}${color 777777}${top pid 5}${goto 65}${top name 5}${goto 160}${top cpu 5}${goto 210}${top user 5}
+${goto 30}${color}____RAM____
+${goto 10}${color ffffff}${top_mem pid 1}${goto 65}${top_mem name 1}${goto 180}${top mem_res 1}
+${goto 10}${color dddddd}${top_mem pid 2}${goto 65}${top_mem name 2}${goto 180}${top mem_res 2}
+${goto 10}${color bbbbbb}${top_mem pid 3}${goto 65}${top_mem name 3}${goto 180}${top mem_res 3}
+${goto 10}${color 999999}${top_mem pid 4}${goto 65}${top_mem name 4}${goto 180}${top mem_res 4}
+${goto 10}${color 777777}${top_mem pid 5}${goto 65}${top_mem name 5}${goto 180}${top mem_res 5}
+${alignc}${color}FG = $running_processes            BG = $processes
+
+${goto 0}  1. ${exec cat ~/.todo |awk 'NR==1'  |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0}  2. ${exec cat ~/.todo |awk 'NR==2'  |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0}  3. ${exec cat ~/.todo |awk 'NR==3'  |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0}  4. ${exec cat ~/.todo |awk 'NR==4'  |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0}  5. ${exec cat ~/.todo |awk 'NR==5'  |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0}  6. ${exec cat ~/.todo |awk 'NR==6'  |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0}  7. ${exec cat ~/.todo |awk 'NR==7'  |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0}  8. ${exec cat ~/.todo |awk 'NR==8'  |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0}  9. ${exec cat ~/.todo |awk 'NR==9'  |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0} 10. ${exec cat ~/.todo |awk 'NR==10' |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0} 11. ${exec cat ~/.todo |awk 'NR==11' |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0} 12. ${exec cat ~/.todo |awk 'NR==12' |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0} 13. ${exec cat ~/.todo |awk 'NR==13' |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0} 14. ${exec cat ~/.todo |awk 'NR==14' |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0} 15. ${exec cat ~/.todo |awk 'NR==15' |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0} 16. ${exec cat ~/.todo |awk 'NR==16' |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0} 17. ${exec cat ~/.todo |awk 'NR==17' |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0} 18. ${exec cat ~/.todo |awk 'NR==18' |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0} 19. ${exec cat ~/.todo |awk 'NR==19' |awk '{print} END {if (!NR) print "     -- "}'}
+${goto 0} 20. ${exec cat ~/.todo |awk 'NR==20' |awk '{print} END {if (!NR) print "     -- "}'}
+${font}
+
+${image ~/.conky/bg.png -p 0,0 -s 280x1080}
+${execpi 3000 brweather --imagem1=CN -p 0,0 -s 90x90}
+${execpi 3001 brweather --imagem1=C1 -p 0,85 -s 65x65}
+${execpi 3002 brweather --imagem1=C2 -p 105,85 -s 65x65}
+${execpi 3003 brweather --imagem1=C3 -p 210,85 -s 65x65}
+]]

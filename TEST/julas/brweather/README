@@ -1,0 +1,28 @@
+#README 
+BrWeather
+Criado por LeandroNKZ
+
+Para mais detalhes, confira a página oficial do BrWeather:
+http://brweatherproject.blogspot.com/
+
+
+Instalação:
+
+Apenas mova a pasta "brweather" para a pasta /opt. E crie um link para o arquivo executável:
+
+sudo mv brweather /opt
+sudo ln -sf /opt/brweather/brweather /usr/local/bin
+
+
+Configuração:
+
+Abra o arquivo brweather.conf e configure de acordo com as instruções. Depois,
+Salve-o na sua pasta /home com o nome de .brweather.conf (observe o "." ponto na frente do nome).
+
+
+Desinstalação:
+
+Apenas apague a pasta e remova o link:
+
+Em /opt:
+sudo rm -r /opt/brweather && rm /usr/local/bin/brweather

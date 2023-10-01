@@ -1,0 +1,773 @@
+#!/bin/bash
+# BrWeather
+# Criado por LeandroNKZ <leandronkz@gmail.com>
+# Se encontrar BUGs, ou erros no programa, favor reportar ao desenvolvedor
+# Acesse o site para maiores instruções:
+# http://brweatherproject.blogspot.com/
+# Distribuído sob licença GPLv3
+
+
+AWE=$(echo awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/id\042/){print$(i+1)}}}')
+
+D5=$(grep -m1 $(date -d "4 day" "+%a") ~/.brweather/cache/open2 | tail -n1)
+WID5=$(echo $(echo $D5 | $AWE))
+
+D6=$(grep -m1 $(date -d "5 day" "+%a") ~/.brweather/cache/open2 | tail -n1)
+WID6=$(echo $(echo $D6 | $AWE))
+
+D7=$(grep -m5 $(date -d "6 day" "+%a") ~/.brweather/cache/open2 | tail -n1)
+WID7=$(echo $(echo $D7 | $AWE))
+
+case $WID5 in
+"200")
+C5T="Tempestade"
+C5I="n"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"201")
+C5T="Tempestade"
+C5I="n"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"202")
+C5T="Tempestado"
+C5I="n"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"210")
+C5T="Tempestade com raios"
+C5I="n"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"211")
+C5T="Trovoadas"
+C5I="n"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"212")
+C5T="Tempestade"
+C5I="n"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"221")
+C5T="Temporal"
+C5I="n"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"230")
+C5T="Tempestade com leve garoa"
+C5I="n"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"231")
+C5T="Tempestade com garoa"
+C5I="n"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"232")
+C5T="Tempestade com forte garoa"
+C5I="n"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"300")
+C5T="Garoa"
+C5I="s"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"301")
+C5T="Garoa"
+C5I="s"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"302")
+C5T="Garoa forte"
+C5I="h"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"310")
+C5T="Garoa leve"
+C5I="s"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"311")
+C5T="Garoa"
+C5I="s"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"312")
+C5T="Garoa forte"
+C5I="h"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"321")
+C5T="Garoa forte"
+C5I="h"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"500")
+C5T="Chuva"
+C5I="t"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"501")
+C5T="Chuva moderada"
+C5I="t"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"502")
+C5T="Chuva forte"
+C5I="i"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"503")
+C5T="Chuva pesada"
+C5I="i"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"504")
+C5T="Chuva extrema"
+C5I="i"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"511")
+C5T="Chuva"
+C5I="t"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"520")
+C5T="Chuva"
+C5I="t"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"521")
+C5T="Chuva"
+C5I="t"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"522")
+C5T="Chuva forte"
+C5I="i"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"600")
+C5T="Neve"
+C5I="r"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"601")
+C5T="Neve"
+C5I="r"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"602")
+C5T="Neve"
+C5I="r"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"611")
+C5T="Chuva e neve"
+C5I="q"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"621")
+C5T="Chuva e neve"
+C5I="q"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"701")
+C5T="Névoa"
+C5I="f"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"711")
+C5T="Fumaça"
+C5I="f"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"721")
+C5T="Neblina"
+C5I="f"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"731")
+C5T="Tempestade de areia"
+C5I="f"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"741")
+C5T="Nevoeiro"
+C5I="f"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"800")
+C5T="Céu claro"
+C5I="a"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cl.png $* }"
+;;
+"801")
+C5T="Poucas nuvens"
+C5I="b"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ps.png $* }"
+;;
+"802")
+C5T="Nuvens esparsas"
+C5I="c"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/vn.png $* }"
+;;
+"803")
+C5T="Encoberto"
+C5I="d"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/e.png $* }"
+;;
+"804")
+C5T="Nublado"
+C5I="e"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/n.png $* }"
+;;
+"900")
+C5T="Tornado"
+C5I="E"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+"901")
+C5T="Tempestade tropical"
+C5I="n"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"902")
+C5T="Furacão"
+C5I="E"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+"903")
+C5T="Frio"
+C5I="r"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/g.png $* }"
+;;
+"904")
+C5T="Quente"
+C5I="a"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cl.png $* }"
+;;
+"905")
+C5T="Ventos"
+C5I="F"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+"906")
+C5T="Granizo"
+C5I="w"
+C5="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+esac
+
+case $WID6 in
+"200")
+C6T="Tempestade"
+C6I="n"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"201")
+C6T="Tempestade"
+C6I="n"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"202")
+C6T="Tempestado"
+C6I="n"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"210")
+C6T="Tempestade com raios"
+C6I="n"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"211")
+C6T="Trovoadas"
+C6I="n"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"212")
+C6T="Tempestade"
+C6I="n"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"221")
+C6T="Temporal"
+C6I="n"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"230")
+C6T="Tempestade com leve garoa"
+C6I="n"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"231")
+C6T="Tempestade com garoa"
+C6I="n"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"232")
+C6T="Tempestade com forte garoa"
+C6I="n"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"300")
+C6T="Garoa"
+C6I="s"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"301")
+C6T="Garoa"
+C6I="s"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"302")
+C6T="Garoa forte"
+C6I="h"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"310")
+C6T="Garoa leve"
+C6I="s"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"311")
+C6T="Garoa"
+C6I="s"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"312")
+C6T="Garoa forte"
+C6I="h"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"321")
+C6T="Garoa forte"
+C6I="h"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"500")
+C6T="Chuva"
+C6I="t"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"501")
+C6T="Chuva moderada"
+C6I="t"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"502")
+C6T="Chuva forte"
+C6I="i"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"503")
+C6T="Chuva pesada"
+C6I="i"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"504")
+C6T="Chuva extrema"
+C6I="i"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"511")
+C6T="Chuva"
+C6I="t"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"520")
+C6T="Chuva"
+C6I="t"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"521")
+C6T="Chuva"
+C6I="t"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"522")
+C6T="Chuva forte"
+C6I="i"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"600")
+C6T="Neve"
+C6I="r"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"601")
+C6T="Neve"
+C6I="r"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"602")
+C6T="Neve"
+C6I="r"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"611")
+C6T="Chuva e neve"
+C6I="q"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"621")
+C6T="Chuva e neve"
+C6I="q"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"701")
+C6T="Névoa"
+C6I="f"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"711")
+C6T="Fumaça"
+C6I="f"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"721")
+C6T="Neblina"
+C6I="f"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"731")
+C6T="Tempestade de areia"
+C6I="f"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"741")
+C6T="Nevoeiro"
+C6I="f"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"800")
+C6T="Céu claro"
+C6I="a"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cl.png $* }"
+;;
+"801")
+C6T="Poucas nuvens"
+C6I="b"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ps.png $* }"
+;;
+"802")
+C6T="Nuvens esparsas"
+C6I="c"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/vn.png $* }"
+;;
+"803")
+C6T="Encoberto"
+C6I="d"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/e.png $* }"
+;;
+"804")
+C6T="Nublado"
+C6I="e"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/n.png $* }"
+;;
+"900")
+C6T="Tornado"
+C6I="E"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+"901")
+C6T="Tempestade tropical"
+C6I="n"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"902")
+C6T="Furacão"
+C6I="E"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+"903")
+C6T="Frio"
+C6I="r"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/g.png $* }"
+;;
+"904")
+C6T="Quente"
+C6I="a"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cl.png $* }"
+;;
+"905")
+C6T="Ventos"
+C6I="F"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+"906")
+C6T="Granizo"
+C6I="w"
+C6="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+esac
+
+case $WID7 in
+"200")
+C7T="Tempestade"
+C7I="n"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"201")
+C7T="Tempestade"
+C7I="n"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"202")
+C7T="Tempestado"
+C7I="n"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"210")
+C7T="Tempestade com raios"
+C7I="n"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"211")
+C7T="Trovoadas"
+C7I="n"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"212")
+C7T="Tempestade"
+C7I="n"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"221")
+C7T="Temporal"
+C7I="n"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"230")
+C7T="Tempestade com leve garoa"
+C7I="n"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"231")
+C7T="Tempestade com garoa"
+C7I="n"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"232")
+C7T="Tempestade com forte garoa"
+C7I="n"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"300")
+C7T="Garoa"
+C7I="s"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"301")
+C7T="Garoa"
+C7I="s"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"302")
+C7T="Garoa forte"
+C7I="h"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"310")
+C7T="Garoa leve"
+C7I="s"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"311")
+C7T="Garoa"
+C7I="s"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"312")
+C7T="Garoa forte"
+C7I="h"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"321")
+C7T="Garoa forte"
+C7I="h"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cv.png $* }"
+;;
+"500")
+C7T="Chuva"
+C7I="t"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"501")
+C7T="Chuva moderada"
+C7I="t"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"502")
+C7T="Chuva forte"
+C7I="i"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"503")
+C7T="Chuva pesada"
+C7I="i"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"504")
+C7T="Chuva extrema"
+C7I="i"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"511")
+C7T="Chuva"
+C7I="t"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"520")
+C7T="Chuva"
+C7I="t"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"521")
+C7T="Chuva"
+C7I="t"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/c.png $* }"
+;;
+"522")
+C7T="Chuva forte"
+C7I="i"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ch.png $* }"
+;;
+"600")
+C7T="Neve"
+C7I="r"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"601")
+C7T="Neve"
+C7I="r"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"602")
+C7T="Neve"
+C7I="r"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"611")
+C7T="Chuva e neve"
+C7I="q"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"621")
+C7T="Chuva e neve"
+C7I="q"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ne.png $* }"
+;;
+"701")
+C7T="Névoa"
+C7I="f"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"711")
+C7T="Fumaça"
+C7I="f"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"721")
+C7T="Neblina"
+C7I="f"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"731")
+C7T="Tempestade de areia"
+C7I="f"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"741")
+C7T="Nevoeiro"
+C7I="f"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nv.png $* }"
+;;
+"800")
+C7T="Céu claro"
+C7I="a"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cl.png $* }"
+;;
+"801")
+C7T="Poucas nuvens"
+C7I="b"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/ps.png $* }"
+;;
+"802")
+C7T="Nuvens esparsas"
+C7I="c"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/vn.png $* }"
+;;
+"803")
+C7T="Encoberto"
+C7I="d"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/e.png $* }"
+;;
+"804")
+C7T="Nublado"
+C7I="e"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/n.png $* }"
+;;
+"900")
+C7T="Tornado"
+C7I="E"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+"901")
+C7T="Tempestade tropical"
+C7I="n"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+"902")
+C7T="Furacão"
+C7I="E"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+"903")
+C7T="Frio"
+C7I="r"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/g.png $* }"
+;;
+"904")
+C7T="Quente"
+C7I="a"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/cl.png $* }"
+;;
+"905")
+C7T="Ventos"
+C7I="F"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/nd.png $* }"
+;;
+"906")
+C7T="Granizo"
+C7I="w"
+C7="$IMAGE $DIRNAME/imagens/imagem$IMAGEM/t.png $* }"
+;;
+esac
+
+
+case $1 in
+"--option=C5T") echo $C5T
+;;
+"--option=C5I") echo $C5I
+;;
+"--option=C6T") echo $C6T
+;;
+"--option=C6I") echo $C6I
+;;
+"--option=C7T") echo $C7T
+;;
+"--option=C7I") echo $C7I
+;;
+"--imagem"*"=C5") echo $C5
+;;
+"--imagem"*"=C6") echo $C6
+;;
+"--imagem"*"=C7") echo $C7
+;;
+"--option"*) echo "Opção inválida.
+Experimente --help para mais informações."
+;;
+esac

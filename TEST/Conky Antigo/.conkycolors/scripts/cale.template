@@ -1,0 +1,4 @@
+${color0}${font Arial Black:size=25}${time %H:%M}${font Arial Black:size=12}.${time %S}${font}${color}
+${color3}${font Arial Black:size=20}${time %A}${font}${color}
+${color3}${color2}${font Arial Black:size=15}${time %d-%b-%Y}${font}${color}
+${font Liberation Mono:bold:size=8}${execpi 10809 cal | sed 's/^/${GOTO 2} /' | sed '1d' | sed s/" `date +%-d` "/" `date +%-d` "/}${font}

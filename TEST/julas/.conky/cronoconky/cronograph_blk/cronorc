@@ -1,0 +1,190 @@
+conky.config = {
+	--------------------------------------------------------------------------------
+	-- ----==[ Cronograph Station BLK ]==----
+	--------------------------------------------------------------------------------
+	
+	-- ----==[ Conky settings ]==----
+	--------------------------------------------------------------------------------
+	update_interval=1,
+	total_run_times=0,
+	background=true,
+	double_buffer=true,
+	-- Imlib2 image cache size, in bytes. Set to 0 to disable the image cache
+	imlib_cache_size=61440,
+	no_buffers=true,
+	--temperature_unit="fahrenheit",
+	
+	-- ----==[ Window specifications ]==----
+	--------------------------------------------------------------------------------
+	alignment="top_right",
+	gap_x=15,
+	gap_y=50,
+	minimum_width=300,
+	minimum_height=300,
+	maximum_width=300,
+	maximum_height=300,
+	border_inner_margin=0,
+	border_outer_margin=0,
+	own_window=true,
+	own_window_class="WC_Cronograph",
+	own_window_hints="undecorated,below,sticky,skip_taskbar,skip_pager",
+	own_window_title="Cronograph Station BLK",
+	own_window_argb_visual=true,
+	-- If ARGB visual is enabled
+	--   sets background opacity to 0%
+	--own_window_argb_value=0,
+	own_window_transparent=true,
+	-- normal type is the default
+	--   Override windows are not under the control of
+	--   the window manager
+	--own_window_type="override",
+	
+	-- ----==[ Graphics settings ]==----
+	--------------------------------------------------------------------------------
+	draw_borders=false,
+	draw_graph_borders=false,
+	draw_outline=false,
+	draw_shades=false,
+	
+	-- ----==[ Color settings ]==----
+	--------------------------------------------------------------------------------
+	default_color="00000D",
+	color0="002633",
+	color1="0066CC",
+	color2="FF3366",
+	color3="FF341D",
+	color4="B62222",
+	color5="FFB366",
+	color6="FFEDDC",
+	color7="E0F3FD",
+	color8="B30000",
+	color9="FF1A1A",
+	
+	-- ----==[ Text settings ]==----
+	--------------------------------------------------------------------------------
+	text_buffer_size=256,
+	uppercase=false,
+	override_utf8_locale=true,
+	use_xft=true,
+	xftalpha=0.9,
+	font="hooge 05_53:size=6",
+	
+	-- ----==[ Misc settings ]==----
+	--------------------------------------------------------------------------------
+	-- change GiB to G and MiB to M
+	--format_human_readable=true,
+	short_units=true,
+	
+	-- ----==[ Lua Load ]==----
+	--------------------------------------------------------------------------------
+	lua_load="/opt/cronograph_blk/scripts/multi_rings.lua /opt/cronograph_blk/scripts/clock_rings.lua",
+	lua_draw_hook_pre="multi_rings",
+	lua_draw_hook_post="clock_rings"
+};
+
+
+conky.text = [[
+#
+${image /opt/cronograph_blk/images/bg.png -p 0,0 -s 300x300}\
+#
+# Update weather info every (300/60sec=5min)
+${texeci 300 sh -c '/opt/cronograph_blk/yahooweather/forecasts.sh'}
+#
+${voffset 23}${goto 118}${font hooge 05_53:size=6:bold:italic}${if_empty ${battery}}PWR${else}BAT${endif}${font}:
+#
+${voffset 29}${alignc +68}${font hooge 05_53:size=11:bold:italic}${time %H:%M}${font}
+${alignc +68}${uptime_short}
+#
+${voffset -36}${alignc -64}${exec export LC_TIME=en_US.utf8; date +"%A" | tr "[:lower:]" "[:upper:]"}
+${alignc -64}${font hooge 05_53:size=11:bold}${exec export LC_TIME=en_US.utf8; date +"%d"}${font}
+${voffset 2}${alignc -64}${exec export LC_TIME=en_US.utf8; date +"%B" | tr "[:lower:]" "[:upper:]"}
+${alignc -64}${exec date +"%Y"}
+#
+${voffset -20}${font hooge 05_53:size=5:bold:italic}${alignc}HDD${font}
+#
+${voffset 14}${alignc}${color0}${fs_used}/${fs_size}${if_match "${hddtemp}" != "N/A"}/${hddtemp}°${endif}${color}
+#
+${voffset 30}${goto 62}\
+#
+${if_empty ${hwmon 0 temp 1}}${else}\
+${if_empty ${exec grep "^temperature_unit='F'" /opt/cronograph_blk/yahooweather/forecasts.sh}}\
+${if_match ${hwmon 0 temp 1} > 75}${color9}${blink ${hwmon 0 temp 1}°}${color}${else}\
+${if_match ${hwmon 0 temp 1} > 50}${color8}${hwmon 0 temp 1}°${color}${else}\
+${hwmon 0 temp 1}°${endif}${endif}${else}\
+${if_match ${hwmon 0 temp 1} > 167}${color9}${blink ${hwmon 0 temp 1}°}${color}${else}\
+${if_match ${hwmon 0 temp 1} > 122}${color8}${hwmon 0 temp 1}°${color}${else}\
+${hwmon 0 temp 1}°${endif}${endif}${endif}${endif}
+#
+${voffset -9}${alignr 191}${cpu cpu0}%
+${voffset -9}${goto 192}${mem}
+${voffset -9}${alignr 61}${memperc}%
+#
+${voffset 6}${goto 76}${font hooge 05_53:size=6:bold:italic}CPU${goto 205}MEM${font}
+#
+#-------------------------------------------------------------------------------
+# Today's weather
+#-------------------------------------------------------------------------------
+#
+${if_match "${execi 15 tail -1 ${HOME}/.config/cronograph_blk/fore_cond}" == "1"}\
+#
+# Display a warning
+#-------------------------------------------------------------------------------
+${voffset 20}${alignc -4}${font hooge 05_53:size=10:bold:italic}${color5}POSSIBLY INACCURACY!!!${color}${font}
+${alignc -2}${color8}Yahoo! weather server did  not  reply  properly${color}${else}${voffset 34}${endif}
+#
+# Display weather information
+#-------------------------------------------------------------------------------
+${voffset -23}${alignc +64}${font hooge 05_53:size=10:bold}${execi 15 head -1 "${HOME}"/.config/cronograph_blk/curr_cond}${font}
+${alignc +66}${execi 15 sed -n '2p' "${HOME}"/.config/cronograph_blk/curr_cond}
+#
+${voffset -40}${goto 124}${font ConkyWeather:size=38}\
+${if_empty ${execi 15 grep "^temperature_unit='F'" /opt/cronograph_blk/yahooweather/forecasts.sh}}\
+${if_match ${execi 15 sed -n '1s/°$//p' "${HOME}"/.config/cronograph_blk/curr_cond} > 36}${color4}${execi 15 sed -n '3p' "${HOME}"/.config/cronograph_blk/curr_cond}${color}${else}\
+${if_match ${execi 15 sed -n '1s/°$//p' "${HOME}"/.config/cronograph_blk/curr_cond} > 30}${color5}${execi 15 sed -n '3p' "${HOME}"/.config/cronograph_blk/curr_cond}${color}${else}\
+${if_match ${execi 15 sed -n '1s/°$//p' "${HOME}"/.config/cronograph_blk/curr_cond} < 3}${color1}${execi 15 sed -n '3p' "${HOME}"/.config/cronograph_blk/curr_cond}${color}${else}\
+${execi 15 sed -n '3p' "${HOME}"/.config/cronograph_blk/curr_cond}${endif}${endif}${endif}${else}\
+${if_match ${execi 15 sed -n '1s/°$//p' "${HOME}"/.config/cronograph_blk/curr_cond} > 97}${color4}${execi 15 sed -n '3p' "${HOME}"/.config/cronograph_blk/curr_cond}${color}${else}\
+${if_match ${execi 15 sed -n '1s/°$//p' "${HOME}"/.config/cronograph_blk/curr_cond} > 86}${color5}${execi 15 sed -n '3p' "${HOME}"/.config/cronograph_blk/curr_cond}${color}${else}\
+${if_match ${execi 15 sed -n '1s/°$//p' "${HOME}"/.config/cronograph_blk/curr_cond} < 37}${color1}${execi 15 sed -n '3p' "${HOME}"/.config/cronograph_blk/curr_cond}${color}${else}\
+${execi 15 sed -n '3p' "${HOME}"/.config/cronograph_blk/curr_cond}${endif}${endif}${endif}${endif}${font}
+#
+# Display weather description split long lines
+#-------------------------------------------------------------------------------
+${voffset -24}${alignc -66}\
+${if_empty ${execi 15 sed -n '5p' "${HOME}"/.config/cronograph_blk/curr_cond}}\
+${execi 15 sed -n '4p' "${HOME}"/.config/cronograph_blk/curr_cond}${voffset -7}
+${else}${voffset -7}${execi 15 sed -n '4p' "${HOME}"/.config/cronograph_blk/curr_cond}
+${alignc -65}${execi 15 sed -n '5p' "${HOME}"/.config/cronograph_blk/curr_cond}${endif}
+#${endif}
+#
+#-------------------------------------------------------------------------------
+# Three days forecasts
+#-------------------------------------------------------------------------------
+#
+${voffset   12}${font ConkyWeather:size=16}${goto 88}${execi 15 head -1 "${HOME}"/.config/cronograph_blk/fore_cond}
+${voffset  -5}${goto 139}${execi 15 sed -n '2p' "${HOME}"/.config/cronograph_blk/fore_cond}
+${voffset -37}${goto 192}${execi 15 sed -n '3p' "${HOME}"/.config/cronograph_blk/fore_cond}${font}
+#
+${voffset  -3}${alignc +52}${execi 15 sed -n '4p' "${HOME}"/.config/cronograph_blk/fore_cond}
+${voffset   6}${alignc}${execi 15 sed -n '5p' "${HOME}"/.config/cronograph_blk/fore_cond}
+${voffset -24}${alignc -52}${execi 15 sed -n '6p' "${HOME}"/.config/cronograph_blk/fore_cond}
+#
+${voffset  -2}${alignc +52}${execi 15 sed -n '7p' "${HOME}"/.config/cronograph_blk/fore_cond}
+${voffset   5}${alignc}${execi 15 sed -n '8p' "${HOME}"/.config/cronograph_blk/fore_cond}
+${voffset -23}${alignc -52}${execi 15 sed -n '9p' "${HOME}"/.config/cronograph_blk/fore_cond}
+#
+#
+#
+${if_empty ${battery}}
+# At first, we assume that there's no battery so the led is always green
+${image /opt/cronograph_blk/images/Dark_Green.png -p 134,21 -s 30x30}
+${else}${if_match ${battery_percent BAT0} > 60}${image /opt/cronograph_blk/images/Dark_Green.png -p 134,21-s 30x30}
+${else}${if_match ${battery_percent BAT0} > 45}${image /opt/cronograph_blk/images/Green.png -p 134,21-s 30x30}
+${else}${if_match ${battery_percent BAT0} > 30}${image /opt/cronograph_blk/images/Yellow.png -p 134,21-s 30x30}
+${else}${if_match ${battery_percent BAT0} > 20}${image /opt/cronograph_blk/images/Orange.png -p 134,21-s 30x30}
+${else}${if_match ${battery_percent BAT0} > 15}${image /opt/cronograph_blk/images/Purple.png -p 134,21-s 30x30}
+${else}${image /opt/cronograph_blk/images/Red.png -p 134,21-s 30x30}${endif}${endif}${endif}${endif}${endif}
+${endif}
+#${execpi 1 cat /opt/cronograph_blk/scripts/blinkingLED}
+${voffset -300}
+]]

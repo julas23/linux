@@ -1,0 +1,21 @@
+ -- test02.module
+ 
+ local modname = ...
+ local M = {}
+ _G[modname] = M
+ package.loaded[modname] = M
+ 
+ function M.test()
+ 	print("Name loaded module:", modname) end
+ 
+ 
+ 
+ --[[
+ ###############################################################################
+ ###                            MODULE MAIN LOOP                             ###
+ ###############################################################################
+ --]]
+ function M.main()
+ 	M.test()
+ end
+ 

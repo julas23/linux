@@ -1,0 +1,208 @@
+
+# Changelog das versões do BrWeather
+# Criado por Leandro Nkz
+
+### Versão 0.7.3 (lançada em 28-08-2016) ###
+- Correção do Bug: #011: Falha ao exibir dados das estações e fases da lua.
+- Correção do Bug: #012: Erros ao exibir algumas opções do modo INPE. 
+
+
+### Versão 0.7.2 (lançada em 04-10-2014) ###
+- Adição da opção windd (direção do vento) no modo OPEN/Híbrido
+
+### Versão 0.7.1 (lançada em 26-09-2014) ###
+- Correção do modo INPE
+
+### Versão 0.7.0 (lançada em 11-07-2014) ###
+- Atualização da API do Openweather, atualizando o modo OPEN.
+
+### Versão 0.6.0 (lançada em 31-03-2013) ###
+- Melhora na performance;
+- Inclusão do módo Híbrido: ele mescla opções do INPE e Open Weather, e é
+indicado para as cidades que não possuem opções de previsão completas.
+- Opções de configuração avançadas (apenas para usuários experientes):
+  - Estas configurações estão presentes no arquivo executável principal: brweather
+  - DIRNAME - Diretório base: pode-se alterar a pasta de instalação do BrWeather (fora
+  de /opt) - Créditos ao usuário rhatto pela implementação;
+  - TIME_COUNT - Timer para apagar arquivos de logs: alterar o tempo de intervalo para a
+  exclusão dos arquivos de log antigos;
+  - ROOT - Permite execução pelo usuário root (1=sim ; 0=não):
+- Aumento do cache de fases da Lua para até 2023.
+
+### Versão 0.5.0 (lançada em 25-11-2012) ###
+- Alteração nos temas de imagens:
+  - Acréscimo de mais dois temas de imagens;
+  - Aumento do número de imagens em cada tema: de 19 para 54.
+- Alteração nos arquivos executáveis do modo INPE e OPEN;
+- Melhoria na performance e tempo de resposta;
+- Diminuição do número de temas disponíveis (em virtude do aumento do número de
+imagens e consequente aumento do tamanho do programa de 3,4 MB para 14,3 MB quando completo);
+- Criação do pacote "brweather-theme-extras" que contém os temas de imagens menos usados,
+e que deve ser instalado à parte e opcionalmente;
+- Renomeação dos temas de imagens, em virtude da exclusão/modificação dos mesmos;
+- Nova opção:
+    --mode
+  Ela exibe qual o modo que está ativo (INPE ou OPEN).
+
+### Versão 0.4.0-rc4-extra4 (lançada em 21-10-2012) ###
+- Correção do Bug #010: Falha ao utilizar as opções de temperatura (entre outras
+do modo OPEN.
+
+### Versão 0.4.0-rc4-extra3 (lançada em 13-10-2012) ###
+- Fim do BrWeather modo Google;
+- Adição da API Open Weather Map em substituição do modo Google;
+- Novas opções de uso no modo "Open":
+  - Previsão para até 7 dias;
+  - Novas condições atuais:
+      --option=PA  Pressão atmosférica
+      --option=CLD Cloudness (quantidade de nuvens)
+  - Novos dados para os dias da semana:
+      --option=umid1 até umid7  Previsão do nível de umidade
+      --option=CLD1 até CLD7  Previsão de cloudness para os demais dias da semana
+
+
+### Versão 0.4.0-rc4-extra2 (lançada em 16-09-2012) ###
+- Correção do Bug #009: Falha ao utilizar a opção "Seasons" (estações do ano)
+
+### Versão 0.4.0-rc4-extra1 (lançada em 22-07-2012) ###
+- Correção do Bug #008: Mensagem de erro ao utilizar o modo Google.
+
+### Versão 0.4.0-rc4 (lançada em 20-07-2012) ###
+- Correção do Bug #007: Falha em algumas opções de imagens
+- Aumento do cache das fases da Lua: até 2021
+- Nova função Timer: O BrWeather só atualiza as previsões depois de um tempo
+pré-determinado
+- Nova função: Ele apaga os registros de logs antigos (criados há mais de três
+horas), e mantém os recentes (os mais úteis);
+- Nova função: O BrWeather não executa se o usuário é root. Ele só criará a
+pasta .brweather na home de um usuário comum;
+- Nova opção: Estações do ano. Previsão das estações do ano para até 2049.
+Maiores detalhes no blog oficial: http://brweatherproject.blogspot.com/
+- Novas opções no modo "Fases da Lua":
+	As opções:
+	--option=LUA1
+	--option=LUA2
+	--option=LUA3
+	--option=LUA4
+	Exibem a fase atual no formato abreviado. Ex.: Min, Cre, Nov, Che.
+
+	As opções
+	--option=LUA1F
+	--option=LUA2F
+	--option=LUA3F
+	--option=LUA4F
+	--option=LUA1f
+	--option=LUA2f
+	--option=LUA3f
+	--option=LUA4f
+	Exibem as fases da Lua no formato de ícone. Obs.: Necessário o uso da
+	fonte "Moon Phases". Maiores detalhes em: http://brweatherproject.blogspot.com/
+- Adição de mais um conjunto de imagens: Accuweather.
+
+### Versão 0.3.0-rc3-extra2 (lançada em 22-06-2012) ###
+- Correção do Bug #006: ausência das opções de imagens C5, C6 e C7 do modo INPE;
+- Aumento do cache das fases da Lua: até 2018;
+- Adição de mais dois conjuntos de ícones (imagens): Samgrey e Weezle.
+
+### Versão 0.3.0-rc3-extra1 (lançada em 17-06-2012) ###
+- Correção do Bug #003: Falha na opção de --imagem=C1 do modo Google;
+- Correção do Bug #004: Quando não houver previsão para a opção LT1 do modo INPE,
+exibir o símbolo "??°" para preservar a identação do código do Conky;
+- Correção do Bug #005: Ao criar um log de erros no modo INPE, não era impressa
+a data e hora no log.
+
+### Versão 0.3.0.rc3 (lançada em 04-06-2012) ###
+- Lançamento do site oficial: http://brweatherproject.blogspot.com/
+- Otimização do código;
+- Alteração da localização do arquivo de configuração. Agora ele fica na pasta
+/home, separado da pasta ".brweather";
+- Alteração nas configurações. Agora só é preciso configurar um serviço nacional.
+O Google não é mais necessário
+no modo "Serviço Nacional";
+- Utilização de apenas um serviço nacional: CPTEC/INPE. O BrWeather não depende
+mais do Climatempo;
+- Mudança em alguns comandos:
+	As opções LT0, HT0, C0, C0I, C0T, UV0, umid0, PC0, de todo os módulos
+	(Google e INPE), foram substituídas por:
+	LT1, HT1, C1, C1I, C1T, UV1, umid1, PC1.
+	A opção do modo Google: Day0 foi substituída por Day1.
+	Isso é para uma melhor organização dos comandos do programa;
+- Aumento do número de dias no modo INPE. Agora há previsões para até 7 dias!;
+- Novas opções:
+	--option=Day1T Exibe o dia da semana no formato completo (Sábado,
+	Domingo, etc);
+- Somente no modo INPE:
+	--option=UVNT Exibe a classificação da radiação UV. Ex.: Moderada,
+	baixa, alta, etc.
+	--option=LUS Última atualização no servidor (somente no modo INPE);
+	--option=STE Sensação Térmica;
+	--option=SOLN1 Horário do Nascer do Sol, para os próximos 7 dias;
+	--option=SOLP1 Horário do Por do Sol, para os próximos 7 dias;
+- Atualização de todos os Conkys-brinde para a nova versão do programa;
+- Novos modelos de Conkys-brinde.
+
+
+### Versão 0.2.0.rc2-extra1 (lançada em 22-04-2012 ) ###
+- Correção do Bug #002 (falha ao utilizar os serviços nacionais, devido à
+uma mudança no código do Climatempo)
+
+### Versão 0.2.0.rc2 (lançada em 01-04-2012 ) ###
+- Nova função: Fases da Lua!
+- Novas opções (para o modo Default):
+	--option=HT0 - Mostra a previsão de temperatura máxima para hoje
+	--option=LT0 - Mostra a previsão de temperatura mínima para hoje
+- Novo método de instalação, muito mais simples. Agora basta descompactar e
+mover a pasta para /opt.
+- E, como sempre, novos modelos de Conkys Brinde.
+
+### Versão 0.1.0.rc1 (lançada em 25-01-2012) ###
+- Correção de imagens quebradas nas pastas imagem2-3
+- Criação do pacote .deb (distribuído à parte)
+- Inclusão do atualizador (atualiza da versão beta3 para a nova).
+
+
+### Versao 0.0.3.beta3  (lançada em  21-12-2011 )###
+
+- Alteração do nome. O WFC passa a se chamar BrWeather.
+- Inclusão de mais dois serviços de meteorologia. Você pode escolher quais 
+utilizar: os nacionais ou apenas o Google, no próprio arquivo de configuração.
+- Adição de imagens. Inclusive as mesmas imagens utilizadas pelo ConkyForecast.
+Ao todo são 7 opções de imagens.
+- Alteração da localização das pastas para /opt.
+- Separação da pasta "conky" (A.K.A. "brinde"). Agora ela deve ser adquirida em
+ separado. 
+- Inclusão de novos modelos de "conky brinde".
+- Alteração do arquivo setup.sh. Em virtude da nova organização de pastas.
+- Alteração do arquivo principal, brweather. Em virtude da nova organização de 
+pastas e a adição de imagens.
+- Melhoria no suporte a logs de erros;
+- Otimização do programa. Agora ele exibe de forma mais rápida os resultados no 
+Conky;
+- Inclusão de mais duas previsões no modo Google: "névoa::" e "Neblina".
+- Alteração de algumas opções:
+	Versão (passa a ser o comando --version);
+	Autor (passa a ser o comando --autor);
+- Novas opções de comandos. As novas opções são:
+	Menus de ajuda (comando --help);
+	Manual (comando --man);
+	Desinstalação (comando --remove);
+	Gerar relatório de erros (comando --gerar-log);
+	Limpar cache (comando --clean-cache);
+	Listar o total de opções de imagens (--total-images).
+- Novos dados disponíveis:
+	- Nível de radiação ultravioleta;
+	- Pressão atmosférica;
+	- Possibilidade de chuva;
+- Maiores informações, use o comando: brweather --help
+
+
+
+### Versão 0.0.2.beta2-extra ###
+- Correção do Bug #001 na exibição do comando LU (last update)
+
+### Versão 0.0.2.beta2 ###
+- Alteração e correção no setup.sh
+- Alteração no instalador do ConkyWFC: installconky.sh
+
+### Versão 0.0.1.beta1 ###
+- Alteração do nome do projeto

@@ -1,0 +1,115 @@
+conky.config = {
+	background = false,
+	update_interval = 1,
+	total_run_times = 0,
+	net_avg_samples = 2,
+	override_utf8_locale = true,
+	double_buffer = true,
+	no_buffers = true,
+	text_buffer_size = 4096,
+	imlib_cache_size = 0,
+	temperature_unit = 'celsius',
+	own_window = true,
+	own_window_type = 'panel',
+	own_window_transparent = true,
+	own_window_hints = 'below,undecorated,sticky,skip_taskbar,skip_pager',
+	own_window_argb_visual = false,
+	own_window_argb_value = 255,
+	border_inner_margin = 0,
+	border_outer_margin = 0,
+	show_graph_scale = false,
+	show_graph_range = false,
+	maximum_width = 280,
+	xinerama_head = 2,
+	alignment = 'top_right',
+	gap_x = 1920,
+	gap_y = 0,
+	draw_shades = false,
+	draw_outline = false,
+	draw_borders = false,
+	draw_graph_borders = true,
+	use_xft = true,
+	xftalpha = 1,
+	uppercase = false,
+	if_up_strictness = 'address',
+	use_spacer = 'right'
+}
+
+conky.text = [[
+#ENERGY: ${goto 85}${color yellow}${acpiacadapter}${color}
+#BATT 0: ${goto 85}${color}${battery_bar 8,50 BAT0} ${color yellow}${battery_percent BAT0}% ${goto 175}${battery BAT0}${color}
+#BATT 1: ${goto 85}${color}${battery_bar 8,50 BAT1} ${color yellow}${battery_percent BAT1}% ${goto 175}${battery BAT1}${color}
+#${else}${endif}${endif}${voffset 6}${goto 0}Status da VPN: ${goto 100} ${if_existing /sys/class/net/tunsnx/operstate unknown}(${color yellow}${addr tunsnx}${color})${else}(${color yellow}${addr tunsnx}${color})${endif}
+################## HOJE
+${voffset 5}${alignr}${font Courier:pixelsize=56}${time %H:%M}${font}
+${alignr}${font Courier:pixelsize=18}${time %a %d %b %Y}${font}
+${font Courier:pixelsize=22}${voffset 70}${execpi 60 myconky cal}
+################## SISTEMA
+${font Courier:pixelsize=10}${voffset 7}${color red}Sistema $stippled_hr${color}
+DISTRO: ${goto 85}${color yellow}${exec myconky dis}${color}
+KERNEL: ${goto 85}${color yellow}${kernel}${color}
+ENVIRONMENT: ${goto 85}${color yellow}${exec myconky env}${color}
+UPTIME: ${goto 85}${color yellow}${uptime}${color}
+CPU:${color yellow}${exec myconky cpu}${color}
+Rotacao:${color blue}${goto 100}${exec echo 'WaterCooled'}${color}
+Temperatura:${goto 90}CPU ${color yellow}${exec sensors |grep Tctl |awk '{print $2}'}${goto 175}${color}MB ${color yellow}${exec sensors |grep edge |awk '{print $2}'}${color}
+${color yellow}${cpu cpu0}%${goto 50}${color}${cpubar cpu0 10,220}${color}
+${color yellow}${freq_g 0}Mhz${goto 50}${color}${cpugraph cpu0 10,220 859900 DC322F scale -t}${color}
+RAM: ${goto 45}${color yellow}${memmax}${color}
+USO: ${goto 45}${color yellow}${memperc}%${color}
+USO: ${goto 45}${color yellow}${mem}${color}
+LIVRES: ${goto 45}${color yellow}${memfree}${color}
+${voffset -53}${goto 110}Consumo
+${goto 110}${membar 10,335}
+${goto 110}Realtime
+${goto 110}${memgraph 10,335 859900 DC322F scale -t}
+${goto 5}sda - / ${fs_bar 10,58 /} ${color yellow} ${fs_free /} ${color}Free
+${goto 5}R: ${diskio_read /dev/sda}${goto 100}W: ${diskio_write /dev/sda} ${goto 180}IOPs: ${diskio /dev/sda}
+${goto 5}${diskiograph /dev/sda 10,250 859900 DC322F scale -t}
+${goto 5}Raid1 - /home ${fs_bar 10,58 /home} ${color yellow} ${fs_free /home} ${color}Free
+${goto 5}R: ${diskio_read /dev/vg_raid1/lv_raid1}${goto 100}W: ${diskio_write /dev/vg_raid1/lv_raid1} ${goto 180}IOPs: ${diskio /dev/vg_raid1/lv_raid1}
+${goto 5}${diskiograph /dev/vg_raid1/lv_raid1 10,250 859900 DC322F scale -t}
+${if_existing /sys/class/net/enp5s0/operstate up}
+${goto 0}LAN:${goto 28}${color yellow}${if_existing /proc/net/route enp5s0}${addr enp5s0}${else}Desconectado${endif}${color}${goto 120}WAN:${goto 152}${color yellow}${if_existing /proc/net/route enp5s0}${exec curl -s meuip.com.br |grep "Meu ip é" |awk '{print $8}' |cut -d'<' -f 1}${else}Offline${endif}${color}
+${goto 0}UP:${goto 20}${upspeedgraph enp5s0 10,58 859900 DC322F scale -t}${goto 85} ${upspeed enp5s0} ${goto 128}DL:${goto 148}${downspeedgraph enp5s0 10,58 859900 DC322F scale -t}${goto 205} ${downspeed enp5s0}
+${else}${if_existing /sys/class/net/wlp4s0/operstate up}
+${goto 0}WLAN:${goto 36}${color yellow}${if_existing /proc/net/route wlp4s0}${addr wlp4s0}${else}Desconectado${endif}${color}${goto 120}WAN:${goto 152}${color yellow}${if_existing /proc/net/route wlp4s0}${exec curl -s meuip.com.br |grep "Meu ip é" |awk '{print $8}' |cut -d'<' -f 1}${else}Offline${endif}${color}
+${goto 0}UP:${goto 20}${upspeedgraph wlp4s0 10,58 859900 DC322F scale -t}${goto 85} ${upspeed wlp4s0} ${goto 128}DL:${goto 148}${downspeedgraph wlp4s0 10,58 859900 DC322F scale -t}${goto 205} ${downspeed wlp4s0}
+
+################## PID
+${color red}Processos $stippled_hr${color}
+${goto 30}${color}____CPU____${goto 150}____RAM____
+${goto 10}${color ffffff}${top name 1}${goto 85}${top cpu 1}${goto 130}${top_mem name 1}${goto 210}${top_mem mem 1}
+${goto 10}${color dddddd}${top name 2}${goto 85}${top cpu 2}${goto 130}${top_mem name 2}${goto 210}${top_mem mem 2}
+${goto 10}${color bbbbbb}${top name 3}${goto 85}${top cpu 3}${goto 130}${top_mem name 3}${goto 210}${top_mem mem 3}
+${goto 10}${color 999999}${top name 4}${goto 85}${top cpu 4}${goto 130}${top_mem name 4}${goto 210}${top_mem mem 4}
+${goto 10}${color 777777}${top name 5}${goto 85}${top cpu 5}${goto 130}${top_mem name 5}${goto 210}${top_mem mem 5}
+${goto 10}${color 555555}${top name 6}${goto 85}${top cpu 6}${goto 130}${top_mem name 6}${goto 210}${top_mem mem 6}
+${alignc}${color}__________ Carga Elevada do Sistema __________
+${goto 10}${color ffffff}${top name 1}${goto 120}${top pid 1}${goto 160}${top cpu 1}${goto 200}${top mem 1}
+${goto 10}${color dddddd}${top name 2}${goto 120}${top pid 2}${goto 160}${top cpu 2}${goto 200}${top mem 2}
+${goto 10}${color bbbbbb}${top name 3}${goto 120}${top pid 3}${goto 160}${top cpu 3}${goto 200}${top mem 3}
+${goto 10}${color 999999}${top name 4}${goto 120}${top pid 4}${goto 160}${top cpu 4}${goto 200}${top mem 4}
+${goto 10}${color 777777}${top name 5}${goto 120}${top pid 5}${goto 160}${top cpu 5}${goto 200}${top mem 5}
+${goto 10}${color 555555}${top name 6}${goto 120}${top pid 6}${goto 160}${top cpu 6}${goto 200}${top mem 6}
+${alignc}${color}FG = $running_processes            BG = $processes
+
+################## TAREFAS
+${color red}Tarefas $stippled_hr${color white}
+${goto 20} 1. ${exec cat ~/.todo |awk 'NR==1'  |awk '{print} END {if (!NR) print "      -- "}'}
+${goto 20} 2. ${exec cat ~/.todo |awk 'NR==2'  |awk '{print} END {if (!NR) print "      -- "}'}
+${goto 20} 3. ${exec cat ~/.todo |awk 'NR==3'  |awk '{print} END {if (!NR) print "      -- "}'}
+${goto 20} 4. ${exec cat ~/.todo |awk 'NR==4'  |awk '{print} END {if (!NR) print "      -- "}'}
+${goto 20} 5. ${exec cat ~/.todo |awk 'NR==5'  |awk '{print} END {if (!NR) print "      -- "}'}
+${goto 20} 6. ${exec cat ~/.todo |awk 'NR==6'  |awk '{print} END {if (!NR) print "      -- "}'}
+${goto 20} 7. ${exec cat ~/.todo |awk 'NR==7'  |awk '{print} END {if (!NR) print "      -- "}'}
+${goto 20} 8. ${exec cat ~/.todo |awk 'NR==8'  |awk '{print} END {if (!NR) print "      -- "}'}
+${font}
+################## IMAGENS
+${image ~/.conky/bg.png -p 0,0 -s 280x1080}
+${execpi 3000 brweather --imagem1=CN -p 10,0 -s 90x90}
+${execpi 3001 brweather --imagem1=C1 -p 0,75 -s 60x60}
+${execpi 3002 brweather --imagem1=C2 -p 65,75 -s 60x60}
+${execpi 3003 brweather --imagem1=C3 -p 132,75 -s 60x60}
+${execpi 3004 brweather --imagem1=C4 -p 197,75 -s 60x60}
+]]

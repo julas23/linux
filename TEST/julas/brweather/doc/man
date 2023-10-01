@@ -1,0 +1,1211 @@
+.TH BrWeather 1 2014-10-04
+.\" Please adjust this date whenever revising the manpage.
+.SH NOME
+BrWeather
+.SH USO
+.B brweather --[option]
+.SH DESCRIÇÃO
+O BrWeather exibe a previsão do tempo no seu Conky. Ele utiliza os dados do 
+serviço de meteorologia CPTEC/INPE. Além de, opcionalmente, apenas do Open Weather.
+
+.SH MODOS DE USO
+.PP
+.B MODO INPE
+- O modo padrão de uso do programa. Ele é destinado às cidades que possuem previsão
+completa no site do INPE (vide sessão INFORMAÇÕES, no final deste manual).
+Utilize a opção 0 no arquivo de configuração:
+.TP
+OPEN="0"
+.TP
+E preencha o campo correspondente com o código de sua cidade:
+.TP
+CPTEC_INPE="código_do_inpe"
+.PP
+.B MODO OPEN
+- O modo alternativo. Ele utiliza os dados do OpenWeather (vide sessão INFORMAÇÕES)
+para exibir a previsão. É destinado às cidades que não constam no site do INPE, ou
+que constam, mas não possuem a previsão completa (com condições atuais, como
+Sensação térmica, temperatura atual, umidade relativa atual etc).
+Utilize a opção 1 no arquivo de configuração:
+.TP
+OPEN="1"
+.TP
+E preencha o campo correspondente com o código de sua cidade:
+.TP
+OPEN_ID="código_do_open"
+.PP
+.B MODO HÍBRIDO
+- O modo híbrido. Ele mescla os dados dos modos INPE e OPEN. É destinado àquelas
+cidades que constam no site do INPE, porém, não possuem a previsão completa (com
+dados de condições atuais).
+Utilize a opção 2 no arquivo de configuração:
+.TP
+OPEN="2"
+.PP
+E preencha os campos dos dois modos:
+
+CPTEC_INPE="código_do_inpe"
+.TP
+OPEN_ID="código_do_open"
+
+
+
+.SH OPÇÕES GERAIS DO PROGRAMA
+.TP
+.B \-\-version 
+Exibe a versão atual do programa.
+.TP
+.B \-\-autor
+Autor do programa ;-)
+.TP
+.B \-\-help		
+Menu de ajuda
+.TP
+.B \-\-help-default
+Menu de ajuda para o serviço nacional (INPE)
+.TP
+.B \-\-help-open
+Menu de ajuda para o serviço Open Weather
+.TP
+.B \-\-help-hibrido
+Menu de ajuda para o modo hibrido
+.TP
+.B \-\-man		
+Este manual
+.TP
+.B \-\-clean-cache
+Limpa o cache de previões e logs. Útil quando ocorrer mensagens de erro.
+.TP
+.B \-\-gerar-log
+Gera um log detalhado de erros e do estado do cache. Este deve ser encaminhado ao desenvolvedor em caso de problemas com o programa.
+.TP
+.B \-\-total-images
+Mostra o número de opções disponíveis para a utilização de imagens.
+.TP
+.B \-\-changelog
+Exibe o arquivo de mudanças entre as versões.
+.TP
+.B \-\-mode		
+Mostra qual dos modos está ativo no momento (INPE, OPEN ou HÍBRIDO).
+.SH OPÇÕES DE IMAGENS
+.TP
+.B \-\-imagem(Numero)=CN
+Exibe a condição atual
+.TP
+.B \-\-imagem(numero)=C1
+Previsão para o resto do dia
+.TP
+.B \-\-imagem(numero)=C2
+Previsão para amanhã (segundo dia)
+.TP
+.B \-\-imagem(numero)=C3
+Previsão para o terceiro dia
+.TP
+.B \-\-imagem(numero)=C4
+Previsão para o quarto dia.
+.TP
+.B \-\-imagem(numero)=C5
+Previsão para o quinto dia.
+.TP
+.B \-\-imagem(numero)=C6
+Previsão para o sexto dia.
+.TP
+.B \-\-imagem(numero)=C7
+Previsão para o sétimo dia.
+.TP
+Substitua (numero) por qualquer uma das opções do comando: --total-images
+.SH OPÇÕES DA FUNÇÃO FASES DA LUA
+.TP
+.B \-\-option=LUA1T
+Exibe o nome da fase atual da Lua. Ex.: Minguante, Cheia, etc.
+.TP
+.B \-\-option=LUA1
+Exibe o nome abreviado da fase atual da Lua
+.TP
+.B \-\-option=LUA2T
+Exibe o nome da próxima fase da Lua
+.TP
+.B \-\-option=LUA2
+Exibe o nome abreviado da próxima fase da Lua
+.TP
+.B \-\-option=LUA3T
+Exibe o nome da terceira fase da Lua
+.TP
+.B \-\-option=LUA3
+Exibe o nome abreviado da terceira fase  da Lua
+.TP
+.B \-\-option=LUA4T
+Exibe o nome da quarta fase da Lua
+.TP
+.B \-\-option=LUA4
+Exibe o nome abreviado da quarta fase da Lua
+.TP
+.B \-\-option=LUA1D
+Exibe a data de hoje
+.TP
+.B \-\-option=LUA2D
+Exibe (com data) quando será a próxima mudança da fase
+.TP
+.B \-\-option=LUA3D
+Exibe quando será a terceira mudança de fase
+.TP
+.B \-\-option=LUA4D
+Exibe quando será a quarta mudança de fase
+.TP
+.B \-\-option=LUA1I
+Mostra, em imagem e em tempo real, a fase atual da Lua
+.TP
+.B \-\-option=LUA2I
+Mostra em uma imagem, qual será a próxima fase da Lua
+.TP
+.B \-\-option=LUA3I
+Mostra qual será a terceira fase da Lua
+.TP
+.B \-\-option=LUA4I
+Mostra qual será a quarta fase da Lua
+.TP
+.B \-\-option=LUA1F
+Mostra, em um ícone e em tempo real, a fase atual da Lua. Necessário o uso da fonte "Moon Phases"
+.TP
+.B \-\-option=LUA1f
+Uma variação do ícone da opção acima
+.TP
+.B \-\-option=LUA2F
+Mostra em um ícone a próxima fase da Lua. Necessário o uso da fonte "Moon Phases"
+.TP
+.B \-\-option=LUA2f
+Uma variação do ícone da opção acima
+.TP
+.B \-\-option=LUA3F
+Mostra em um ícone a terceira fase da Lua. Necessário o uso da fonte "Moon Phases"
+.TP
+.B \-\-option=LUA3f
+Uma variação do ícone da opção acima
+.TP
+.B \-\-option=LUA4F
+Mostra em um ícone a quarta fase da Lua. Necessário o uso da fonte "Moon Phases"
+.TP
+.B \-\-option=LUA4f
+Uma variação do ícone da opção acima
+.SH OPÇÕES DA FUNÇÃO ESTAÇÕES DO ANO
+.TP
+.B \-\-seasons=1T
+Mostra a estação do ano atual
+.TP
+.B \-\-seasons=1
+Mostra a estação do ano atual, no formato abreviado. Ex.: Pri, Ver, Out e Inv.
+.TP
+.B \-\-seasons=1D
+Mostra a data do início da estação atual
+.TP
+.B \-\-seasons=1H
+Mostra a hora (no formato HH:MM:SS) do início da estação atual
+.TP
+.B \-\-seasons=2T
+Mostra a próxima estação do ano
+.TP
+.B \-\-seasons=2
+Mostra a próxima estação do ano, no formato abreviado. Ex.: Pri, Ver, Out e Inv.
+.TP
+.B \-\-seasons=2D
+Mostra a data do início da próxima estação
+.TP
+.B \-\-seasons=2H
+Mostra a hora (no formato HH:MM:SS) do início da próxima estação
+.TP
+.B \-\-seasons=3T
+Mostra a terceira estação do ano
+.TP
+.B \-\-seasons=3
+Mostra a terceira estação do ano, no formato abreviado. Ex.: Pri, Ver, Out e Inv.
+.TP
+.B \-\-seasons=3D
+Mostra a data do início da terceira estação
+.TP
+.B \-\-seasons=3H
+Mostra a hora (no formato HH:MM:SS) do início da terceira estação
+.TP
+.B \-\-seasons=4T
+Mostra a quarta estação do ano
+.TP
+.B \-\-seasons=4
+Mostra a quarta estação do ano, no formato abreviado. Ex.: Pri, Ver, Out e Inv.
+.TP
+.B \-\-seasons=4D
+Mostra a data do início da quarta estação
+.TP
+.B \-\-seasons=4H
+Mostra a hora (no formato HH:MM:SS) do início da quarta estação
+.TP
+.B \-\-seasons=OUTD
+Data de início do próximo Outono
+.TP
+.B \-\-seasons=OUTH
+Hora de início do próximo Outono
+.TP
+.B \-\-seasons=INVD
+Data de início do próximo Inverno
+.TP
+.B \-\-seasons=INVH
+Hora de início do próximo Inverno
+.TP
+.B \-\-seasons=PRID
+Data de início da próxima Primavera
+.TP
+.B \-\-seasons=PRIH
+Hora de início da próxima Primavera
+.TP
+.B \-\-seasons=VERD
+Data de início do próximo Verão
+.TP
+.B \-\-seasons=VERH
+Hora de início do próximo Verão
+.SH OPÇÕES DO MODO PADRÃO (SERVIÇO NACIONAL)
+.TP
+.B \-\-option=city		
+Cidade
+.TP
+.B \-\-option=date
+Data atual
+.TP
+.B \-\-option=Day0
+Dia de Hoje. Nome abreviado. Ex.: Sáb
+.TP
+.B \-\-option=Day0T
+Hoje, nome completo. Ex.: Sábado
+.TP
+.B \-\-option=LU
+Last update (última atualização)
+.TP
+.B \-\-option=LUS
+Last update do servidor (última atualização do site)
+.TP
+.B \-\-option=CNT
+Tempo atual modo texto (por extenso)
+.TP
+.B \-\-option=CNI
+Tempo atual modo ícone (necessita de fonte weather instalada)
+.TP
+.B \-\-option=TN
+Temperatura atual
+.TP
+.B \-\-option=umid
+Nível de umidade atual
+.TP
+.B \-\-option=windd
+Direção do vento
+.TP
+.B \-\-option=winds
+Força do vento
+.TP
+.B \-\-option=PA
+Nível de pressão atmosférica
+.TP
+.B \-\-option=UVN
+Nível de Radiação ultravioleta
+.TP
+.B \-\-option=UVNT
+Nível de Radiação ultravioleta modo texto. Ex.: Moderado, Baixo.
+.TP
+.B \-\-option=STE
+Sensação Térmica
+.SH Previsão para as próximas horas
+.TP
+.B \-\-option=Day1
+Próximas horas (pode ser hoje, ou amanhã)
+.TP
+.B \-\-option=Day1T
+Próximas horas, nome completo. Ex.: Sábado
+.TP
+.B \-\-option=C1T
+Previsão as próximas horas (modo texto)
+.TP
+.B \-\-option=C1I
+Previsão para as próximas horas (modo ícone)
+.TP
+.B \-\-option=LT1
+Temperatura mínima
+.TP
+.B \-\-option=HT1
+Temperatura máxima
+.TP
+.B \-\-option=PC1
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV1
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV1T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN1
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP1
+Por do SOL (horário)
+.TP
+.B \-\-option=umid1
+Previsão do nível de umidade
+.SH Previsão para o segundo dia
+.TP
+.B \-\-option=Day2
+Segundo dia
+.TP
+.B \-\-option=Day2T
+Segundo dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT2
+Temperatura mínima para segundo dia
+.TP
+.B \-\-option=HT2
+Temperatura máxima para segundo dia
+.TP
+.B \-\-option=C2T
+Previsão para o segundo dia (modo texto)
+.TP
+.B \-\-option=C2I
+Previsão para o segundo dia (modo ícone)
+.TP
+.B \-\-option=PC2
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV2
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV2T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN2
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP2
+Por do SOL (horário)
+.TP
+.B \-\-option=umid2
+Previsão do nível de umidade
+.SH Previsão para o terceiro dia
+.TP
+.B \-\-option=Day3
+Terceiro dia
+.TP
+.B \-\-option=Day3T
+Terceiro dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT3
+Temperatura mínima
+.TP
+.B \-\-option=HT3
+Temperatura máxima
+.TP
+.B \-\-option=C3T
+Previsão para o terceiro dia (modo texto)
+.TP
+.B \-\-option=C3I
+Previsão para o terceiro dia (modo ícone)
+.TP
+.B \-\-option=PC3
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV3
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV3T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN3
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP3
+Por do SOL (horário)
+.TP
+.B \-\-option=umid3
+Previsão do nível de umidade
+.SH Previsão para o quarto dia
+.TP
+.B \-\-option=Day4
+Quarto dia
+.TP
+.B \-\-option=Day4T
+Quarto dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT4
+Temperatura mínima para quarto dia
+.TP
+.B \-\-option=HT4
+Temperatura máxima para quarto dia
+.TP
+.B \-\-option=C4T
+Previsão para o quarto dia (modo texto)
+.TP
+.B \-\-option=C4I
+Previsão para o quarto dia (modo ícone)
+.TP
+.B \-\-option=PC4
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV4
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV4T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN4
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP4
+Por do SOL (horário)
+.TP
+.B \-\-option=umid4
+Previsão do nível de umidade
+.SH Previsão para o quinto dia
+.TP
+.B \-\-option=Day5
+Quinto dia
+.TP
+.B \-\-option=Day5T
+Quinto dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT5
+Temperatura mínima para quinto dia
+.TP
+.B \-\-option=HT5
+Temperatura máxima para quinto dia
+.TP
+.B \-\-option=C5T
+Previsão para o quinto dia (modo texto)
+.TP
+.B \-\-option=C5I
+Previsão para o quinto dia (modo ícone)
+.TP
+.B \-\-option=PC5
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV5
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV5T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN5
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP5
+Por do SOL (horário)
+.TP
+.B \-\-option=umid5
+Previsão do nível de umidade
+.SH Previsão para o sexto dia
+.TP
+.B \-\-option=Day6
+Sexto dia
+.TP
+.B \-\-option=Day6T
+Sexto dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT6
+Temperatura mínima para sexto dia
+.TP
+.B \-\-option=HT6
+Temperatura máxima para sexto dia
+.TP
+.B \-\-option=C6T
+Previsão para o sexto dia (modo texto)
+.TP
+.B \-\-option=C6I
+Previsão para o sexto dia (modo ícone)
+.TP
+.B \-\-option=PC6
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV6
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV6T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN6
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP6
+Por do SOL (horário)
+.TP
+.B \-\-option=umid6
+Previsão do nível de umidade
+.SH Previsão para o sétimo dia
+.TP
+.B \-\-option=Day7
+Sétimo dia
+.TP
+.B \-\-option=Day7T
+Sétimo dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT7
+Temperatura mínima para sétimo dia
+.TP
+.B \-\-option=HT7
+Temperatura máxima para sétimo dia
+.TP
+.B \-\-option=C7T
+Previsão para o sétimo dia (modo texto)
+.TP
+.B \-\-option=C7I
+Previsão para o sétimo dia (modo ícone)
+.TP
+.B \-\-option=PC7
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV7
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV7T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN7
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP7
+Por do SOL (horário)
+.TP
+.B \-\-option=umid7
+Previsão do nível de umidade
+.SH OPÇÕES DO MODO OPEN WEATHER
+.TP
+.B \-\-option=city
+Cidade
+.TP
+.B \-\-option=date
+Data atual
+.TP
+.B \-\-option=Day0
+Dia de Hoje. Nome abreviado. Ex.: Sáb
+.TP
+.B \-\-option=Day0T
+Hoje, nome completo. Ex.: Sábado
+.TP
+.B \-\-option=LU
+Last update (última atualização)
+.TP
+.B \-\-option=CNT
+Tempo atual modo texto (por extenso)
+.TP
+.B \-\-option=CNI
+Tempo atual modo ícone (necessita de fonte weather instalada)
+.TP
+.B \-\-option=TN
+Temperatura atual
+.TP
+.B \-\-option=umid
+Nível de umidade atual
+.TP
+.B \-\-option=wind
+Força do vento
+.TP
+.B \-\-option=winds
+Força do vento
+.TP
+.B \-\-option=windd
+Direção do vento
+.TP
+.B \-\-option=PA
+Nível de pressão atmosférica
+.TP
+.B \-\-option=CLD
+Quantidade de nuvens (em %)
+.SH Previsão para as próximas horas
+.TP
+.B \-\-option=Day1
+Próximas horas (pode ser hoje, ou amanhã)
+.TP
+.B \-\-option=Day1T
+Próximas horas, nome completo. Ex.: Sábado
+.TP
+.B \-\-option=C1T
+Previsão as próximas horas (modo texto)
+.TP
+.B \-\-option=C1I
+Previsão para as próximas horas (modo ícone)
+.TP
+.B \-\-option=LT1
+Temperatura mínima
+.TP
+.B \-\-option=HT1
+Temperatura máxima
+.TP
+.B \-\-option=umid1
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD1
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA1
+Nível de pressão atmosférica
+.SH Previsão para o segundo dia
+.TP
+.B \-\-option=Day2
+Segundo dia
+.TP
+.B \-\-option=Day2T
+Segundo dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT2
+Temperatura mínima para segundo dia
+.TP
+.B \-\-option=HT2
+Temperatura máxima para segundo dia
+.TP
+.B \-\-option=C2T
+Previsão para o segundo dia (modo texto)
+.TP
+.B \-\-option=C2I
+Previsão para o segundo dia (modo ícone)
+.TP
+.B \-\-option=umid2
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD2
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA2
+Nível de pressão atmosférica
+.SH Previsão para o terceiro dia
+.TP
+.B \-\-option=Day3
+Terceiro dia
+.TP
+.B \-\-option=Day3T
+Terceiro dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT3
+Temperatura mínima
+.TP
+.B \-\-option=HT3
+Temperatura máxima
+.TP
+.B \-\-option=C3T
+Previsão para o terceiro dia (modo texto)
+.TP
+.B \-\-option=C3I
+Previsão para o terceiro dia (modo ícone)
+.TP
+.B \-\-option=umid3
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD3
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA3
+Nível de pressão atmosférica
+.SH Previsão para o quarto dia
+.TP
+.B \-\-option=Day4
+Quarto dia
+.TP
+.B \-\-option=Day4T
+Quarto dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT4
+Temperatura mínima para quarto dia
+.TP
+.B \-\-option=HT4
+Temperatura máxima para quarto dia
+.TP
+.B \-\-option=C4T
+Previsão para o quarto dia (modo texto)
+.TP
+.B \-\-option=C4I
+Previsão para o quarto dia (modo ícone)
+.TP
+.B \-\-option=umid4
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD4
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA4
+Nível de pressão atmosférica
+.SH Previsão para o quinto dia
+.TP
+.B \-\-option=Day5
+Quinto dia
+.TP
+.B \-\-option=Day5T
+Quinto dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT5
+Temperatura mínima para quinto dia
+.TP
+.B \-\-option=HT5
+Temperatura máxima para quinto dia
+.TP
+.B \-\-option=C5T
+Previsão para o quinto dia (modo texto)
+.TP
+.B \-\-option=C5I
+Previsão para o quinto dia (modo ícone)
+.TP
+.B \-\-option=umid5
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD5
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA5
+Nível de pressão atmosférica
+.SH Previsão para o sexto dia
+.TP
+.B \-\-option=Day6
+Sexto dia
+.TP
+.B \-\-option=Day6T
+Sexto dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT6
+Temperatura mínima para sexto dia
+.TP
+.B \-\-option=HT6
+Temperatura máxima para sexto dia
+.TP
+.B \-\-option=C6T
+Previsão para o sexto dia (modo texto)
+.TP
+.B \-\-option=C6I
+Previsão para o sexto dia (modo ícone)
+.TP
+.B \-\-option=umid6
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD6
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA6
+Nível de pressão atmosférica
+.SH Previsão para o sétimo dia
+.TP
+.B \-\-option=Day7
+Sétimo dia
+.TP
+.B \-\-option=Day7T
+Sétimo dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT7
+Temperatura mínima para sétimo dia
+.TP
+.B \-\-option=HT7
+Temperatura máxima para sétimo dia
+.TP
+.B \-\-option=C7T
+Previsão para o sétimo dia (modo texto)
+.TP
+.B \-\-option=C7I
+Previsão para o sétimo dia (modo ícone)
+.TP
+.B \-\-option=umid7
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD7
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA7
+Nível de pressão atmosférica
+
+
+.SH OPÇÕES DO MODO HÍBRIDO (MESCLA DADOS DO INPE E OPEN WEATHER)
+.TP
+.B \-\-option=city		
+Cidade
+.TP
+.B \-\-option=date
+Data atual
+.TP
+.B \-\-option=Day0
+Dia de Hoje. Nome abreviado. Ex.: Sáb
+.TP
+.B \-\-option=Day0T
+Hoje, nome completo. Ex.: Sábado
+.TP
+.B \-\-option=LU
+Last update (última atualização)
+.TP
+.B \-\-option=LUS
+Last update do servidor (última atualização do site)
+.TP
+.B \-\-option=CNT
+Tempo atual modo texto (por extenso)
+.TP
+.B \-\-option=CNI
+Tempo atual modo ícone (necessita de fonte weather instalada)
+.TP
+.B \-\-option=TN
+Temperatura atual
+.TP
+.B \-\-option=umid
+Nível de umidade atual
+.TP
+.B \-\-option=winds
+Força do vento
+.TP
+.B \-\-option=windd
+Direção do vento
+.TP
+.B \-\-option=PA
+Nível de pressão atmosférica
+.TP
+.B \-\-option=UVN
+Nível de Radiação ultravioleta
+.TP
+.B \-\-option=UVNT
+Nível de Radiação ultravioleta modo texto. Ex.: Moderado, Baixo.
+.TP
+.B \-\-option=CLD
+Quantidade de nuvens (em %)
+
+
+.SH Previsão para as próximas horas
+.TP
+.B \-\-option=Day1
+Próximas horas (pode ser hoje, ou amanhã)
+.TP
+.B \-\-option=Day1T
+Próximas horas, nome completo. Ex.: Sábado
+.TP
+.B \-\-option=C1T
+Previsão as próximas horas (modo texto)
+.TP
+.B \-\-option=C1I
+Previsão para as próximas horas (modo ícone)
+.TP
+.B \-\-option=LT1
+Temperatura mínima
+.TP
+.B \-\-option=HT1
+Temperatura máxima
+.TP
+.B \-\-option=PC1
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV1
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV1T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN1
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP1
+Por do SOL (horário)
+.TP
+.B \-\-option=umid1
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD1
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA1
+Nível de pressão atmosférica
+
+
+.SH Previsão para o segundo dia
+.TP
+.B \-\-option=Day2
+Segundo dia
+.TP
+.B \-\-option=Day2T
+Segundo dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT2
+Temperatura mínima para segundo dia
+.TP
+.B \-\-option=HT2
+Temperatura máxima para segundo dia
+.TP
+.B \-\-option=C2T
+Previsão para o segundo dia (modo texto)
+.TP
+.B \-\-option=C2I
+Previsão para o segundo dia (modo ícone)
+.TP
+.B \-\-option=PC2
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV2
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV2T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN2
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP2
+Por do SOL (horário)
+.TP
+.B \-\-option=umid2
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD2
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA2
+Nível de pressão atmosférica
+
+
+.SH Previsão para o terceiro dia
+.TP
+.B \-\-option=Day3
+Terceiro dia
+.TP
+.B \-\-option=Day3T
+Terceiro dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT3
+Temperatura mínima
+.TP
+.B \-\-option=HT3
+Temperatura máxima
+.TP
+.B \-\-option=C3T
+Previsão para o terceiro dia (modo texto)
+.TP
+.B \-\-option=C3I
+Previsão para o terceiro dia (modo ícone)
+.TP
+.B \-\-option=PC3
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV3
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV3T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN3
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP3
+Por do SOL (horário)
+.TP
+.B \-\-option=umid3
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD3
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA3
+Nível de pressão atmosférica
+
+
+.SH Previsão para o quarto dia
+.TP
+.B \-\-option=Day4
+Quarto dia
+.TP
+.B \-\-option=Day4T
+Quarto dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT4
+Temperatura mínima para quarto dia
+.TP
+.B \-\-option=HT4
+Temperatura máxima para quarto dia
+.TP
+.B \-\-option=C4T
+Previsão para o quarto dia (modo texto)
+.TP
+.B \-\-option=C4I
+Previsão para o quarto dia (modo ícone)
+.TP
+.B \-\-option=PC4
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV4
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV4T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN4
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP4
+Por do SOL (horário)
+.TP
+.B \-\-option=umid4
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD4
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA4
+Nível de pressão atmosférica
+
+
+.SH Previsão para o quinto dia
+.TP
+.B \-\-option=Day5
+Quinto dia
+.TP
+.B \-\-option=Day5T
+Quinto dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT5
+Temperatura mínima para quinto dia
+.TP
+.B \-\-option=HT5
+Temperatura máxima para quinto dia
+.TP
+.B \-\-option=C5T
+Previsão para o quinto dia (modo texto)
+.TP
+.B \-\-option=C5I
+Previsão para o quinto dia (modo ícone)
+.TP
+.B \-\-option=PC5
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV5
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV5T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN5
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP5
+Por do SOL (horário)
+.TP
+.B \-\-option=umid5
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD5
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA5
+Nível de pressão atmosférica
+
+
+.SH Previsão para o sexto dia
+.TP
+.B \-\-option=Day6
+Sexto dia
+.TP
+.B \-\-option=Day6T
+Sexto dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT6
+Temperatura mínima para sexto dia
+.TP
+.B \-\-option=HT6
+Temperatura máxima para sexto dia
+.TP
+.B \-\-option=C6T
+Previsão para o sexto dia (modo texto)
+.TP
+.B \-\-option=C6I
+Previsão para o sexto dia (modo ícone)
+.TP
+.B \-\-option=PC6
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV6
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV6T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN6
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP6
+Por do SOL (horário)
+.TP
+.B \-\-option=umid6
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD6
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA6
+Nível de pressão atmosférica
+
+
+.SH Previsão para o sétimo dia
+.TP
+.B \-\-option=Day7
+Sétimo dia
+.TP
+.B \-\-option=Day7T
+Sétimo dia. Completo. Ex.: Sábado
+.TP
+.B \-\-option=LT7
+Temperatura mínima para sétimo dia
+.TP
+.B \-\-option=HT7
+Temperatura máxima para sétimo dia
+.TP
+.B \-\-option=C7T
+Previsão para o sétimo dia (modo texto)
+.TP
+.B \-\-option=C7I
+Previsão para o sétimo dia (modo ícone)
+.TP
+.B \-\-option=PC7
+Probabilidade de chuva (em %)
+.TP
+.B \-\-option=UV7
+Previsão de nível de radiação ultravioleta
+.TP
+.B \-\-option=UV7T
+Previsão de nível de radiação ultravioleta (nome completo. Ex.: moderada, baixa)
+.TP
+.B \-\-option=SOLN7
+Nascer do SOL (horário)
+.TP
+.B \-\-option=SOLP7
+Por do SOL (horário)
+.TP
+.B \-\-option=umid7
+Previsão do nível de umidade
+.TP
+.B \-\-option=CLD7
+Quantidade de nuvens (em %)
+.TP
+.B \-\-option=PA7
+Nível de pressão atmosférica
+
+
+.SH ARQUIVO DE CONFIGURAÇÃO
+.TP
+/home/seu_usuário/.brweather.conf
+
+
+.SH AUTOR
+BrWeather foi orgulhosamente desenvolvido e trazido até você por:
+.TP
+LeandroNKZ <leandronkz@gmail.com>.
+
+.SH COPYRIGHT
+Este software é fornecido "no estado em que se encontra", não havendo quaisquer
+garantias por parte do desenvolvedor.
+.TP
+O BrWeather é distribuído sob a licença GPLv3:
+http://www.gnu.org/licenses/gpl-3.0.html
+
+.SH INFORMAÇÕES
+Este manual foi escrito pelo próprio desenvolvedor. Quaisquer erros, ou BUGs no programa, favor relatar ao autor.
+.TP
+Visite o blog oficial para mais informações, tutoriais e dicas:
+.TP
+http://brweatherproject.blogspot.com/
+.TP
+Todos os dados meteorológicos são obtidos a partir dos sites:
+.TP
+http://openweathermap.org
+.TP
+http://www.cptec.inpe.br/
+.TP
+INPE - Instituto Nacional de Pesquisas Espaciais
+.TP
+CPTEC - Centro de Previsão de Tempo e Estudos Climáticos
+

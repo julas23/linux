@@ -1,0 +1,379 @@
+ --[[
+ multiple analogue clocks by mrpeachy - 18 Jun 2012
+ 21 Jun 2012 - Chronograph modifications by Sector11
+ 22 Jun 2012 - again with mrpeachy's help day names, numbers and month names
+ 23 Jun 2012 - crono.lua by mrprachy - modified by Sector11 23/24 Jun 2012
+ 
+ v1.0	- (11.07.2012) conversion to One4All module by dk75 with some procedural modyfication
+ ]]
+
+ 
+ local modname = ...
+ local M = {}
+ _G[modname] = M
+ package.loaded[modname] = M
+ 
+ 
+ 
+ --[[
+ ###############################################################################
+ ###                              SETTINGS                                   ###
+ ###############################################################################
+ --]]
+ local settings_table = {
+ 	{
+ 	--######################################################################
+ 	--######## CLOCK WIDGET SETTINGS #######################################
+ 		startX		= 0,		-- upper left corner
+ 		startY		= 0,		-- upper left corner
+ 		widget_radius	= 175,		-- whole clock radius
+ 						-- width/height = radius * 2
+ 		clock_tz	= "local",		--check tzselect in BASH/SH terminal to see what TIMEZONE to set for desired location - set "local" for a local time
+ 		date		= {},
+ 	--######################################################################
+ 	--######## SET BORDER OPTIONS FOR "CLOCKS" #############################
+ 		border	= {
+ 			width	= 0,		-- border width
+ 			color	= 0xffffff,	-- color for clock border
+ 			alpha	= 1,		-- fully opaque border
+ 			gap	= 13,		-- border to marks gap in widget_radius precent
+ 			},
+ 	--######################################################################
+ 	--######## CLOCK A SETTINGS ############################################
+ 		clockA	= {
+ 			clock_type	= 24,	-- Large Main 24 HR Clock
+ 	--################ MARKS ###############################################
+ 			marks	= {
+ 				number	= 24,
+ 				length	= 0,	-- widget_radius percent
+ 				width	= 2.5,	-- widget_radius percent
+ 				cap	= CAIRO_LINE_CAP_ROUND,
+ 				color	= 0xffffff,
+ 				alpha	= 1,	-- fully opaque marks
+ 				},
+ 	--################ HOUR HANDS ##########################################
+ 			hh	= {
+ 				length	= 70,	-- widget_radius percent
+ 				width	= 3,	-- widget_radius percent
+ 				cap	= CAIRO_LINE_CAP_ROUND,
+ 				color	= 0x00ffdf,
+ 				alpha	= .4,	-- fully opaque hand
+ 				},
+ 	--################ MINUTE HANDS ########################################
+ 			mh	= {
+  				length	= 94,	-- widget_radius percent
+ 				width	= 1.5,	-- widget_radius percent
+ 				cap	= CAIRO_LINE_CAP_ROUND,
+ 				color	= 0x00ffdf,
+ 				alpha	= .6,	-- fully opaque hand
+ 				},
+ 	--################ FONT ################################################
+ 			font	= {
+ 				face	= "CorporateMonoExtraBold",
+ 				size	= .65,
+ 				slant	= CAIRO_FONT_SLANT_NORMAL,
+ 				weight	= CAIRO_FONT_WEIGHT_NORMAL,
+ 				color	= 0xffffff,
+ 				alpha	= 1,
+ 				},
+ 			},
+ 	--######################################################################
+ 	--######## CLOCK B SETTINGS #### Top - Week Day Names Dial #############
+ 		clockB	= {
+ 			text	= {"SUN","MON","TUE","WED","THR","FRI","SAT",},
+ 			radius	= 30,
+ 			width	= 1,
+ 			cap	= CAIRO_LINE_CAP_ROUND,
+ 			color	= 0xffffff,
+ 			alpha	= 1,
+ 	--################ MARKS ###############################################
+ 			marks	= {
+ 				number	= 7,
+ 				length	= 0,	-- widget_radius percent
+ 				width	= 2.5,	-- widget_radius percent
+ 				cap	= CAIRO_LINE_CAP_ROUND,
+ 				color	= 0xffffff,
+ 				alpha	= 1,	-- fully opaque marks
+ 				},
+ 	--################ FONT ################################################
+ 			font	= {
+ 				face	= "CorporateMonoExtraBold",
+ 				size	= 1.20,
+ 				slant	= CAIRO_FONT_SLANT_NORMAL,
+ 				weight	= CAIRO_FONT_WEIGHT_NORMAL,
+ 				color	= 0xffffff,
+ 				alpha	= 1,
+ 				},
+ 			},
+ 	--######################################################################
+ 	--######## CLOCK C SETTINGS #### Right -Month Names Dial ###############
+ 		clockC	= {
+ 			text	= {"DEC","JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV",},
+ 			radius	= 40,
+ 			width	= 1,
+ 			cap	= CAIRO_LINE_CAP_ROUND,
+ 			color	= 0xffffff,
+ 			alpha	= 1,
+ 	--################ MARKS ###############################################
+ 			marks	= {
+ 				number	= 12,
+ 				length	= 0,	-- widget_radius percent
+ 				width	= 2.5,	-- widget_radius percent
+ 				cap	= CAIRO_LINE_CAP_ROUND,
+ 				color	= 0xffffff,
+ 				alpha	= 1,	-- fully opaque marks
+ 				},
+ 	--################ FONT ################################################
+ 			font	= {
+ 				face	= "CorporateMonoExtraBold",
+ 				size	= 1,
+ 				slant	= CAIRO_FONT_SLANT_NORMAL,
+ 				weight	= CAIRO_FONT_WEIGHT_NORMAL,
+ 				color	= 0xffffff,
+ 				alpha	= 1,
+ 				},
+ 			},
+ 	--######################################################################
+ 	--######## CLOCK D SETTINGS #### Left - Month Names Dial ###############
+ 		clockD	= {
+ 			radius	= 40,
+ 			width	= 1,
+ 			cap	= CAIRO_LINE_CAP_ROUND,
+ 			color	= 0xffffff,
+ 			alpha	= 1,
+ 	--################ MARKS ###############################################
+ 			marks	= {
+ 				number	= 31,
+ 				length	= 0,	-- widget_radius percent
+ 				width	= 2.5,	-- widget_radius percent
+ 				cap	= CAIRO_LINE_CAP_ROUND,
+ 				color	= 0xffffff,
+ 				alpha	= 1,	-- fully opaque marks
+ 				},
+ 	--################ FONT ################################################
+ 			font	= {
+ 				face	= "CorporateMonoExtraBold",
+ 				size	= .85,
+ 				slant	= CAIRO_FONT_SLANT_NORMAL,
+ 				weight	= CAIRO_FONT_WEIGHT_NORMAL,
+ 				color	= 0xffffff,
+ 				alpha	= 1,
+ 				},
+ 			},
+ 	--######################################################################
+ 	--######## CLOCK E SETTINGS #### Bottom - Seconds Dial #################
+ 		clockE	= {
+ 			radius	= 30,
+ 			width	= 1,
+ 			cap	= CAIRO_LINE_CAP_ROUND,
+ 			color	= 0xff0000,
+ 			alpha	= 1,
+ 	--################ MARKS ###############################################
+ 			marks	= {
+ 				number	= 60,
+ 				length	= 0,	-- widget_radius percent
+ 				width	= 2.5,	-- widget_radius percent
+ 				cap	= CAIRO_LINE_CAP_ROUND,
+ 				color	= 0xffffff,
+ 				alpha	= 1,	-- fully opaque marks
+ 				},
+ 	--################ FONT ################################################
+ 			font	= {
+ 				face	= "CorporateMonoExtraBold",
+ 				size	= 1,
+ 				slant	= CAIRO_FONT_SLANT_NORMAL,
+ 				weight	= CAIRO_FONT_WEIGHT_NORMAL,
+ 				color	= 0xffffff,
+ 				alpha	= 1,
+ 				},
+ 			},
+ 	},
+ }
+ --[[
+ ###############################################################################
+ ###                           END OF SETTINGS                               ###
+ ###############################################################################
+ --]]
+ 
+ 
+ 
+ --######## INITIALIZE #########################################################
+ for i in pairs(settings_table) do
+ 	local t = settings_table[i]
+ 	t.border.gap = t.widget_radius*t.border.gap/100
+ 	t.clockA.centerX = t.startX+t.widget_radius
+ 	t.clockA.centerY = t.startY+t.widget_radius
+ 	t.clockA.marks.width = t.widget_radius*t.clockA.marks.width/100
+ 	t.clockA.marks.length = t.widget_radius*t.clockA.marks.length/100
+ 	t.clockA.hh.width = t.widget_radius*t.clockA.hh.width/100
+ 	t.clockA.hh.length = t.widget_radius*t.clockA.hh.length/100
+ 	t.clockA.mh.width = t.widget_radius*t.clockA.mh.width/100
+ 	t.clockA.mh.length = t.widget_radius-t.border.width-t.border.gap-t.clockA.marks.length-t.clockA.marks.width-t.clockA.mh.width
+ 	t.clockA.font.size = math.floor((t.border.gap-t.border.width-t.clockA.marks.width)*t.clockA.font.size)
+ 	t.clockB.centerX = t.clockA.centerX
+ 	t.clockB.centerY = t.clockA.centerY-t.widget_radius*.55
+ 	t.clockB.radius = t.widget_radius*t.clockB.radius/100
+ 	t.clockB.width = t.widget_radius*t.clockB.width/100
+ 	t.clockB.marks.width = t.widget_radius*t.clockB.marks.width/100
+ 	t.clockB.marks.length = t.widget_radius*t.clockB.marks.length/100
+ 	t.clockB.font.size = math.floor(t.clockA.font.size*t.clockB.font.size)
+ 	t.clockC.centerX = t.clockA.centerX+t.widget_radius*.45
+ 	t.clockC.centerY = t.clockA.centerY
+ 	t.clockC.radius = t.widget_radius*t.clockC.radius/100
+ 	t.clockC.width = t.widget_radius*t.clockC.width/100
+ 	t.clockC.marks.width = t.widget_radius*t.clockC.marks.width/100
+ 	t.clockC.marks.length = t.widget_radius*t.clockC.marks.length/100
+ 	t.clockC.font.size = math.floor(t.clockA.font.size*t.clockC.font.size)
+ 	t.clockD.centerX = t.clockA.centerX-t.widget_radius*.45
+ 	t.clockD.centerY = t.clockA.centerY
+ 	t.clockD.radius = t.widget_radius*t.clockD.radius/100
+ 	t.clockD.width = t.widget_radius*t.clockD.width/100
+ 	t.clockD.marks.width = t.widget_radius*t.clockD.marks.width/100
+ 	t.clockD.marks.length = t.widget_radius*t.clockD.marks.length/100
+ 	t.clockD.font.size = math.floor(t.clockA.font.size*t.clockD.font.size)
+ 	t.clockE.centerX = t.clockA.centerX
+ 	t.clockE.centerY = t.clockA.centerY+t.widget_radius*.55
+ 	t.clockE.radius = t.widget_radius*t.clockE.radius/100
+ 	t.clockE.width = t.widget_radius*t.clockE.width/100
+ 	t.clockE.marks.width = t.widget_radius*t.clockE.marks.width/100
+ 	t.clockE.marks.length = t.widget_radius*t.clockE.marks.length/100
+ 	t.clockE.font.size = math.floor(t.clockA.font.size*t.clockE.font.size)
+ end
+ --#############################################################################
+ 
+ 
+ 
+ function M.draw_border(x, y, radius, width, color, alpha)
+ 	cairo_set_source_rgba(cr, one4all_cairo.rgb2rgba(color, alpha))
+ 	cairo_set_line_width(cr, width)
+ 	cairo_arc(cr, x, y, radius, 0, 2*math.pi)
+ 	cairo_stroke(cr)
+ end
+ 
+ function M.draw_marks(x, y, radius, number, length, width, cap, color, alpha)
+ 	cairo_set_line_cap(cr, cap) --set line cap type
+ 	cairo_set_line_width(cr, width) --set line width
+ 	cairo_set_source_rgba(cr, one4all_cairo.rgb2rgba(color, alpha)) --set color and alpha for marks
+ 	local i, angle = nil
+ 	for i=0, number-1
+ 	do
+ 		angle = i*(360/number)-90
+ 		cairo_move_to(cr, one4all_main.pointATcircle(x, y, angle, radius))
+ 		cairo_line_to(cr, one4all_main.pointATcircle(x, y, angle, radius-length))
+ 		cairo_stroke(cr)
+ 	end
+ end
+ 
+ function M.hands(x, y, angle, length, styleCAP, styleWIDTH, color, alpha)
+ 	cairo_move_to(cr, x, y)
+ 	cairo_line_to(cr,one4all_main.pointATcircle(x, y, angle, length))
+	cairo_set_line_width(cr, styleWIDTH)
+ 	cairo_set_source_rgba(cr, one4all_cairo.rgb2rgba(color, alpha))
+ 	cairo_set_line_cap(cr, styleCAP)
+ 	cairo_stroke(cr)
+ end
+ 
+ function circlewriting(x, y, text, width, radius, angle)
+ 	local inum=string.len(text)
+ 	local arcRad=width/radius
+ 	local charRad=arcRad/inum
+ 	for i=1,inum do
+ 		local cha=string.sub(text,i,i)
+ 		cairo_move_to(cr, one4all_main.pointATcircle(x, y, angle+math.deg(-arcRad/2-charRad+charRad*i), radius))
+ 		cairo_save(cr)
+ 		cairo_rotate(cr, math.rad(angle+90)-arcRad/2-charRad/2+charRad*i)
+ 		cairo_show_text(cr, cha)
+ 		cairo_stroke(cr)
+ 		cairo_restore(cr)
+ 	end
+ end
+ 
+ 
+ 
+ function M.cronograph(t)
+ 	local extents, i, tmp1, tmp2 = cairo_text_extents_t:create(), nil, nil, nil
+ 	t.date=os.date("*t")
+ 	local h_angle, m_angle, s_angle = one4all_main.time2angle(24, t.clock_tz, t.date.hour, t.date.min, t.date.sec)
+ 	--######## BORDERS ###############################################################
+ 	if t.border.width ~= nil or t.border.width ~= 0
+ 	then
+ 		M.draw_border(t.clockA.centerX, t.clockA.centerY, t.widget_radius-t.border.width/2, t.border.width, t.border.color, t.border.alpha)
+ 		M.draw_border(t.clockB.centerX, t.clockB.centerY, t.clockB.radius-t.border.width/2, t.border.width, t.border.color, t.border.alpha)
+ 	end
+ 	--######## CLOCK B -  Top - Week Day Names Dial ########################
+ 	M.draw_marks(t.clockB.centerX, t.clockB.centerY, t.clockB.radius-t.clockB.marks.width-t.clockB.marks.length-t.clockB.font.size, t.clockB.marks.number, t.clockB.marks.length, t.clockB.marks.width, t.clockB.marks.cap, t.clockB.marks.color, t.clockB.marks.alpha)
+  	cairo_select_font_face(cr, t.clockB.font.face, t.clockB.font.slant, t.clockB.font.weight)
+ 	cairo_set_font_size(cr, t.clockB.font.size)
+ 	cairo_set_source_rgba(cr, one4all_cairo.rgb2rgba(t.clockB.font.color, t.clockB.font.alpha))
+	for i in pairs(t.clockB.text) do
+		cairo_text_extents(cr, t.clockB.text[i], extents)
+ 		circlewriting(t.clockB.centerX, t.clockB.centerY, t.clockB.text[i], extents.width, t.clockB.radius-t.clockB.font.size, (i-1)*(360/t.clockB.marks.number)-90)
+ 	end
+ 	M.hands(t.clockB.centerX, t.clockB.centerY, (t.date.wday-1)*(360/t.clockB.marks.number)-90, t.clockB.radius-t.clockB.marks.width*2-t.clockB.font.size, t.clockB.cap, t.clockB.width, t.clockB.color, t.clockB.alpha)
+ 	--######## CLOCK C #### Right -Month Names Dial ########################
+ 	M.draw_marks(t.clockC.centerX, t.clockC.centerY, t.clockC.radius-t.clockC.marks.width-t.clockC.marks.length-t.clockC.font.size, t.clockC.marks.number, t.clockC.marks.length, t.clockC.marks.width, t.clockC.marks.cap, t.clockC.marks.color, t.clockC.marks.alpha)
+ 	cairo_select_font_face(cr, t.clockC.font.face, t.clockC.font.slant, t.clockC.font.weight)
+ 	cairo_set_font_size(cr, t.clockC.font.size)
+ 	cairo_set_source_rgba(cr, one4all_cairo.rgb2rgba(t.clockC.font.color, t.clockC.font.alpha))
+	for i in pairs(t.clockC.text) do
+		cairo_text_extents(cr, t.clockC.text[i], extents)
+ 		circlewriting(t.clockC.centerX, t.clockC.centerY, t.clockC.text[i], extents.width, t.clockC.radius-t.clockC.font.size, (i-1)*(360/t.clockC.marks.number)-90)
+ 	end
+ 	M.hands(t.clockC.centerX, t.clockC.centerY, t.date.month*(360/t.clockC.marks.number)-90, t.clockC.radius-t.clockC.marks.width*2-t.clockC.font.size, t.clockC.cap, t.clockC.width, t.clockC.color, t.clockC.alpha)
+ 	--######## CLOCK D #### Left - Day Numbers Dial ########################
+ 	M.draw_marks(t.clockD.centerX, t.clockD.centerY, t.clockD.radius-t.clockD.marks.width-t.clockD.marks.length-t.clockD.font.size, t.clockD.marks.number+1, t.clockD.marks.length, t.clockD.marks.width, t.clockD.marks.cap, t.clockD.marks.color, t.clockD.marks.alpha)
+ 	cairo_select_font_face(cr, t.clockD.font.face, t.clockD.font.slant, t.clockD.font.weight)
+ 	cairo_set_font_size(cr, t.clockD.font.size)
+ 	cairo_set_source_rgba(cr, one4all_cairo.rgb2rgba(t.clockD.font.color, t.clockD.font.alpha))
+ 	local _even=0
+ 	for i=1,t.clockD.marks.number+1 do
+ 		local text = string.format("%02d", i)
+ 		if i > t.clockD.marks.number then text = "##" end
+ 		tmp1, tmp2 = math.modf(i/2)
+ 		if tmp2 ~= 0 then _even = 0 else _even = t.clockD.font.size+t.clockD.marks.width*1.25+t.clockD.marks.length end
+		cairo_text_extents(cr, text, extents)
+ 		circlewriting(t.clockD.centerX, t.clockD.centerY, text, extents.width, t.clockD.radius-t.clockD.font.size-_even, (i-1)*(360/(t.clockD.marks.number+1))-90)
+ 	end
+ 	M.hands(t.clockD.centerX, t.clockD.centerY, (t.date.day-1)*(360/(t.clockD.marks.number+1))-90, t.clockD.radius-t.clockD.marks.width*2-t.clockD.font.size*2, t.clockD.cap, t.clockD.width, t.clockD.color, t.clockD.alpha)
+ 	--######## CLOCK E #### Bottom - Seconds Dial ########################
+ 	M.draw_marks(t.clockE.centerX, t.clockE.centerY, t.clockE.radius-t.clockE.marks.width-t.clockE.marks.length-t.clockE.font.size, t.clockE.marks.number, t.clockE.marks.length*.30, t.clockE.marks.width*.30, t.clockE.marks.cap, t.clockE.marks.color, t.clockE.marks.alpha)
+ 	M.draw_marks(t.clockE.centerX, t.clockE.centerY, t.clockE.radius-t.clockE.marks.width-t.clockE.marks.length-t.clockE.font.size, math.floor(t.clockE.marks.number/5), t.clockE.marks.length, t.clockE.marks.width, t.clockE.marks.cap, t.clockE.marks.color, t.clockE.marks.alpha)
+ 	cairo_select_font_face(cr, t.clockE.font.face, t.clockE.font.slant, t.clockE.font.weight)
+ 	cairo_set_font_size(cr, t.clockE.font.size)
+ 	cairo_set_source_rgba(cr, one4all_cairo.rgb2rgba(t.clockE.font.color, t.clockE.font.alpha))
+ 	for i=0,t.clockE.marks.number-1,5 do
+ 		local text = string.format("%02d", i)
+		cairo_text_extents(cr, text, extents)
+ 		circlewriting(t.clockE.centerX, t.clockE.centerY, text, extents.width, t.clockE.radius-t.clockE.font.size, i*(360/t.clockE.marks.number)-90)
+ 	end
+ 	M.hands(t.clockE.centerX, t.clockE.centerY, s_angle, t.clockE.radius-t.clockE.marks.width*2-t.clockE.font.size, t.clockE.cap, t.clockE.width, t.clockE.color, t.clockE.alpha)
+ 	--######## CLOCK A - 24H MAIN CLOCK ##############################################
+ 	M.draw_marks(t.clockA.centerX, t.clockA.centerY, t.widget_radius-t.border.width-t.border.gap, t.clockA.marks.number, t.clockA.marks.length, t.clockA.marks.width, t.clockA.marks.cap, t.clockA.marks.color, t.clockA.marks.alpha)
+ 	cairo_select_font_face(cr, t.clockA.font.face, t.clockA.font.slant, t.clockA.font.weight)
+ 	cairo_set_font_size(cr, t.clockA.font.size)
+ 	cairo_set_source_rgba(cr, one4all_cairo.rgb2rgba(t.clockA.font.color, t.clockA.font.alpha))
+ 	for i=0,t.clockA.marks.number-1 do
+ 		local text = string.format("%02d", i)
+ 		cairo_text_extents(cr, text, extents)
+ 		local textX, textY = one4all_main.pointATcircle(t.clockA.centerX, t.clockA.centerY, i*(360/t.clockA.marks.number)-90, t.widget_radius-t.border.width-t.border.gap+math.sqrt(extents.x_advance^2+extents.height^2)/2+t.clockA.marks.width*.75)
+ 		cairo_move_to(cr, textX-extents.x_advance/2, textY+extents.height/2)
+ 		cairo_show_text(cr, text)
+ 		cairo_stroke(cr)
+ 	end
+ 	M.hands(t.clockA.centerX, t.clockA.centerY, h_angle, t.clockA.hh.length, t.clockA.hh.cap, t.clockA.hh.width, t.clockA.hh.color, t.clockA.hh.alpha)
+ 	M.hands(t.clockA.centerX, t.clockA.centerY, m_angle, t.clockA.mh.length, t.clockA.mh.cap, t.clockA.mh.width, t.clockA.mh.color, t.clockA.mh.alpha)
+ end
+ 
+ 
+  
+ --[[
+ ###############################################################################
+ ###                            MODULE MAIN LOOP                             ###
+ ###############################################################################
+ --]]
+ function M.main()
+         for i in pairs(settings_table) do
+             M.cronograph(settings_table[i])
+         end
+ end
+

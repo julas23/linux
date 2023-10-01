@@ -1,0 +1,24 @@
+[Desktop Entry]
+Version=1.0
+Name=Cronograph Station BLK
+GenericName=Starts or restarts Cronograph Station BLK
+Comment=Cronograph Station BLK is an amazing good-looking clock that displays your local weather on your desktop
+Exec=start_crono
+Icon=cronograph
+Type=Application
+StartupNotify=true
+Terminal=false
+Hidden=false
+NoDisplay=false
+Categories=GTK;Utility;Clock;
+X-DBUS-ServiceName=
+X-DBUS-StartupType=unique
+X-GNOME-Autostart-Delay=
+X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-Phase=Application
+X-KDE-StartupNotify=false
+X-KDE-SubstituteUID=false
+X-KDE-Username=
+X-MATE-Autostart-enabled=true
+X-XFCE-Autostart-Override=true
+OnlyShowIn=Unity;GNOME;Cinnamon;KDE;MATE;XFCE;

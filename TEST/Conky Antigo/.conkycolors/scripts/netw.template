@@ -1,0 +1,9 @@
+# N E T W O R K
+${font DejaVu Sans:bold:size=12}${color0}Network [${gw_iface}]${font}${color}
+Local IP: ${GOTO 70}${color3}${addr wlan0}${color}
+Wireless : ${GOTO 70}${color3}${gw_ip}${GOTO 170}${wireless_essid wlan0}${GOTO 230}${wireless_link_qual_perc  wlan0}%${GOTO 270}${wireless_link_bar 5,50 wlan0}${color}
+Public IP: ${GOTO 70}${color3}${execi 10000 ~/.conkycolors/scripts/ip.sh}${color}
+${GOTO 45}Up Speed/Total ${GOTO 210}Down Speed Total
+${GOTO 20}${upspeedgraph wlan0 20,150 00FF7F FF3030}${GOTO 190}${downspeedgraph wlan0 20,150 FF3030 00FF7F}
+${voffset -44}
+${color3}${GOTO 45}${upspeed wlan0}${GOTO 110}${totalup wlan0}${GOTO 215}${downspeed wlan0}${GOTO 280}${totaldown wlan0}${color}

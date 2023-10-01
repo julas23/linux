@@ -1,0 +1,189 @@
+#!/bin/bash
+# BrWeather Modo INPE
+# Criado por LeandroNKZ <leandronkz@gmail.com>
+# Se encontrar BUGs, ou erros no programa, favor reportar ao desenvolvedor
+# Acesse o site para maiores instruções:
+# http://brweatherproject.blogspot.com/
+# Distribuído sob licença GPLv3
+
+DVOLATIL=`grep -m1 '<div class="tit">' ~/.brweather/cache/cache | cut -f2 -d'>' | cut -f1 -d'-' | sed 's/ //g'`
+
+case $DVOLATIL in
+"Domingo")
+  DAY1="Dom"
+  DAY1T="Domingo"
+  DAY2="Seg"
+  DAY2T="Segunda"
+  DAY3="Ter"
+  DAY3T="Terça"
+  DAY4="Qua"
+  DAY4T="Quarta"
+  DAY5="Qui"
+  DAY5T="Quinta"
+  DAY6="Sex"
+  DAY6T="Sexta"
+  DAY7="Sáb"
+  DAY7T="Sábado"
+;;
+"Segunda")
+  DAY1="Seg"
+  DAY1T="Segunda"
+  DAY2="Ter"
+  DAY2T="Terça"
+  DAY3="Qua"
+  DAY3T="Quarta"
+  DAY4="Qui"
+  DAY4T="Quinta"
+  DAY5="Sex"
+  DAY5T="Sexta"
+  DAY6="Sáb"
+  DAY6T="Sábado"
+  DAY7="Dom"
+  DAY7T="Domingo"
+;;
+"Terça")
+  DAY1="Ter"
+  DAY1T="Terça"
+  DAY2="Qua"
+  DAY2T="Quarta"
+  DAY3="Qui"
+  DAY3T="Quinta"
+  DAY4="Sex"
+  DAY4T="Sexta"
+  DAY5="Sáb"
+  DAY5T="Sábado"
+  DAY6="Dom"
+  DAY6T="Domingo"
+  DAY7="Seg"
+  DAY7T="Segunda"
+;;
+"Quarta")
+  DAY1="Qua"
+  DAY1T="Quarta"
+  DAY2="Qui"
+  DAY2T="Quinta"
+  DAY3="Sex"
+  DAY3T="Sexta"
+  DAY4="Sáb"
+  DAY4T="Sábado"
+  DAY5="Dom"
+  DAY5T="Domingo"
+  DAY6="Seg"
+  DAY6T="Segunda"
+  DAY7="Ter"
+  DAY7T="Terça"
+;;
+"Quinta")
+  DAY1="Qui"
+  DAY1T="Quinta"
+  DAY2="Sex"
+  DAY2T="Sexta"
+  DAY3="Sáb"
+  DAY3T="Sábado"
+  DAY4="Dom"
+  DAY4T="Domingo"
+  DAY5="Seg"
+  DAY5T="Segunda"
+  DAY6="Ter"
+  DAY6T="Terça"
+  DAY7="Qua"
+  DAY7T="Quarta"
+;;
+"Sexta")
+  DAY1="Sex"
+  DAY1T="Sexta"
+  DAY2="Sáb"
+  DAY2T="Sábado"
+  DAY3="Dom"
+  DAY3T="Domingo"
+  DAY4="Seg"
+  DAY4T="Segunda"
+  DAY5="Ter"
+  DAY5T="Terça"
+  DAY6="Qua"
+  DAY6T="Quarta"
+  DAY7="Qui"
+  DAY7T="Quinta"
+;;
+"Sábado")
+  DAY1="Sáb"
+  DAY1T="Sábado"
+  DAY2="Dom"
+  DAY2T="Domingo"
+  DAY3="Seg"
+  DAY3T="Segunda"
+  DAY4="Ter"
+  DAY4T="Terça"
+  DAY5="Qua"
+  DAY5T="Quarta"
+  DAY6="Qui"
+  DAY6T="Quinta"
+  DAY7="Sex"
+  DAY7T="Sexta"
+;;
+esac
+
+
+case $1 in
+"--option=city") grep '<div class="i">' ~/.brweather/cache/cache | cut -f2 -d'>' | cut -f1 -d'<'
+;;
+"--option=date") date "+%d-%m-%Y"
+;;
+"--option=Day0") date "+%a"
+;;
+"--option=Day0T") date +%A | sed -r 's/\b[a-z]{3,}/\u&/g'
+;;
+"--option=LU") cat ~/.brweather/cache/lastupdate
+;;
+"--option=LUS")
+    if [ $OPEN == "2" ]; then
+        grep -m1 '<div class="dados">IUV com Nuvem' ~/.brweather/cache/cache | cut -f5 -d'>' | cut -f1 -d'<'
+    else
+        grep -m1 'height="3px" />Atualizado:' ~/.brweather/cache/cache | cut -f2 -d':' | cut -f1 -d'<' | sed 's/ //'
+    fi
+;;
+"--option=TN") grep '<div class="c2"> TEMPERATURA ATUAL' ~/.brweather/cache/cache | cut -f5 -d'>' | cut -f1 -d'C' | sed 's/º//g'
+;;
+"--option=STE") grep -A1 '<div class="c4"> SENSA&Ccedil;&Atilde;O T&Eacute;RMICA' ~/.brweather/cache/cache | tail -n1 | cut -f2 -d'>' | cut -f1 -d'C' | sed 's/º//g'
+;;
+"--option=umid") grep '<div class="c3"> UMIDADE RELATIVA' ~/.brweather/cache/cache | cut -f5 -d'>' | cut -f1 -d'C' | cut -f1 -d'%'
+;;
+"--option=PA") grep -m1 '<div class="c6"> PRESS&Atilde;O ATMOSF&Eacute;RICA&nbsp;' ~/.brweather/cache/cache | cut -f5 -d'>' | cut -f1 -d'<'
+;;
+"--option=windd") grep -m1 '<div class="c5"> DIR. E INTENSIDADE<br>DO VENTO' ~/.brweather/cache/cache | cut -f6 -d'>' | cut -f1 -d'<' | sed 's/ //g'
+;;
+"--option=winds") grep -m1 '<div class="c5"> DIR. E INTENSIDADE<br>DO VENTO' ~/.brweather/cache/cache | cut -f7 -d'>' | cut -f1 -d'<' | sed 's/ //g'
+;;
+"--option=Day1") echo $DAY1
+;;
+"--option=Day1T") echo $DAY1T
+;;
+"--option=Day2") echo $DAY2
+;;
+"--option=Day2T") echo $DAY2T
+;;
+"--option=Day3") echo $DAY3
+;;
+"--option=Day3T") echo $DAY3T
+;;
+"--option=Day4") echo $DAY4
+;;
+"--option=Day4T") echo $DAY4T
+;;
+"--option=Day5") echo $DAY5
+;;
+"--option=Day5T") echo $DAY5T
+;;
+"--option=Day6") echo $DAY6
+;;
+"--option=Day6T") echo $DAY6T
+;;
+"--option=Day7") echo $DAY7
+;;
+"--option=Day7T") echo $DAY7T
+;;
+"--option"* ) echo "Opção inválida.
+Experimente --help para mais informações."
+;;
+esac
+exit 0

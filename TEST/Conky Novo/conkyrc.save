@@ -1,0 +1,103 @@
+# Default Fonts
+use_xft yes
+xftfont Liberation Sans:size=8
+xftalpha 0.1
+override_utf8_locale yes
+
+# Performance Settings
+update_interval 0.5
+total_run_times 0
+double_buffer yes
+no_buffers yes
+net_avg_samples 2
+text_buffer_size 4096
+
+# Window Settings
+own_window yes
+own_window_class Conky
+own_window_type override
+own_window_transparent yes
+own_window_argb_visual no
+#own_window_colour 123456
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+
+# Window border
+draw_borders no
+draw_outline no
+
+# Default Color
+default_color E0DFDE
+format_human_readable
+
+# Color Title.
+color0 FAFAFA #Titulo DD3A21
+color1 FF3030 #Vermelho
+color2 FF7F00 #laranja
+color3 FFD700 #ouro
+color4 FFFF00 #amarelo
+color5 EEE8AA #creme
+color6 FFFFFF #branco
+color7 009ACD #azul
+color8 B0E2FF #azulclaro
+color9 00FF7F #verde
+
+# Size and position
+alignment top_right
+minimum_size 182 768
+maximum_width 182
+gap_x 5
+gap_y 5
+
+TEXT
+# D A T A / H O R A
+${color2}${font Liberation Sans:style=Bold:size=30} ${time %H:%M.}${font}${voffset -15}${font Liberation Sans:style=Bold:size=20}${time %S}${font}${color}
+${voffset 6}${alignc}${time %a %d %B %Y}${voffset -6}
+${voffset 2}${color0}${font ConkyColors:size=15}n${font}${voffset -9}${offset 1}${font Liberation Sans:style=Bold:size=7}${offset -17}${voffset 4}${time %d}${font}${color}${voffset -1}${font Liberation Mono:size=7}${execpi 300 DJS=`date +%_d`; ncal -h -S -b|sed '2,8!d'| sed '/./!d' | sed 's/^/${goto 42} /'| sed 's/$/ /' | sed 's/^/ /' | sed /" $DJS "/s/" $DJS "/" "'${font Arial:style=Bold:size=8}${voffset -2}${offset -4}${color1} '"$DJS"'${color}${font Liberation Mono:size=7}'" "/}${voffset -1}${color}${font}
+# T E M P O
+${execi 600 wget `curl -s --connect-timeout 30 "http://www.cptec.inpe.br/cidades/tempo/1182" |sed -n '/<div class="c1">/p' |awk 'NR == 1' |cut -d\> -f3 |cut -d\" -f2` -O /home/juliano/.conkycolors/icons/hoje.png}${image ~/.conkycolors/icons/hoje.png -s 60x40 -p 0,150}${goto 70}HOJE: ${alignr 2}${font Liberation Sans:style=Bold:size=8}${color1}${execi 600 curl -s --connect-timeout 30 "http://www.cptec.inpe.br/cidades/tempo/1182" |sed -n '/<div class="c8">/p' |awk 'NR == 1' |cut -d\> -f2 |cut -d\< -f1}${color}${font}
+${goto 70}Temp: ${font Liberation Sans:style=Bold:size=8}${color1}${execi 600 curl -s --connect-timeout 30 "http://www.cptec.inpe.br/cidades/tempo/1182" |sed -n '/ TEMPERATURA ATUAL/p' |cut -d\> -f5 |cut -d\< -f1}${color}${font}   -${font Liberation Sans:style=Bold:size=8}${color1} ${execi 600 curl -s --connect-timeout 30 "http://servicos.cptec.inpe.br/RSS/cidade/1182/previsao.xml" |awk 'NR == 20 {print $6}'}${color}${font}   +${font Liberation Sans:style=Bold:size=8}${color1} ${execi 600 curl -s --connect-timeout 30 "http://servicos.cptec.inpe.br/RSS/cidade/1182/previsao.xml" |awk 'NR == 20 {print $8}'}${color}${font}
+${goto 70}Umid: ${font Liberation Sans:style=Bold:size=8}${color1}${execi 600 curl -s --connect-timeout 30 "http://www.cptec.inpe.br/cidades/tempo/1182" |sed -n '/ UMIDADE RELATIVA /p' |cut -d\> -f5 |cut -d\< -f1}${color}${font}  Pres: ${font Liberation Sans:style=Bold:size=8}${color1}${execi 600 curl -s --connect-timeout 30 "http://www.cptec.inpe.br/cidades/tempo/1182" |sed -n '/PRESS&Atilde;O ATMOSF&Eacute;RICA&nbsp;*/p' |cut -d\> -f5 |cut -d\< -f1}${color}${font}
+${goto 70}Vent: ${font Liberation Sans:style=Bold:size=8}${color1}${execi 600 curl -s --connect-timeout 30 "http://www.cptec.inpe.br/cidades/tempo/1182" |sed -n '/DIR. E INTENSIDADE/p' |cut -d\> -f7 |cut -d\" -f1 |cut -d\< -f1}${color}${font}
+
+${execi 600 wget `curl -s --connect-timeout 30 "http://www.cptec.inpe.br/cidades/tempo/1182" |sed -n '/<div class="c1">/p' |awk 'NR == 1' |cut -d\> -f3 |cut -d\" -f2` -O /home/juliano/.conkycolors/icons/hoje.png}
+${image ~/.conkycolors/icons/hoje.png -s 60x40 -p 0,150}
+
+
+
+
+# H A R D W A R E
+${font DejaVu Sans:bold:size=12}${color0}Hardware${font}${color}${stippled_hr}
+MAQ:${GOTO 35}${color5}${exec cat /home/juliano/.conkycolors/scripts/hdw.txt |awk 'NR == 1'}${color}
+CPU:${GOTO 35}${color5}${exec cat /home/juliano/.conkycolors/scripts/hdw.txt |awk 'NR == 2'}${color}
+VGA:${GOTO 35}${color5}${exec cat /home/juliano/.conkycolors/scripts/hdw.txt |awk 'NR == 3'}${color}
+RAM:${GOTO 35}${color5}${exec cat /home/juliano/.conkycolors/scripts/hdw.txt |awk 'NR == 4'}${color}
+HDD:${GOTO 35}${color5}${exec cat /home/juliano/.conkycolors/scripts/hdw.txt |awk 'NR == 5'}${color}
+# M O N I T O R A M E N T O
+${voffset 4}${color0}${font ConkyColors:size=16}c${color}${font}${voffset -4}${goto 32}CPU: ${font Liberation Sans:style=Bold:size=8}${color1}${cpu cpu1}%${color}${font} ${alignr}${color2}${cpugraph cpu1 8,100 E07A1F CE5C00}${color}
+${voffset 2}${color0}${font ConkyColors:size=15}g${font}${color}${goto 32}${voffset -7}RAM: ${font Liberation Sans:style=Bold:size=8}${color1}$memperc%${color}${font}${alignr}${color2}${memgraph cpu1 8,100 E07A1F CE5C00}${color}
+${offset 1}${voffset 4}${color0}${membar 4,17}${color}${goto 32}LIVRE: ${font Liberation Sans:style=Bold:size=8}${color2}${memfree}   ${color}${font}${voffset -1}USO: ${font Liberation Sans:style=Bold:size=8}${color2}${mem}%${color}${font}
+${voffset 1}${color0}${font ConkyColors:size=16}6${color}${font}${goto 32}${voffset -7}BAT: ${battery_percent}% ${battery_time}${alignr}${battery_bar 8,40 BAT0}
+
+# S O F T W A R E
+${font DejaVu Sans:bold:size=12}${color0}Software${font}${color}${stippled_hr}
+Kernel:${GOTO 70}${color5}${sysname} ${kernel} ${machine}${color}
+Host:${GOTO 70}${color5}${execpi 9000 whoami}@${nodename}${color}
+Uptime:${GOTO 70}${color5}${uptime}${color}
+Internal:${GOTO 70}${color5}${addr wlan0}${color}
+External:${GOTO 70}${color5}${execi 600 ~/.conkycolors/scripts/ip.sh}${color}
+Threads:${GOTO 70}${color5}${running_threads} de ${threads}${color}
+Load:${GOTO 70}${color5}${loadavg}${color}
+Text Buffer:${GOTO 70}${color4}${entropy_perc}%${color} (${color4}${entropy_avail}${color} of ${color4}${entropy_poolsize}${color})
+
+# P R O C E S S O S
+Run: ${color4}$running_processes${color} of ${color4}$processes${color}${GOTO 90}PID${GOTO 118}CPU%${GOTO 160}MEM%
+${font Liberation Sans:style=Bold:size=6}${color1} ${top name 1} ${GOTO 90}${top pid 1} ${GOTO 118}${top cpu 1}%${GOTO 160}${top mem 1}%${color}
+${font Liberation Sans:style=Bold:size=6}${color2} ${top name 2} ${GOTO 90}${top pid 2} ${GOTO 118}${top cpu 2}%${GOTO 160}${top mem 2}%${color}
+${font Liberation Sans:style=Bold:size=6}${color3} ${top name 3} ${GOTO 90}${top pid 3} ${GOTO 118}${top cpu 3}%${GOTO 160}${top mem 3}%${color}
+${font Liberation Sans:style=Bold:size=6}${color4} ${top name 4} ${GOTO 90}${top pid 4} ${GOTO 118}${top cpu 4}%${GOTO 160}${top mem 4}%${color}
+${font Liberation Sans:style=Bold:size=6}${color5} ${top name 5} ${GOTO 90}${top pid 5} ${GOTO 118}${top cpu 5}%${GOTO 160}${top mem 5}%${color}
+${font Liberation Sans:style=Bold:size=6}${color6} ${top name 6} ${GOTO 90}${top pid 6} ${GOTO 118}${top cpu 6}%${GOTO 160}${top mem 6}%${color}
+
+# T O D O
+${font DejaVu Sans:bold:size=12}${color0}ToDo${font}${color}${stippled_hr}
+${execi 600 cat /home/juliano/todo.txt}

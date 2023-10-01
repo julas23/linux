@@ -1,0 +1,3 @@
+Concluir Linux		[pacotes]
+Testar Servidores	[monitores]
+Corrigir xplanet	[crontab -e] ??

@@ -1,0 +1,20 @@
+Links Simbólicos para adequação:
+ln -s /opt/conky_colors/conky-colors /bin/conky-colors
+ln -s /opt/conky_colors/conkycolors /usr/share/conkycolors
+
+
+--theme=carbonite
+--ubuntu
+--lang=pt
+--unit=C
+--clock=default
+--calendarm
+--weather=BRXX0050
+--cpu=4
+--cputemp
+--hd=meerkat
+--hdtemp1=sda
+--hdtemp2=sdb
+--network
+
+conky-colors --theme=carbonite --ubuntu --lang=pt --unit=C --clock=default --calendarm --weather=BRXX0050 --cpu=4 --cputemp --network --hd=meerkat --hdtemp1=sda --hdtemp2=sdb --network

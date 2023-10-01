@@ -1,0 +1,1178 @@
+#!/bin/bash
+# BrWeather
+# Criado por LeandroNKZ <leandronkz@gmail.com>
+# Se encontrar BUGs, ou erros no programa, favor reportar ao desenvolvedor
+# Acesse o site para maiores instruções:
+# http://brweatherproject.blogspot.com/
+# Distribuído sob licença GPLv3
+
+################################################################
+
+##Opções avançadas (Edite apenas se estritamente necessário)
+
+##Diretório base (evite atalhos como ~/ ou $HOME, use caminhos completos:/home/seu_usuario/brweather):
+##Créditos a rhatto pela implementação
+DIRNAME="/opt/brweather" #Diretório de instalação padrão
+
+##Timer para apagar arquivos de logs:
+TIME_COUNT="10800" #A cada três horas, verificar e apagar logs antigos
+
+##Permitir execução pelo usuário root (1=sim ; 0=não):
+ROOT="0"
+
+################################################################
+
+
+
+##Conferindo se o usuário não é root
+if [ `whoami` = "root" ] && [ $ROOT = "0" ] ; then
+    echo "Erro: O BrWeather deve ser usado apenas como usuário normal."
+    exit 1
+fi
+
+##Conferindo se já existe o arquivo de configuração
+CONF(){
+    echo "Criando pasta de configuração ~/.brweather..."
+    mkdir ~/.brweather
+    mkdir ~/.brweather/cache
+}
+
+CONF2(){
+    echo "Criando arquivo de configuração ~/.brweather.conf"
+    cp $DIRNAME/doc/brweather.conf.default ~/.brweather.conf
+}
+
+CONF3(){
+    mkdir ~/.brweather/cache
+}
+
+cat ~/.brweather.conf &>/dev/null || CONF2
+ls ~/.brweather &>/dev/null || CONF
+ls ~/.brweather/cache &>/dev/null || CONF3
+
+
+##Conferindo se foi utilizada alguma opção
+if [ -z $1 ] ; then
+    echo ""
+    echo 'Utilize alguma opção.
+
+Uso: brweather [OPÇÃO]
+
+Tente "brweather --help" para mais opções.'
+    exit 1
+fi
+
+##Mensagens de Erro
+
+LOG=`date "+%A %d/%m/%Y %H:%M:%S"`
+
+ERROA1="Log $LOG COD#`date +%s`
+Falha no cache INPE
+
+Falha ao obter dados das previsões.
+Isso pode ser causado por:
+- Falha ao conectar à Internet;
+- Servidor temporariamente fora do ar;
+- O programa não consegue interpretar as informações baixadas.
+
+Tente limpar o cache com o comando:
+
+brweather --clean-cache
+
+Se o erro persistir por vários dias, entre em contato com o desenvolvedor pelo e-mail abaixo:
+
+leandronkz@gmail.com"
+
+ERROB1="Log $LOG COD#`date +%s`
+Falha no cache OPEN
+
+Falha ao obter dados das previsões.
+Isso pode ser causado por:
+- Falha ao conectar à Internet;
+- Servidor temporariamente fora do ar;
+- O programa não consegue interpretar as informações baixadas.
+
+Tente limpar o cache com o comando:
+
+brweather --clean-cache
+
+Se o erro persistir por vários dias, entre em contato com o desenvolvedor pelo e-mail abaixo:
+
+leandronkz@gmail.com"
+
+
+##Versão do programa
+VERSION=`cat $DIRNAME/doc/version`
+
+
+##Ler arquivo de configuração
+source ~/.brweather.conf
+
+##Opções do programa que não precisam de Internet
+case $1 in
+    "--gerar-log") source $DIRNAME/bin/logs
+    exit 0
+    ;;
+    "--version") echo "BrWeather-$VERSION"
+    exit 0
+    ;;
+    "--autor") echo "Leandro Nkz <leandronkz@gmail.com>"
+    echo "http://brweatherproject.blogspot.com/"
+    exit 0
+    ;;
+    "--help") cat $DIRNAME/doc/help
+    exit 0
+    ;;
+    "--help-default") cat $DIRNAME/doc/help-default
+    exit 0
+    ;;
+    "--help-open") cat $DIRNAME/doc/help-open
+    exit 0
+    ;;
+    "--help-hibrido") cat $DIRNAME/doc/help-hibrido
+    exit 0
+    ;;
+    "--help-google")
+    echo "Opção descontinuada. Tente:
+    --help-open"
+    exit 0
+    ;;
+    "--man") man $DIRNAME/doc/man
+    exit 0
+    ;;
+    "--clean-cache") rm -f ~/.brweather/log* && rm -f ~/.brweather/cache/*
+    echo "Cache limpo!"
+    exit 0
+    ;;
+    "--changelog") cat $DIRNAME/doc/Changelog
+    exit 0
+    ;;
+    "--option=LUA"*) source $DIRNAME/bin/moon $*
+    exit 0
+    ;;
+    "--season"*) source $DIRNAME/bin/seasons $*
+    exit 0
+    ;;
+    "--mode")
+    if [ $OPEN = "0" ] ; then
+        echo "O modo INPE está ativado."
+    elif [ $OPEN = "1" ] ; then
+        echo "O modo OPEN está ativado."
+    elif [ $OPEN = "2" ] ; then
+        echo "O modo Híbrido está ativado."
+    fi
+    exit 0
+    ;;
+esac
+
+
+if [ $1 = "--total-images" ] ; then
+    if [ `ls $DIRNAME/imagens/ | grep imagem | wc -l` -gt 7 ] ; then
+        echo -e "imagem1\nimagem2\nimagem3\nimagem4\nimagem5\nimagem6\nimagem7\nimagem8\nimagem9\nimagem10\nimagem11\nimagem12" && exit 0
+    else
+        echo -e "imagem1\nimagem2\nimagem3\nimagem4\nimagem5\nimagem6\nimagem7" && exit 0
+    fi
+fi
+
+#Baixar cache de previsões
+if [ $OPEN = "0" ] ; then
+    cat ~/.brweather/cache/timer &>/dev/null || echo "0" > ~/.brweather/cache/timer
+
+    TIME=`date '+%s'`
+    TIME1=`cat ~/.brweather/cache/timer`
+    TIME2=$(($TIME+$TIMER))
+
+elif [ $OPEN = "1" ] ; then
+    cat ~/.brweather/cache/timer2 &>/dev/null || echo "0" > ~/.brweather/cache/timer2
+
+    TIME=`date '+%s'`
+    TIME1=`cat ~/.brweather/cache/timer2`
+    TIME2=$(($TIME+$TIMER))
+
+elif [ $OPEN = "2" ] ; then
+    cat ~/.brweather/cache/timer3 &>/dev/null || echo "0" > ~/.brweather/cache/timer3
+
+    TIME=`date '+%s'`
+    TIME1=`cat ~/.brweather/cache/timer3`
+    TIME2=$(($TIME+$TIMER))
+fi
+
+#API Key
+KEY="ee701e50c956bc75c87e5b237b16fd64"
+
+if [ $TIME1 -lt $TIME ] ; then
+    if [ $OPEN = "0" ] ; then
+        wget -q -T $TIME -O ~/.brweather/cache/previsao "http://tempo1.cptec.inpe.br/cidades/tempo/$CPTEC_INPE"
+        echo $TIME2 > ~/.brweather/cache/timer
+        cat ~/.brweather/cache/previsao | iconv -f iso-8859-1 -t $CODIGO -o ~/.brweather/cache/previsao
+    elif [ $OPEN = "1" ] ; then
+        wget -q -T $TIME -O ~/.brweather/cache/open1_A "http://api.openweathermap.org/data/2.5/weather?id=$OPEN_ID&units=metric&APPID=$KEY"
+        wget -q -T $TIME -O ~/.brweather/cache/open2_A "http://api.openweathermap.org/data/2.5/forecast/daily?id=$OPEN_ID&units=metric&APPID=$KEY"
+        echo $TIME2 > ~/.brweather/cache/timer2
+    elif [ $OPEN = "2" ] ; then
+        wget -q -T $TIME -O ~/.brweather/cache/previsao "http://tempo1.cptec.inpe.br/cidades/tempo/$CPTEC_INPE"
+        cat ~/.brweather/cache/previsao | iconv -f iso-8859-1 -t $CODIGO -o ~/.brweather/cache/previsao
+
+        wget -q -T $TIME -O ~/.brweather/cache/open1_A "http://api.openweathermap.org/data/2.5/weather?id=$OPEN_ID&units=metric&APPID=$KEY"
+        wget -q -T $TIME -O ~/.brweather/cache/open2_A "http://api.openweathermap.org/data/2.5/forecast/daily?id=$OPEN_ID&units=metric&APPID=$KEY"
+        echo $TIME2 > ~/.brweather/cache/timer3
+    fi
+
+    if [ $OPEN = "0" ] ; then
+        if [ -f `grep '<div class="i">' ~/.brweather/cache/previsao | cut -f2 -d'>' | cut -f1 -d'<' | sed 's/ /_/g'` ] ; then
+            echo "$ERROA1" > ~/.brweather/log
+            echo $(($TIME+30)) > ~/.brweather/cache/timer
+        else
+            cat ~/.brweather/cache/previsao > ~/.brweather/cache/cache
+            sed -i 's/\r//g' ~/.brweather/cache/cache
+            date "+%H:%M:%S" > ~/.brweather/cache/lastupdate
+        fi
+    elif [ $OPEN = "1" ] ; then
+        if [ -f $(awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/name\042/){print$(i+1)}}}' ~/.brweather/cache/open1_A | sed 's/ /_/g') ] ; then
+            echo "$ERROB1" > ~/.brweather/log
+            echo $(($TIME+50)) > ~/.brweather/cache/timer2
+        else
+            date "+%H:%M:%S" > ~/.brweather/cache/lastupdate
+            cat ~/.brweather/cache/open1_A > ~/.brweather/cache/open1
+        fi
+        if [ -f $(awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/name\042/){print$(i+1)}}}' ~/.brweather/cache/open2_A | sed 's/ /_/g') ] ; then
+            echo "$ERROB1" > ~/.brweather/log
+            echo $(($TIME+50)) > ~/.brweather/cache/timer2
+        else
+            cat ~/.brweather/cache/open2_A | sed 's/{"dt"/\n"{dt"/g' > ~/.brweather/cache/open2_B
+            grep "dt_calc" ~/.brweather/cache/open2_B | sed 's/id/cityid/g' > ~/.brweather/cache/open2
+            for i in `egrep ^'"{dt":' ~/.brweather/cache/open2_B | cut -f2 -d':' | cut -f1 -d','` ; do
+                DATE=`date -d "1/1/1970 + $i seconds" "+%a:%H"`
+                grep "\"{dt\":$i" ~/.brweather/cache/open2_B | sed -e "s/$i/$DATE:/" >> ~/.brweather/cache/open2
+            done
+        fi
+    elif [ $OPEN = "2" ] ; then
+        if [ -f `grep '<div class="i">' ~/.brweather/cache/previsao | cut -f2 -d'>' | cut -f1 -d'<' | sed 's/ /_/g'` ] ; then
+            echo "$ERROA1" > ~/.brweather/log
+            echo $(($TIME+30)) > ~/.brweather/cache/timer3
+        else
+            cat ~/.brweather/cache/previsao > ~/.brweather/cache/cache
+            sed -i 's/\r//g' ~/.brweather/cache/cache
+            date "+%H:%M:%S" > ~/.brweather/cache/lastupdate
+        fi
+        if [ -f $(awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/name\042/){print$(i+1)}}}' ~/.brweather/cache/open1_A | sed 's/ /_/g') ] ; then
+            echo "$ERROB1" > ~/.brweather/log
+            echo $(($TIME+50)) > ~/.brweather/cache/timer3
+        else
+            date "+%H:%M:%S" > ~/.brweather/cache/lastupdate
+            cat ~/.brweather/cache/open1_A > ~/.brweather/cache/open1
+        fi
+        if [ -f $(awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/name\042/){print$(i+1)}}}' ~/.brweather/cache/open2_A | sed 's/ /_/g') ] ; then
+            echo "$ERROB1" > ~/.brweather/log
+            echo $(($TIME+50)) > ~/.brweather/cache/timer3
+        else
+            cat ~/.brweather/cache/open2_A | sed 's/{"dt"/\n"{dt"/g' > ~/.brweather/cache/open2_B
+            grep "dt_calc" ~/.brweather/cache/open2_B | sed 's/id/cityid/g' > ~/.brweather/cache/open2
+            for i in `egrep ^'"{dt":' ~/.brweather/cache/open2_B | cut -f2 -d':' | cut -f1 -d','` ; do
+                DATE=`date -d "1/1/1970 + $i seconds" "+%a:%H"`
+                grep "\"{dt\":$i" ~/.brweather/cache/open2_B | sed -e "s/$i/$DATE:/" >> ~/.brweather/cache/open2
+            done
+        fi
+    fi
+fi
+
+
+#Imagens
+IMAGE=`echo '${image'`
+
+if [ `ls $DIRNAME/imagens/ | grep imagem | wc -l` -gt 7 ] ; then
+    case $1 in
+        ##CN
+        "--imagem1=CN")
+        IMAGEM="1"
+        ;;
+        "--imagem2=CN")
+        IMAGEM="2"
+        ;;
+        "--imagem3=CN")
+        IMAGEM="3"
+        ;;
+        "--imagem4=CN")
+        IMAGEM="4"
+        ;;
+        "--imagem5=CN")
+        IMAGEM="5"
+        ;;
+        "--imagem6=CN")
+        IMAGEM="6"
+        ;;
+        "--imagem7=CN")
+        IMAGEM="7"
+        ;;
+        "--imagem8=CN")
+        IMAGEM="8"
+        ;;
+        "--imagem9=CN")
+        IMAGEM="9"
+        ;;
+        "--imagem10=CN")
+        IMAGEM="10"
+        ;;
+        "--imagem11=CN")
+        IMAGEM="11"
+        ;;
+        "--imagem12=CN")
+        IMAGEM="12"
+        ;;
+        "--imagem"*=CN)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C1
+        "--imagem1=C1")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C1")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C1")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C1")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C1")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C1")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C1")
+        IMAGEM="7"
+        ;;
+        "--imagem8=C1")
+        IMAGEM="8"
+        ;;
+        "--imagem9=C1")
+        IMAGEM="9"
+        ;;
+        "--imagem10=C1")
+        IMAGEM="10"
+        ;;
+        "--imagem11=C1")
+        IMAGEM="11"
+        ;;
+        "--imagem12=C1")
+        IMAGEM="12"
+        ;;
+        "--imagem"*=C1)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C2
+        "--imagem1=C2")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C2")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C2")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C2")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C2")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C2")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C2")
+        IMAGEM="7"
+        ;;
+        "--imagem8=C2")
+        IMAGEM="8"
+        ;;
+        "--imagem9=C2")
+        IMAGEM="9"
+        ;;
+        "--imagem10=C2")
+        IMAGEM="10"
+        ;;
+        "--imagem11=C2")
+        IMAGEM="11"
+        ;;
+        "--imagem12=C2")
+        IMAGEM="12"
+        ;;
+        "--imagem"*=C2)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C3
+        "--imagem1=C3")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C3")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C3")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C3")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C3")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C3")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C3")
+        IMAGEM="7"
+        ;;
+        "--imagem8=C3")
+        IMAGEM="8"
+        ;;
+        "--imagem9=C3")
+        IMAGEM="9"
+        ;;
+        "--imagem10=C3")
+        IMAGEM="10"
+        ;;
+        "--imagem11=C3")
+        IMAGEM="11"
+        ;;
+        "--imagem12=C3")
+        IMAGEM="12"
+        ;;
+        "--imagem"*=C3)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C4
+        "--imagem1=C4")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C4")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C4")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C4")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C4")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C4")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C4")
+        IMAGEM="7"
+        ;;
+        "--imagem8=C4")
+        IMAGEM="8"
+        ;;
+        "--imagem9=C4")
+        IMAGEM="9"
+        ;;
+        "--imagem10=C4")
+        IMAGEM="10"
+        ;;
+        "--imagem11=C4")
+        IMAGEM="11"
+        ;;
+        "--imagem12=C4")
+        IMAGEM="12"
+        ;;
+        "--imagem"*=C4)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C5
+        "--imagem1=C5")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C5")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C5")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C5")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C5")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C5")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C5")
+        IMAGEM="7"
+        ;;
+        "--imagem8=C5")
+        IMAGEM="8"
+        ;;
+        "--imagem9=C5")
+        IMAGEM="9"
+        ;;
+        "--imagem10=C5")
+        IMAGEM="10"
+        ;;
+        "--imagem11=C5")
+        IMAGEM="11"
+        ;;
+        "--imagem12=C5")
+        IMAGEM="12"
+        ;;
+        "--imagem"*=C5)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C6
+        "--imagem1=C6")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C6")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C6")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C6")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C6")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C6")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C6")
+        IMAGEM="7"
+        ;;
+        "--imagem8=C6")
+        IMAGEM="8"
+        ;;
+        "--imagem9=C6")
+        IMAGEM="9"
+        ;;
+        "--imagem10=C6")
+        IMAGEM="10"
+        ;;
+        "--imagem11=C6")
+        IMAGEM="11"
+        ;;
+        "--imagem12=C6")
+        IMAGEM="12"
+        ;;
+        "--imagem"*=C6)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C7
+        "--imagem1=C7")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C7")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C7")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C7")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C7")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C7")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C7")
+        IMAGEM="7"
+        ;;
+        "--imagem8=C7")
+        IMAGEM="8"
+        ;;
+        "--imagem9=C7")
+        IMAGEM="9"
+        ;;
+        "--imagem10=C7")
+        IMAGEM="10"
+        ;;
+        "--imagem11=C7")
+        IMAGEM="11"
+        ;;
+        "--imagem12=C7")
+        IMAGEM="12"
+        ;;
+        "--imagem"*=C7)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+    esac
+else
+    case $1 in
+        ##CN
+        "--imagem1=CN")
+        IMAGEM="1"
+        ;;
+        "--imagem2=CN")
+        IMAGEM="2"
+        ;;
+        "--imagem3=CN")
+        IMAGEM="3"
+        ;;
+        "--imagem4=CN")
+        IMAGEM="4"
+        ;;
+        "--imagem5=CN")
+        IMAGEM="5"
+        ;;
+        "--imagem6=CN")
+        IMAGEM="6"
+        ;;
+        "--imagem7=CN")
+        IMAGEM="7"
+        ;;
+        "--imagem"*=CN)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C1
+        "--imagem1=C1")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C1")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C1")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C1")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C1")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C1")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C1")
+        IMAGEM="7"
+        ;;
+        "--imagem"*=C1)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C2
+        "--imagem1=C2")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C2")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C2")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C2")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C2")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C2")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C2")
+        IMAGEM="7"
+        ;;
+        "--imagem"*=C2)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C3
+        "--imagem1=C3")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C3")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C3")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C3")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C3")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C3")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C3")
+        IMAGEM="7"
+        ;;
+        "--imagem"*=C3)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C4
+        "--imagem1=C4")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C4")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C4")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C4")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C4")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C4")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C4")
+        IMAGEM="7"
+        ;;
+        "--imagem"*=C4)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C5
+        "--imagem1=C5")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C5")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C5")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C5")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C5")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C5")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C5")
+        IMAGEM="7"
+        ;;
+        "--imagem"*=C5)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C6
+        "--imagem1=C6")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C6")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C6")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C6")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C6")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C6")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C6")
+        IMAGEM="7"
+        ;;
+        "--imagem"*=C6)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+        ##C7
+        "--imagem1=C7")
+        IMAGEM="1"
+        ;;
+        "--imagem2=C7")
+        IMAGEM="2"
+        ;;
+        "--imagem3=C7")
+        IMAGEM="3"
+        ;;
+        "--imagem4=C7")
+        IMAGEM="4"
+        ;;
+        "--imagem5=C7")
+        IMAGEM="5"
+        ;;
+        "--imagem6=C7")
+        IMAGEM="6"
+        ;;
+        "--imagem7=C7")
+        IMAGEM="7"
+        ;;
+        "--imagem"*=C7)
+        echo "Tema de imagens não encontrado." && exit 1
+        ;;
+    esac
+fi
+
+
+##Escolher entre modo Open ou INPE
+if [ $OPEN = "0" ] ; then
+    case $1 in
+        "--imagem"*=CN) source $DIRNAME/bin/inpe-4 $*
+        ;;
+        "--imagem"*=C1) source $DIRNAME/bin/inpe-4 $*
+        ;;
+        "--imagem"*=C2) source $DIRNAME/bin/inpe-5 $*
+        ;;
+        "--imagem"*=C3) source $DIRNAME/bin/inpe-5 $*
+        ;;
+        "--imagem"*=C4) source $DIRNAME/bin/inpe-5 $*
+        ;;
+        "--imagem"*=C5) source $DIRNAME/bin/inpe-6 $*
+        ;;
+        "--imagem"*=C6) source $DIRNAME/bin/inpe-6 $*
+        ;;
+        "--imagem"*=C7) source $DIRNAME/bin/inpe-6 $*
+        ;;
+        "--option=city") source $DIRNAME/bin/inpe-1 $*
+        ;;
+        "--option=date") source $DIRNAME/bin/inpe-1 $*
+        ;;
+        "--option=Day"*) source $DIRNAME/bin/inpe-1 $*
+        ;;
+        "--option=LU"*) source $DIRNAME/bin/inpe-1 $*
+        ;;
+        "--option=CN"*) source $DIRNAME/bin/inpe-4 $*
+        ;;
+        "--option=TN") source $DIRNAME/bin/inpe-1 $*
+        ;;
+        "--option=STE") source $DIRNAME/bin/inpe-1 $*
+        ;;
+        "--option=umid") source $DIRNAME/bin/inpe-1 $*
+        ;;
+        "--option=umid1") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=umid2") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=umid3") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=umid4") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=umid5") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=umid6") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=umid7") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=PA") source $DIRNAME/bin/inpe-1 $*
+        ;;
+        "--option=wind"*) source $DIRNAME/bin/inpe-1 $*
+        ;;
+        "--option=UV"*) source $DIRNAME/bin/inpe-3 $*
+        ;;
+        "--option=SOL"*) source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=LT"*) source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=HT"*) source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=C1"*) source $DIRNAME/bin/inpe-4 $*
+        ;;
+        "--option=PC"*) source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=C2"*) source $DIRNAME/bin/inpe-5 $*
+        ;;
+        "--option=C3"*) source $DIRNAME/bin/inpe-5 $*
+        ;;
+        "--option=C4"*) source $DIRNAME/bin/inpe-5 $*
+        ;;
+        "--option=C5"*) source $DIRNAME/bin/inpe-6 $*
+        ;;
+        "--option=C6"*) source $DIRNAME/bin/inpe-6 $*
+        ;;
+        "--option=C7"*) source $DIRNAME/bin/inpe-6 $*
+        ;;
+        "–option"*) echo -e "Opção inválida.\nO correto é --option (com dois traços)."
+        ;;
+        "--imagem"* ) echo -e "Opção inválida.\nExperimente --help para mais informações."
+        ;;
+        "–imagem"*) echo -e "Opção inválida.\nO correto é --imagem (com dois traços)."
+        ;;
+        *) echo -e "Opção inválida.\nExperimente --help para mais informações."
+        ;;
+    esac
+elif [ $OPEN = "1" ] ; then
+    case $1 in
+        "--imagem"*=CN) source $DIRNAME/bin/open-3 $*
+        ;;
+        "--imagem"*=C1) source $DIRNAME/bin/open-3 $*
+        ;;
+        "--imagem"*=C2) source $DIRNAME/bin/open-4 $*
+        ;;
+        "--imagem"*=C3) source $DIRNAME/bin/open-4 $*
+        ;;
+        "--imagem"*=C4) source $DIRNAME/bin/open-4 $*
+        ;;
+        "--imagem"*=C5) source $DIRNAME/bin/open-5 $*
+        ;;
+        "--imagem"*=C6) source $DIRNAME/bin/open-5 $*
+        ;;
+        "--imagem"*=C7) source $DIRNAME/bin/open-5 $*
+        ;;
+        "--option=city") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=date") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=Day"*"T") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=Day0") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=Day1") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=Day2") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=Day3") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=Day4") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=Day5") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=Day6") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=Day7") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=LU"*) source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=CN"*) source $DIRNAME/bin/open-3 $*
+        ;;
+        "--option=TN") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=CLD") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=CLD1") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=CLD2") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=CLD3") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=CLD4") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=CLD5") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=CLD6") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=CLD7") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=umid") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=umid1") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=umid2") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=umid3") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=umid4") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=umid5") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=umid6") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=umid7") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=PA") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=PA1") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=PA2") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=PA3") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=PA4") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=PA5") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=PA6") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=PA7") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=wind") source $DIRNAME/bin/open-1 --option=winds
+        ;;
+        "--option=winds") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=windd") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=LT1") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=LT2") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=LT3") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=LT4") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=LT5") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=LT6") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=LT7") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=HT1") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=HT2") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=HT3") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=HT4") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=HT5") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=HT6") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=HT7") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=C1"*) source $DIRNAME/bin/open-3 $*
+        ;;
+        "--option=C2"*) source $DIRNAME/bin/open-4 $*
+        ;;
+        "--option=C3"*) source $DIRNAME/bin/open-4 $*
+        ;;
+        "--option=C4"*) source $DIRNAME/bin/open-4 $*
+        ;;
+        "--option=C5"*) source $DIRNAME/bin/open-5 $*
+        ;;
+        "--option=C6"*) source $DIRNAME/bin/open-5 $*
+        ;;
+        "--option=C7"*) source $DIRNAME/bin/open-5 $*
+        ;;
+        "–option"*) echo -e "Opção inválida.\nO correto é --option (com dois traços)."
+        ;;
+        "--imagem"* ) echo -e "Opção inválida.\nExperimente --help para mais informações."
+        ;;
+        "–imagem"*) echo -e "Opção inválida.\nO correto é --imagem (com dois traços)."
+        ;;
+        *) echo -e "Opção inválida.\nExperimente --help para mais informações."
+        ;;
+    esac
+elif [ $OPEN = "2" ] ; then
+    case $1 in
+        "--imagem"*=CN) source $DIRNAME/bin/open-3 $*
+        ;;
+        "--imagem"*=C1) source $DIRNAME/bin/inpe-4 $*
+        ;;
+        "--imagem"*=C2) source $DIRNAME/bin/inpe-5 $*
+        ;;
+        "--imagem"*=C3) source $DIRNAME/bin/inpe-5 $*
+        ;;
+        "--imagem"*=C4) source $DIRNAME/bin/inpe-5 $*
+        ;;
+        "--imagem"*=C5) source $DIRNAME/bin/inpe-6 $*
+        ;;
+        "--imagem"*=C6) source $DIRNAME/bin/inpe-6 $*
+        ;;
+        "--imagem"*=C7) source $DIRNAME/bin/inpe-6 $*
+        ;;
+        "--option=city") source $DIRNAME/bin/inpe-1 $*
+        ;;
+        "--option=date") source $DIRNAME/bin/inpe-1 $*
+        ;;
+        "--option=Day"*) source $DIRNAME/bin/inpe-1 $*
+        ;;
+        "--option=LU"*) source $DIRNAME/bin/inpe-1 $*
+        ;;
+        "--option=CN"*) source $DIRNAME/bin/open-3 $*
+        ;;
+        "--option=TN") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=umid") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=umid1") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=umid2") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=umid3") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=umid4") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=umid5") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=umid6") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=umid7") source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=PA") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=PA1") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=PA2") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=PA3") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=PA4") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=PA5") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=PA6") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=PA7") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=wind") source $DIRNAME/bin/open-1 --option=winds
+        ;;
+        "--option=winds") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=windd") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=UV"*) source $DIRNAME/bin/inpe-3 $*
+        ;;
+        "--option=SOL"*) source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=LT"*) source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=HT"*) source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=C1"*) source $DIRNAME/bin/inpe-4 $*
+        ;;
+        "--option=PC"*) source $DIRNAME/bin/inpe-2 $*
+        ;;
+        "--option=C2"*) source $DIRNAME/bin/inpe-5 $*
+        ;;
+        "--option=C3"*) source $DIRNAME/bin/inpe-5 $*
+        ;;
+        "--option=C4"*) source $DIRNAME/bin/inpe-5 $*
+        ;;
+        "--option=C5"*) source $DIRNAME/bin/inpe-6 $*
+        ;;
+        "--option=C6"*) source $DIRNAME/bin/inpe-6 $*
+        ;;
+        "--option=C7"*) source $DIRNAME/bin/inpe-6 $*
+        ;;
+        "--option=CLD") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=CLD1") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=CLD2") source $DIRNAME/bin/open-1 $*
+        ;;
+        "--option=CLD3") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=CLD4") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=CLD5") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=CLD6") source $DIRNAME/bin/open-2 $*
+        ;;
+        "--option=CLD7") source $DIRNAME/bin/open-2 $*
+        ;;
+        "–option"*) echo -e "Opção inválida.\nO correto é --option (com dois traços)."
+        ;;
+        "--imagem"* ) echo -e "Opção inválida.\nExperimente --help para mais informações."
+        ;;
+        "–imagem"*) echo -e "Opção inválida.\nO correto é --imagem (com dois traços)."
+        ;;
+        *) echo -e "Opção inválida.\nExperimente --help para mais informações."
+        ;;
+      esac
+fi
+
+##Exterminador de logs ;)
+if [ -e ~/.brweather/log ] ; then
+    COD=`head -n1 ~/.brweather/log | cut -f2 -d'#'`
+    COD2=$(($COD + $TIME_COUNT))
+    if [ $TIME -gt $COD2 ] ; then
+        rm ~/.brweather/log
+    elif [ $TIME -eq $COD2 ] ; then
+        rm ~/.brweather/log
+    fi
+fi
+exit 0
