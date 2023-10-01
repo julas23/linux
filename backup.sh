@@ -46,9 +46,9 @@ linuxfiles(){
     cp -r /usr/share/zsh-theme-powerlevel10k $TARGET
     cp -r /usr/share/zsh $TARGET
 
-    echo 'Removing 6 hour old backups. This list will be deleted.'
-    find $TARGET -type d -cmin +360 -print
-    find $TARGET -type d -cmin +360 -exec rm -r {} \;
+    #echo 'Removing 6 hour old backups. This list will be deleted.'
+    #find $TARGET -type d -cmin +360 -print
+    #find $TARGET -type d -cmin +360 -exec rm -r {} \;
 
     echo 'Backup Pacman conf.'
     sudo cp /etc/pacman.conf $TARGET

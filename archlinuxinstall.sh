@@ -54,17 +54,17 @@ esac
 func_wm_install() {
     pacman --noconfirm -Syy
 	pacman --noconfirm -Syyu
-	pacman -S git base-devel
-	pacman -S git
+	pacman --noconfirm -S git base-devel
+	pacman --noconfirm -S git
 	git clone https://aur.archlinux.org/yay.git
 	cd yay
 	makepkg -si
 	yay -S pamac
 	pacman --noconfirm -S paru
 	pamac enable AUR
-    pacman -Syy
-    pacman -Syyu
-    pacman -S --needed xorg lightdm lightdm-gtk-greeter acpid networkmanager connman
+    pacman --noconfirm -Syy
+    pacman --noconfirm -Syyu
+    pacman --noconfirm -S --needed xorg lightdm lightdm-gtk-greeter acpid networkmanager connman
     systemctl enable dhcpcd
     systemctl enable sshd
     systemctl enable lightdm
@@ -73,28 +73,28 @@ func_wm_install() {
     systemctl enable acpid
     case "$1" in
         "mate")
-            pacman -S --needed mate-desktop mate-session-manager mate-panel mate-control-center mate-extra mate-applet-dock mate-applet-streamer caja marco
+            pacman --noconfirm -S --needed mate-desktop mate-session-manager mate-panel mate-control-center mate-extra mate-applet-dock mate-applet-streamer caja marco
             ;;
         "plasma")
-            pacman -S --needed plasma plasma-desktop plasma-wayland-session kde-applications
+            pacman --noconfirm -S --needed plasma plasma-desktop plasma-wayland-session kde-applications
             ;;
         "gnome")
-            pacman -S --needed gnome gnome-extra gnome-tweaks
+            pacman --noconfirm -S --needed gnome gnome-extra gnome-tweaks
             ;;
         "xfe")
-            pacman -S --needed xfce4 xfce4-goodies
+            pacman --noconfirm -S --needed xfce4 xfce4-goodies
             ;;
         "lxde")
-            pacman -S --needed pacman -S lxdm
+            pacman --noconfirm -S --needed pacman -S lxdm
             ;;
         "afterstep")
-            pacman -S --needed afterstep
+            pacman --noconfirm -S --needed afterstep
             ;;
         "enlightenment")
-                pacman -S efl
-                pacman -S enlightenment
-                pacman -S --needed firefox vlc filezilla leafpad xscreensaver archlinux-wallpaper 
-                pacman -S ecrire ephoto evisum rage terminology
+                pacman --noconfirm -S efl
+                pacman --noconfirm -S enlightenment
+                pacman --noconfirm -S --needed firefox vlc filezilla leafpad xscreensaver archlinux-wallpaper 
+                pacman --noconfirm -S ecrire ephoto evisum rage terminology
             ;;
         *)
             echo "Window Manager not recognized.: $1"
@@ -263,8 +263,8 @@ func_chaotic() {
 func_pamac_yay() {
 	pacman --noconfirm -Syy
 	pacman --noconfirm -Syyu
-	pacman -S git base-devel
-	pacman -S git
+	pacman --noconfirm -S git base-devel
+	pacman --noconfirm -S git
 	git clone https://aur.archlinux.org/yay.git
 	cd yay
 	makepkg -si
@@ -320,17 +320,17 @@ func_install() {
 }
 
 func_linux_amd() {
-	pacman -S xf86-video-fbdev
-	pacman -S xf86-video-ati
-	pacman -S xf86-video-amdgpu
+	pacman --noconfirm -S xf86-video-fbdev
+	pacman --noconfirm -S xf86-video-ati
+	pacman --noconfirm -S xf86-video-amdgpu
 	modprobe fbdev
 	modprobe ati
 	modprobe amdgpu
 }
 
 func_linux_nvidia() {
-	pacman -S xf86-video-fbdev
-	pacman -S nvidia
+	pacman --noconfirm -S xf86-video-fbdev
+	pacman --noconfirm -S nvidia
 	modprobe fbdev
 	modprobe nvidia
 }
