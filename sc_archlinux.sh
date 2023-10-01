@@ -196,6 +196,7 @@ func_confirm_disk() {
     echo "PartUEFI:" $UEFI
     echo "PartROOT:" $ROOT
     lsblk -o NAME,MOUNTPOINT,SIZE,FSUSED,FSAVAIL,FSUSE%,FSTYPE
+    func_archlinux_installation
 }
 
 func_cable_cfg() {
@@ -280,6 +281,7 @@ func_pamac_yay() {
 	yay -S pamac
 	pacman --noconfirm -S paru
 	pamac enable AUR
+    func_wm_install
 }
 
 func_mariadb() {
@@ -305,7 +307,7 @@ func_mariadb() {
 	systemctl restart mariadb
 }
 
-func_install() {
+func_package_install() {
 	echo "" > error.log
 	pacman --noconfirm -S simple-scan
 	paru MFC-L2710DW
@@ -386,7 +388,11 @@ func_archlinux_installation() {
     reflector -c "US" -f 12 -l 10 -n 12 --save /etc/pacman.d/mirrorlist
     pacstrap /mnt base linux linux-firmware vim nano nano dhcpcd net-tools grub efibootmgr openssh
     genfstab -U /mnt >> /mnt/etc/fstab
-    arch-chroot /mnt
+    cp sc_* /mnt/
+    arch-chroot /mnt /usr/bin/bash sc_archlinux.sh func_after_chroot
+}
+
+func_after_chroot(){
     ln -sf /usr/share/zoneinfo/Europe/Lisbon /etc/localtime
     hwclock --systohc
     locale-gen
@@ -418,6 +424,7 @@ func_archlinux_installation() {
     grub-install --target=x86_64-efi $BOOT
     grub-mkconfig -o /boot/grub/grub.cfg
     mkinitcpio -p linux
+    func_pamac_yay
 }
 
 if [ "$1" == "raid" ]; then
@@ -432,15 +439,13 @@ elif [ "$1" == "packages" ]; then
     func_install_packages
 elif [ "$1" == "initial" ]; then
     func_confirm_disk
-    func_archlinux_installation
-    func_wm_install
 elif [ "$1" == "amd" ]; then
     func_linux_amd
 elif [ "$1" == "nvidia" ]; then
     func_linux_nvidia
 else
     echo "Invalid argument: $1. Use the following variables below:"
-    echo "initial - will run all commands to install archlinux using all variables set in the script"
+    echo "initial - will run all through steps"
     echo "raid - to set lvm softraid between 2 NVMe (1/2)"
     echo "pamac - install pamac and yay"
     echo "chaotic - enable CHAOTIC AUR repo"
