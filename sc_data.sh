@@ -1,9 +1,9 @@
 #!/bin/bash
 
-DB_USER=$(cat data.ini |grep DB_USER |cut -d= -f2)
-DB_PASS=$(cat data.ini |grep DB_PASS |cut -d= -f2)
-DB_HOST=$(cat data.ini |grep DB_HOST |cut -d= -f2)
-DB_NAME=$(cat data.ini |grep DB_NAME |cut -d= -f2)
+DB_USER=$(cat sc_vars.ini |grep DB_USER |cut -d= -f2)
+DB_PASS=$(cat sc_vars.ini |grep DB_PASS |cut -d= -f2)
+DB_HOST=$(cat sc_vars.ini |grep DB_HOST |cut -d= -f2)
+DB_NAME=$(cat sc_vars.ini |grep DB_NAME |cut -d= -f2)
 DB_COMM="mariadb -u $DB_USER -p$DB_PASS -h $DB_HOST -D $DB_NAME --skip-column-names -s -r -e"
 
 cd $HOME/.git/linux/
@@ -16,7 +16,7 @@ func_begin() {
     killall conky
     killall cava
     killall konsole
-    kstart5 --window cava --alldesktops --onbottom --keepbelow --maximize-horizontally --desktopfile /FS/DATA/juliano/.git/linux/config/konsole-cava.kwinrule ~/.git/linux/data startcava
+    kstart5 --window cava --alldesktops --onbottom --keepbelow --maximize-horizontally --desktopfile /FS/DATA/juliano/.git/linux/config/konsole-cava.kwinrule ~/.git/linux/sc_data.sh startcava
     sleep 2
     WIN_ID1=$(xdotool search --class "konsole" | tail -1)
     sleep 1
@@ -26,7 +26,7 @@ func_begin() {
     sleep 1
     xdotool windowactivate $WIN_ID1
     
-    kstart5 --window conky --alldesktops --onbottom --keepbelow --maximize-horizontally --desktopfile /FS/DATA/juliano/.git/linux/config/konsole-cava.kwinrule ~/.git/linux/data startconky
+    kstart5 --window conky --alldesktops --onbottom --keepbelow --maximize-horizontally --desktopfile /FS/DATA/juliano/.git/linux/config/konsole-cava.kwinrule ~/.git/linux/sc_data.sh startconky
     #sleep 2
     #WIN_ID2=$(xdotool search --class "Conky" | tail -1)
     #sleep 1
@@ -103,7 +103,7 @@ elif [[ "$1" == "rebuild" ]]; then
 
 elif [[ "$1" == "update" ]]; then
     cd ~/.git/linux/
-    python3 data.py
+    python3 sc_data.py
     func_wallpaper
 
 elif [[ "$1" == "check_all" ]]; then

@@ -6,25 +6,20 @@ import sys
 import os
 import time
 
-# Função para redirecionar saída para o arquivo de log
 def redirect_output_to_log(log_file):
     sys.stdout = open(log_file, 'a')
     sys.stderr = open(log_file, 'a')
 
-# Função para registrar a identificação da rotina com timestamp
 def log_routine_start(log_file, routine_name):
     timestamp = datetime.datetime.now().strftime("%a %d %b %H_%M")
     log_line = f"Routine: {routine_name}, Timestamp: {timestamp}\n"
     with open(log_file, 'a') as log:
         log.write(log_line)
 
-# Diretório de log
-log_directory = '/var/log/backup'
+log_directory = '~/.git/linux/'
 
-# Nome do arquivo de log
-log_file = os.path.join(log_directory, 'backup.log')
+log_file = os.path.join(log_directory, 'err.log')
 
-# Verificar se o diretório de log existe, senão, crie-o
 if not os.path.exists(log_directory):
     os.makedirs(log_directory)
 
