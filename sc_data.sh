@@ -4,7 +4,7 @@ DB_USER=$(cat sc_vars.ini |grep DB_USER |cut -d= -f2)
 DB_PASS=$(cat sc_vars.ini |grep DB_PASS |cut -d= -f2)
 DB_HOST=$(cat sc_vars.ini |grep DB_HOST |cut -d= -f2)
 DB_NAME=$(cat sc_vars.ini |grep DB_NAME |cut -d= -f2)
-DB_COMM="mariadb -u $DB_USER -p$DB_PASS -h $DB_HOST -D $DB_NAME --skip-column-names -s -r -e"
+DB_COMM="mariadb -u $DB_USER -p$DB_PASS -h $DB_HOST -D $DB_NAME --skip-column-names -s -r"
 
 cd $HOME/.git/linux/
 
@@ -25,7 +25,7 @@ func_begin() {
     xdotool windowmove $WIN_ID1 0 1865
     sleep 1
     xdotool windowactivate $WIN_ID1
-    
+
     kstart5 --window conky --alldesktops --onbottom --keepbelow --maximize-horizontally --desktopfile /FS/DATA/juliano/.git/linux/config/konsole-cava.kwinrule ~/.git/linux/sc_data.sh startconky
     #sleep 2
     #WIN_ID2=$(xdotool search --class "Conky" | tail -1)
@@ -66,16 +66,15 @@ if [[ -z "$1" ]]; then
 elif [[ "$1" == "startconky" ]]; then
     if pgrep -x "conky"; then
         killall conky
-        nice -n 19 conky -q -d -c "$HOME/.git/linux/conky_ju.conf" &
+        nice -n 19 /home/juliano/Downloads/Install/Packages/conky.AppImage -q -d -c "$HOME/.git/linux/conky_ju.conf" &
         sleep 1
-        nice -n 19 conky -q -d -c "$HOME/.git/linux/conky_bg.conf" &
+        nice -n 19 /home/juliano/Downloads/Install/Packages/conky.AppImage -q -d -c "$HOME/.git/linux/conky_bg.conf" &
         #xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id `xdotool search --class conky`
     else
-        nice -n 19 conky -q -d -c "$HOME/.git/linux/conky_ju.conf" &
+        nice -n 19 /home/juliano/Downloads/Install/Packages/conky.AppImage -q -d -c "$HOME/.git/linux/conky_ju.conf" &
         sleep 1
-        nice -n 19 conky -q -d -c "$HOME/.git/linux/conky_bg.conf" &
+        nice -n 19 /home/juliano/Downloads/Install/Packages/conky.AppImage -q -d -c "$HOME/.git/linux/conky_bg.conf" &
         #xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id `xdotool search --class conky`
-        clear
     fi
 
 elif [[ "$1" == "startcava" ]]; then konsole --force-reuse --profile Cava --hide-menubar --hide-tabbar --title "Cava" -e cava -p /FS/DATA/juliano/.git/linux/config/cavaconfig
@@ -95,10 +94,10 @@ elif [[ "$1" == "begin" ]]; then func_begin
 elif [[ "$1" == "rebuild" ]]; then
     cd $HOME/.git/linux/
     #for inst in `cat requirements`; do sudo pacman -S python-$inst; done
-    $DB_COMM < rebuild.sql
-    $DB_COMM < .todo.sql
+    $DB_COMM < db_rebuild.sql
+    $DB_COMM < db_todo.sql
     cd ~/.git/linux/
-    python3 data.py
+    python3 sc_data.py
     func_wallpaper
 
 elif [[ "$1" == "update" ]]; then

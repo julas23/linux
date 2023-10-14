@@ -24,7 +24,6 @@ if not os.path.exists(log_directory):
     os.makedirs(log_directory)
 
 ##
-os.system('clear')
 def check_internet_connection():
     try:
         subprocess.run(['ping', '-c', '3', '8.8.8.8'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
@@ -49,13 +48,12 @@ except mysql.connector.Error as e:
 time.sleep(5)
 
 ##
-os.system('clear')
-os.system('yes |sudo sensors-detect')
+os.system('yes | sudo sensors-detect')
 for command_id in range(1, 7):
     cursor = conn.cursor()
     select_query = "SELECT cmd_out FROM t_bulkcon WHERE id = %s"
     update_query = "UPDATE t_bulkcon SET mass_out = %s WHERE id = %s"
-    
+
     cursor.execute(select_query, (command_id,))
     rows = cursor.fetchall()
 
@@ -73,7 +71,6 @@ for command_id in range(1, 7):
 time.sleep(5)
 
 ##
-os.system('clear')
 def get_public_ip():
     try:
         response = requests.get('https://api.ipify.org/?format=json')
@@ -95,7 +92,6 @@ if public_ip:
 time.sleep(5)
 
 ##
-os.system('clear')
 city = "Braga"
 api_key = "96191d21d3ba740890e070dec112bd0e"
 def get_weather_data(city, api_key):
@@ -113,22 +109,21 @@ weather_temp_max = str(weather_data['main']['temp_max'])[:2]
 if weather_data:
     cursor = conn.cursor()
     update_query = "UPDATE t_results SET outpu = %s WHERE variable = %s"
-    
+
     cursor.execute(update_query, (weather_temp_now, "weather_tmp_n"))
     conn.commit()
-    
+
     cursor.execute(update_query, (weather_temp_min, "weather_tmp_m"))
     conn.commit()
-    
+
     cursor.execute(update_query, (weather_temp_max, "weather_tmp_x"))
     conn.commit()
-    
+
     cursor.close()
 
 time.sleep(5)
 
 ##
-os.system('clear')
 def obter_estacao(mes):
     if mes in (1, 2, 3):
         return "Spring"
@@ -198,7 +193,6 @@ cursor.close()
 time.sleep(5)
 
 ##
-os.system('clear')
 def get_users_logged():
     command_output = subprocess.run(['who'], stdout=subprocess.PIPE, text=True).stdout
     num_users = len(command_output.splitlines())
@@ -214,7 +208,6 @@ get_users_logged()
 time.sleep(5)
 
 ##
-os.system('clear')
 today = datetime.date.today()
 next_1_day_fw = (today + datetime.timedelta(days=1)).strftime('%d/%b')
 next_2_day_fw = (today + datetime.timedelta(days=2)).strftime('%d/%b')
@@ -233,12 +226,10 @@ cursor.close()
 time.sleep(5)
 
 ##
-os.system('clear')
 shell_command = "cat /etc/passwd | grep $USER | awk -F: '{print $7}' | cut -d'/' -f 3"
 command_output = subprocess.run(shell_command, shell=True, stdout=subprocess.PIPE, text=True).stdout.strip()
 
 
-os.system('clear')
 cursor = conn.cursor()
 update_query_shell = "UPDATE t_results SET outpu = %s WHERE variable = %s"
 cursor.execute(update_query_shell, (command_output, "shell_running"))
@@ -248,7 +239,6 @@ cursor.close()
 time.sleep(5)
 
 ##
-os.system('clear')
 cursor = conn.cursor()
 variable_details = [
     ("distroversion",'1',"|awk 'NR==2 {print $2,$3,$4}'"),
@@ -284,7 +274,6 @@ for variable, line_number, cmd in variable_details:
     result = cursor.fetchone()[0]
 
     combined_command = f"echo '{result}' {cmd}"
-    os.system('clear')
 
     process = subprocess.Popen(
         combined_command,

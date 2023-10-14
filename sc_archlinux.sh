@@ -450,7 +450,7 @@ elif [ "$1" == "chaotic" ]; then
 elif [ "$1" == "mariadb" ]; then
     func_mariadb
 elif [ "$1" == "packages" ]; then
-    func_install_packages
+    func_package_install
 elif [ "$1" == "amd" ]; then
     func_linux_amd
 elif [ "$1" == "nvidia" ]; then
