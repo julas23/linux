@@ -68,18 +68,6 @@ else
     fi
 fi
 
-echo "USERNAME:" $USERNAME
-echo "PASSWORD:" $PASSWORD
-echo "ARCHTECT:" $ARCHITECTURE
-echo "WINDOW M:" $WINDOWMANAGER
-echo "HOSTNAME:" $HOSTNAME
-echo "NETWORKIP:" $NETWORKIP
-echo "GATEWAYIP:" $GATEWAYIP
-echo "NAMESERVER1:" $NAMESERVER1
-echo "NAMESERVER2:" $NAMESERVER2
-echo "WIFIPASSWORD:" $WIFIPASSWORD
-echo "STORAGE:" $STORAGE
-
 read -rp "All done to proceed? (Y/N): " response
 case "$response" in
     [yY])
@@ -426,7 +414,8 @@ func_mariadb() {
 		chmod 744 $var -R
 	done
 	mariadb-install-db --user=mysql --basedir=/usr/bin --datadir=/var/lib/mysql
-
+    systemctl enable mariadb
+    systemctl start mariadb
 	mariadb -u root -p -e "CREATE DATABASE conky;"
 	mariadb -u root -p -e "CREATE USER '$USERNAME'@'localhost' IDENTIFIED BY '$PASSWORD';"
 	mariadb -u root -p -e "GRANT ALL PRIVILEGES ON *.* TO '$USERNAME'@'localhost';"
@@ -436,6 +425,18 @@ func_mariadb() {
 	mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON conky.* TO 'conky'@'localhost';"
 	systemctl restart mariadb
 }
+
+echo "USERNAME:" $USERNAME
+echo "PASSWORD:" $PASSWORD
+echo "ARCHTECT:" $ARCHITECTURE
+echo "WINDOW M:" $WINDOWMANAGER
+echo "HOSTNAME:" $HOSTNAME
+echo "NETWORKIP:" $NETWORKIP
+echo "GATEWAYIP:" $GATEWAYIP
+echo "NAMESERVER1:" $NAMESERVER1
+echo "NAMESERVER2:" $NAMESERVER2
+echo "WIFIPASSWORD:" $WIFIPASSWORD
+echo "STORAGE:" $STORAGE
 
 if [ "$1" == "initial" ]; then
     func_confirm_disk
