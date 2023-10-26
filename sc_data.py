@@ -5,6 +5,7 @@ import datetime
 import sys
 import os
 import time
+import configparser
 
 def redirect_output_to_log(log_file):
     sys.stdout = open(log_file, 'a')
@@ -92,8 +93,15 @@ if public_ip:
 time.sleep(5)
 
 ##
-city = "Braga"
-api_key = "96191d21d3ba740890e070dec112bd0e"
+config = configparser.ConfigParser()
+config.read('sv_vars.ini')
+
+city = config.get('Config', 'city')
+api_key = config.get('Config', 'api_key')
+
+print(f"Cidade: {city}")
+print(f"API Key: {api_key}")
+
 def get_weather_data(city, api_key):
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
     response = requests.get(url)
