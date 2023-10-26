@@ -18,7 +18,6 @@ def log_routine_start(log_file, routine_name):
         log.write(log_line)
 
 log_directory = '~/.git/linux/'
-
 log_file = os.path.join(log_directory, 'err.log')
 
 if not os.path.exists(log_directory):
