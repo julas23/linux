@@ -7,8 +7,7 @@ DB_NAME=$(cat sc_vars.ini |grep DB_NAME |cut -d= -f2)
 DB_COMM="mariadb -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_NAME --skip-column-names -s -r -e"
 HOMEDIR=/FS/DATA/juliano
 LINUXDIR=/FS/DATA/juliano/.git/linux
-CKPLACE=/FS/DATA/juliano/Downloads/Install/Packages/conky.AppImage
-#CKPLACE=conky
+CKPLACE=$(cat sc_vars.ini |grep CKPLACE |cut -d= -f2)
 
 cd $LINUXDIR/
 
