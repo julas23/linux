@@ -7,6 +7,36 @@ import os
 import time
 import configparser
 
+config = configparser.ConfigParser()
+config.read('sc_vars.ini')
+
+print("Checando as variáveis:")
+print(f"SOURCE_DIRECTORY: {config['Config']['SOURCE_DIRECTORY']}")
+print(f"DESTINATION_DIRECTORY: {config['Config']['DESTINATION_DIRECTORY']}")
+print(f"USERNAME: {config['Config']['USERNAME']}")
+print(f"PASSWORD: {config['Config']['PASSWORD']}")
+print(f"ROOTPASS: {config['Config']['ROOTPASS']}")
+print(f"STORAGE: {config['Config']['STORAGE']}")
+print(f"ARCHITECTURE: {config['Config']['ARCHITECTURE']}")
+print(f"WINDOWMANAGER: {config['Config']['WINDOWMANAGER']}")
+print(f"HOSTNAME: {config['Config']['HOSTNAME']}")
+print(f"WIFIPASSWORD: {config['Config']['WIFIPASSWORD']}")
+print(f"NETWORKIP: {config['Config']['NETWORKIP']}")
+print(f"PREFIX: {config['Config']['PREFIX']}")
+print(f"GATEWAYIP: {config['Config']['GATEWAYIP']}")
+print(f"NAMESERVER1: {config['Config']['NAMESERVER1']}")
+print(f"NAMESERVER2: {config['Config']['NAMESERVER2']}")
+print(f"WIFISSID: {config['Config']['WIFISSID']}")
+print(f"DB_USER: {config['Config']['DB_USER']}")
+print(f"DB_PASS: {config['Config']['DB_PASS']}")
+print(f"DB_HOST: {config['Config']['DB_HOST']}")
+print(f"DB_NAME: {config['Config']['DB_NAME']}")
+print(f"CITY: {config['Config']['CITY']}")
+print(f"API_KEY: {config['Config']['API_KEY']}")
+
+time.sleep(5)
+os.system('cls' if os.name == 'nt' else 'clear')
+
 def redirect_output_to_log(log_file):
     sys.stdout = open(log_file, 'a')
     sys.stderr = open(log_file, 'a')
@@ -24,10 +54,6 @@ if not os.path.exists(log_directory):
     os.makedirs(log_directory)
 
 ##
-config = configparser.ConfigParser()
-config.read('database_config.ini')
-database_config = config['Database']
-
 def check_internet_connection():
     try:
         subprocess.run(['ping', '-c', '3', '8.8.8.8'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
@@ -40,10 +66,10 @@ if not check_internet_connection():
 
 try:
     conn = mysql.connector.connect(
-        host = database_config['host']
-        user = database_config['user']
-        password = database_config['password']
-        database = database_config['database']
+        host=config['Config']['DB_HOST'],
+        user=config['Config']['DB_USER'],
+        password=config['Config']['DB_PASS'],
+        database=config['Config']['DB_NAME']
     )
 except mysql.connector.Error as e:
     print(f"Error connecting to MariaDB Platform: {e}")
@@ -96,11 +122,8 @@ if public_ip:
 time.sleep(5)
 
 ##
-config = configparser.ConfigParser()
-config.read('sv_vars.ini')
-
-city = config.get('Config', 'city')
-api_key = config.get('Config', 'api_key')
+city = config.get('Config', 'CITY')
+api_key = config.get('Config', 'API_KEY')
 
 print(f"Cidade: {city}")
 print(f"API Key: {api_key}")

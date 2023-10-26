@@ -4,7 +4,7 @@ DB_USER=$(cat sc_vars.ini |grep DB_USER |cut -d= -f2)
 DB_PASS=$(cat sc_vars.ini |grep DB_PASS |cut -d= -f2)
 DB_HOST=$(cat sc_vars.ini |grep DB_HOST |cut -d= -f2)
 DB_NAME=$(cat sc_vars.ini |grep DB_NAME |cut -d= -f2)
-DB_COMM="mariadb -u $DB_USER -p$DB_PASS -h $DB_HOST -D $DB_NAME --skip-column-names -s -r"
+DB_COMM="mariadb -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_NAME --skip-column-names -s -r -e"
 
 cd $HOME/.git/linux/
 
