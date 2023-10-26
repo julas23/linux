@@ -78,7 +78,6 @@ except mysql.connector.Error as e:
 time.sleep(5)
 
 ##
-os.system('yes | sudo sensors-detect')
 for command_id in range(1, 7):
     cursor = conn.cursor()
     select_query = "SELECT cmd_out FROM t_bulkcon WHERE id = %s"

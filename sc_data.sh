@@ -6,8 +6,9 @@ DB_HOST=$(cat sc_vars.ini |grep DB_HOST |cut -d= -f2)
 DB_NAME=$(cat sc_vars.ini |grep DB_NAME |cut -d= -f2)
 DB_COMM="mariadb -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_NAME --skip-column-names -s -r -e"
 HOMEDIR=/FS/DATA/juliano
-LINUXDIR=$HOMEDIR/.git.linux
-
+LINUXDIR=/FS/DATA/juliano/.git/linux
+CKPLACE=/FS/DATA/juliano/Downloads/Install/Packages/conky.AppImage
+#CKPLACE=conky
 
 cd $LINUXDIR/
 
@@ -69,14 +70,14 @@ if [[ -z "$1" ]]; then
 elif [[ "$1" == "startconky" ]]; then
     if pgrep -x "conky"; then
         killall conky
-        nice -n 19 /home/juliano/Downloads/Install/Packages/conky.AppImage -q -d -c "$LINUXDIR/conky_ju.conf" &
+        nice -n 19 $CKPLACE -q -d -c "$LINUXDIR/conky_ju.conf" &
         sleep 1
-        nice -n 19 /home/juliano/Downloads/Install/Packages/conky.AppImage -q -d -c "$LINUXDIR/conky_bg.conf" &
+        nice -n 19 $CKPLACE -q -d -c "$LINUXDIR/conky_bg.conf" &
         #xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id `xdotool search --class conky`
     else
-        nice -n 19 /home/juliano/Downloads/Install/Packages/conky.AppImage -q -d -c "$LINUXDIR/conky_ju.conf" &
+        nice -n 19 $CKPLACE -q -d -c "$LINUXDIR/conky_ju.conf" &
         sleep 1
-        nice -n 19 /home/juliano/Downloads/Install/Packages/conky.AppImage -q -d -c "$LINUXDIR/conky_bg.conf" &
+        nice -n 19 $CKPLACE -q -d -c "$LINUXDIR/conky_bg.conf" &
         #xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id `xdotool search --class conky`
     fi
 
@@ -96,15 +97,15 @@ elif [[ "$1" == "begin" ]]; then func_begin
 
 elif [[ "$1" == "rebuild" ]]; then
     cd $LINUXDIR/
-    #for inst in `cat requirements`; do sudo pacman -S python-$inst; done
     $DB_COMM < db_rebuild.sql
     $DB_COMM < db_todo.sql
     cd $LINUXDIR/
+    yes | sudo sensors-detect
     python3 sc_data.py
     func_wallpaper
 
 elif [[ "$1" == "update" ]]; then
-    cd $LINUXDIR/
+    cd $LINUXDIR
     python3 sc_data.py
     func_wallpaper
 
