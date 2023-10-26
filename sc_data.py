@@ -25,6 +25,10 @@ if not os.path.exists(log_directory):
     os.makedirs(log_directory)
 
 ##
+config = configparser.ConfigParser()
+config.read('database_config.ini')
+database_config = config['Database']
+
 def check_internet_connection():
     try:
         subprocess.run(['ping', '-c', '3', '8.8.8.8'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
@@ -37,10 +41,10 @@ if not check_internet_connection():
 
 try:
     conn = mysql.connector.connect(
-        host="localhost",
-        user="conky",
-        password="conky_db123",
-        database="conky"
+        host = database_config['host']
+        user = database_config['user']
+        password = database_config['password']
+        database = database_config['database']
     )
 except mysql.connector.Error as e:
     print(f"Error connecting to MariaDB Platform: {e}")
