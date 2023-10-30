@@ -1,10 +1,7 @@
 #!/bin/bash
 
-DB_USER=$(cat sc_vars.ini |grep DB_USER |cut -d= -f2)
-DB_PASS=$(cat sc_vars.ini |grep DB_PASS |cut -d= -f2)
-DB_HOST=$(cat sc_vars.ini |grep DB_HOST |cut -d= -f2)
-DB_NAME=$(cat sc_vars.ini |grep DB_NAME |cut -d= -f2)
-DB_COMM="mariadb -u $DB_USER -p$DB_PASS -h $DB_HOST $DB_NAME --skip-column-names -s -r -e"
+source sc_vars.ini
+
 HOMEDIR=/FS/DATA/juliano
 LINUXDIR=/FS/DATA/juliano/.git/linux
 CKPLACE=$(cat sc_vars.ini |grep CKPLACE |cut -d= -f2)
@@ -62,8 +59,8 @@ if [[ -z "$1" ]]; then
     echo "cloud_medium  - baixa e cria nuvens com qualidade média"
     echo "cloud_lower   - baixa e cria nuvens com qualidade mínima"
     echo ""
-    for var in $($DB_COMM "SELECT id from t_results"); do
-        echo $($DB_COMM "SELECT variable from t_results WHERE id = '$var'") '-' $($DB_COMM "SELECT descr from t_results WHERE id = '$var'")
+    for var in $($DBC "SELECT id from t_results"); do
+        echo $($DBC "SELECT variable from t_results WHERE id = '$var'") '-' $($DBC "SELECT descr from t_results WHERE id = '$var'")
     done
 
 elif [[ "$1" == "startconky" ]]; then
@@ -84,20 +81,18 @@ elif [[ "$1" == "startcava" ]]; then konsole --force-reuse --profile Cava --hide
 
 elif [[ "$1" == "wallpaper" ]]; then func_wallpaper
 
-elif [[ "$1" == "calendar" ]]; then $DB_COMM "SELECT mass_out FROM t_bulkcon WHERE id = '7'"
+elif [[ "$1" == "calendar" ]]; then $DBC "SELECT mass_out FROM t_bulkcon WHERE id = '7'"
 
-elif [[ "$1" == "task" ]]; then $DB_COMM "SELECT texto FROM t_todo WHERE tipo IN ('task');"
+elif [[ "$1" == "task" ]]; then $DBC "SELECT texto FROM t_todo WHERE tipo IN ('task');"
 
-elif [[ "$1" == "note" ]]; then $DB_COMM "SELECT texto FROM t_todo WHERE tipo IN ('note');"
-
-elif [[ "$1" == "safe" ]]; then $DB_COMM "SELECT texto FROM t_todo WHERE TIPO = 'safe';"
+elif [[ "$1" == "safe" ]]; then $DBS "SELECT varname,varvalue FROM t_safe;"
 
 elif [[ "$1" == "begin" ]]; then func_begin
 
 elif [[ "$1" == "rebuild" ]]; then
     cd $LINUXDIR/
-    $DB_COMM < db_rebuild.sql
-    $DB_COMM < db_todo.sql
+    $DBC < DBC_rebuild.sql
+    $DBC < DBC_todo.sql
     cd $LINUXDIR/
     yes | sudo sensors-detect
     python3 sc_data.py
@@ -109,11 +104,10 @@ elif [[ "$1" == "update" ]]; then
     func_wallpaper
 
 elif [[ "$1" == "check_all" ]]; then
-    clear
-    for var in $($DB_COMM "SELECT id from t_results"); do
-        echo $($DB_COMM "SELECT variable,outpu FROM t_results WHERE id = '$var'")
+    for var in $($DBC "SELECT id from t_results"); do
+        echo $($DBC "SELECT variable,outpu FROM t_results WHERE id = '$var'")
     done
-    echo $($DB_COMM "SELECT texto FROM t_todo")
+    echo $($DBC "SELECT texto FROM t_todo")
 else
-    $DB_COMM "SELECT outpu FROM t_results WHERE variable = '$1'"
+    $DBC "SELECT outpu FROM t_results WHERE variable = '$1'"
 fi
