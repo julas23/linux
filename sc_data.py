@@ -63,6 +63,16 @@ def get_variable_from_db(varname, conn):
     else:
         return ""
 
+def get_weather_data(city, api_key):
+    try:
+        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+        response = requests.get(url)
+        data = response.json()
+        return data
+    except requests.RequestException:
+        return None
+
+
 SOURCE_DIRECTORY = get_variable_from_db('SOURCE_DIRECTORY', conn_safe)
 DESTINATION_DIRECTORY = get_variable_from_db('DESTINATION_DIRECTORY', conn_safe)
 USERNAME = get_variable_from_db('USERNAME', conn_safe)
@@ -123,7 +133,7 @@ except mysql.connector.Error as e:
 time.sleep(5)
 
 ## Array for commands in DataBase
-print('Array for commands in DataBase')
+print('Array to input commands output in DataBase')
 for command_id in range(1, 7):
     cursor = conn_conky.cursor()
     select_query = "SELECT cmd_out FROM t_bulkcon WHERE id = %s"
@@ -169,17 +179,13 @@ time.sleep(5)
 
 ## OpenWeather data collection
 print('Grabbing data from OpenWeather')
-city = get_variable_from_db('CITY')
-api_key = get_variable_from_db('API_KEY')
+city = get_variable_from_db('CITY', conn_safe)
+api_key = get_variable_from_db('API_KEY', conn_safe)
 
 print(f"City: {city}")
 print(f"API Key: {api_key}")
 
-def get_weather_data( city, api_key ):
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
-    response = requests.get(url)
-    data = response.json()
-    return data
+weather_data = get_weather_data(city, api_key)
 
 if 'main' in weather_data:
     weather_temp_now = str(weather_data['main']['temp'])[:2]
@@ -201,6 +207,7 @@ if 'main' in weather_data:
     cursor.close()
 else:
     print("Error: 'main' key not found in the weather data.")
+
 
 time.sleep(5)
 

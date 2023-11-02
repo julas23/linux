@@ -4,7 +4,6 @@ source sc_vars.ini
 
 HOMEDIR=/FS/DATA/juliano
 LINUXDIR=/FS/DATA/juliano/.git/linux
-CKPLACE=$(cat sc_vars.ini |grep CKPLACE |cut -d= -f2)
 
 cd $LINUXDIR/
 
@@ -66,14 +65,14 @@ if [[ -z "$1" ]]; then
 elif [[ "$1" == "startconky" ]]; then
     if pgrep -x "conky"; then
         killall conky
-        nice -n 19 $CKPLACE -q -d -c "$LINUXDIR/conky_ju.conf" &
+        nice -n 19 conky -c "$LINUXDIR/conky_ju.conf" &
         sleep 1
-        nice -n 19 $CKPLACE -q -d -c "$LINUXDIR/conky_bg.conf" &
+        nice -n 19 conky -c "$LINUXDIR/conky_bg.conf" &
         #xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id `xdotool search --class conky`
     else
-        nice -n 19 $CKPLACE -q -d -c "$LINUXDIR/conky_ju.conf" &
+        nice -n 19 conky -c "$LINUXDIR/conky_ju.conf" &
         sleep 1
-        nice -n 19 $CKPLACE -q -d -c "$LINUXDIR/conky_bg.conf" &
+        nice -n 19 conky -c "$LINUXDIR/conky_bg.conf" &
         #xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id `xdotool search --class conky`
     fi
 
