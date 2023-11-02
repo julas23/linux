@@ -17,7 +17,7 @@ func_begin() {
     killall konsole
     kstart5 --window cava --alldesktops --onbottom --keepbelow --maximize-horizontally --desktopfile $LINUXDIR/config/konsole-cava.kwinrule $LINUXDIR/sc_data.sh startcava
     sleep 2
-    WIN_ID1=$(xdotool search --class "konsole" | tail -1)
+    WIN_ID1=$(xdotool search --class "Conky" | tail -1)
     sleep 1
     xdotool windowsize $WIN_ID1 3390 300
     sleep 1
@@ -85,6 +85,8 @@ elif [[ "$1" == "calendar" ]]; then $DBC "SELECT mass_out FROM t_bulkcon WHERE i
 elif [[ "$1" == "task" ]]; then $DBC "SELECT texto FROM t_todo WHERE tipo IN ('task');"
 
 elif [[ "$1" == "safe" ]]; then $DBS "SELECT varname,varvalue FROM t_safe;"
+
+elif [[ "$1" == "note" ]]; then $DBC "SELECT texto FROM t_todo WHERE tipo IN ('note')"
 
 elif [[ "$1" == "begin" ]]; then func_begin
 
