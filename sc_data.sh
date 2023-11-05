@@ -1,9 +1,10 @@
 #!/bin/bash
 
-source sc_vars.ini
 
 HOMEDIR=/FS/DATA/juliano
 LINUXDIR=/FS/DATA/juliano/.git/linux
+
+source $LINUXDIR/sc_vars.ini
 
 cd $LINUXDIR/
 
