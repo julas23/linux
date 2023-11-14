@@ -3,10 +3,10 @@
 echo "" >> /var/log/backup
 echo "Starting Backup Process" >> /var/log/backup
 
-PASSWORD=$(cat sc_vars.ini |grep PASSWORD |cut -d= -f2)
-SOURCE_DIRECTORY=$(cat sc_vars.ini |grep SOURCE_DIRECTORY |cut -d= -f2)
-DESTINATION_DIRECTORY=$(cat sc_vars.ini |grep DESTINATION_DIRECTORY |cut -d= -f2)
-TARGET=$SOURCE_DIRECTORY"/linux_backup/"$(date +'%a%d%b%Hh')"/"
+PASSWORD='jas2305X'
+SOURCE_DIRECTORY='/FS/DATA'
+DESTINATION_DIRECTORY='/FS/BACK/'
+TARGET="/FS/DATA/linux_backup/"$(date +'%a%d%b%Hh')"/"
 
 is_mounted() {
     mountpoint -q $DESTINATION_DIRECTORY
@@ -27,12 +27,12 @@ linuxfiles(){
     echo $TARGET 'created successfully'
 
     echo 'Backup of Crontab'
-    crontab -l $TARGET/crontab.bak
-
-    echo 'Updating data.'
-    /home/juliano/.git/linux/sc_data.sh update
+    crontab -l > $TARGET/crontab.bak
 
     echo 'Backing Up Linux files'
+    cp ~/.zshrc $TARGET/
+    cp ~/.bashrc $TARGET/
+    cp ~/.aliasrc $TARGET/
     cp /etc/default/grub $TARGET/grub
     cp /etc/mkinitcpio.conf $TARGET/mkinitcpio.conf
     cp /etc/fstab $TARGET/fstab
@@ -42,10 +42,7 @@ linuxfiles(){
 
     echo 'MariaDB Dump backup'
     sudo mariadb-dump -x -A -u juliano -p$PASSWORD -h localhost --all-databases > $TARGET/conky.sql
-
-    echo 'ZSH Theme'
-    sudo cp -r /usr/share/zsh-theme-powerlevel10k $TARGET
-    sudo cp -r /usr/share/zsh $TARGET
+    sudo mariadb-dump -x -A -u juliano -p$PASSWORD -h localhost --all-databases > $TARGET/safe.sql
 
     echo 'Removing 6 hour old backups. This list will be deleted.'
     find $DESTINATION_DIRECTORY/linux_backup/ -type d -cmin +360 -print
