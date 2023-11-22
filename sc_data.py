@@ -101,7 +101,7 @@ def redirect_output_to_log(log_file):
     sys.stdout = open(log_file, 'a')
     sys.stderr = open(log_file, 'a')
 
-log_directory = '/FS/DATA/juliano/.git/linux/'
+log_directory = '/FS/DATA/juliano/Git/linux/'
 log_file = os.path.join(log_directory, 'err.log')
 
 if not os.path.exists(log_directory):

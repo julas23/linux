@@ -44,9 +44,9 @@ linuxfiles(){
     sudo mariadb-dump -x -A -u juliano -p$PASSWORD -h localhost --all-databases > $TARGET/conky.sql
     sudo mariadb-dump -x -A -u juliano -p$PASSWORD -h localhost --all-databases > $TARGET/safe.sql
 
-    echo 'Removing 6 hour old backups. This list will be deleted.'
-    find $DESTINATION_DIRECTORY/linux_backup/ -type d -cmin +360 -print
-    #find $DESTINATION_DIRECTORY/linux_backup/ -type d -cmin +360 -exec rm -r {} \;
+    echo 'Removing 7 days old backups. This list will be deleted.'
+    find $DESTINATION_DIRECTORY/linux_backup/ -type d -mtime +7 -print
+    find $DESTINATION_DIRECTORY/linux_backup/ -type d -mtime +7 -exec rm -r {} \;
 
     sudo chown juliano:juliano $TARGET -R
     sudo chmod +r $TARGET -R
@@ -77,11 +77,23 @@ filesystem(){
     fi
 }
 
-if   [ "$1" == "linuxfiles" ]; then linuxfiles
-elif [ "$1" == "filesystem" ]; then filesystem
-elif [ -z "$1" ]; then
+filesystem(){
+    echo '-a run full backup'
+    echo '-l run linux files backup only'
+    echo '-f run filesystem backup only'
+}
+
+if   [ "$1" == "-l" ]; then linuxfiles
+elif [ "$1" == "-f" ]; then filesystem
+elif [ "$1" == "-a" ]; then
     linuxfiles
     filesystem
+    clear
+    echo 'System is going to halt in 30 seconds'
+    sleep 30
+    sudo shutdown -h now 
+elif [ -z "$1" ]; then
+    how_to_use
 else
     echo "Invalid Argument. Use 'linux_files', 'filesystem' or keep empty to run both."
 fi
