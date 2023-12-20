@@ -77,7 +77,7 @@ filesystem(){
     fi
 }
 
-filesystem(){
+how_to_use(){
     echo '-a run full backup'
     echo '-l run linux files backup only'
     echo '-f run filesystem backup only'
