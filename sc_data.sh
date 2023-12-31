@@ -103,6 +103,8 @@ elif [[ "$1" == "update" ]]; then
     cd $LINUXDIR
     python3 sc_data.py
     func_wallpaper
+    killall conky
+    nice -n 19 conky -c "$LINUXDIR/conky_ju.conf" &
 
 elif [[ "$1" == "check_all" ]]; then
     for var in $($DBC "SELECT id from t_results"); do
