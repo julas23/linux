@@ -45,7 +45,48 @@ func_wallpaper() {
     gsettings set org.mate.background picture-filename $LINUXDIR/worldmapwp/images/$(date +'%d%m%y').jpg
 }
 
-if [[ -z "$1" ]]; then
+func_startconky() {
+    if pgrep -x "conky"; then
+        killall conky
+        nice -n 19 conky -c "$LINUXDIR/conky_ju.conf" &
+        #sleep 1
+        #nice -n 19 conky -c "$LINUXDIR/conky_bg.conf" &
+        #xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id `xdotool search --class conky`
+    else
+        nice -n 19 conky -c "$LINUXDIR/conky_ju.conf" &
+        #sleep 1
+        #nice -n 19 conky -c "$LINUXDIR/conky_bg.conf" &
+        #xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id `xdotool search --class conky`
+    fi
+}
+
+func_update() {
+    cd $LINUXDIR
+    echo $TIMESTAMP 'Ran update' >> /var/log/output
+    python3 sc_data.py
+    func_wallpaper
+    func_startconky
+}
+
+func_rebuild() {
+    cd $LINUXDIR/
+    $DBC < db_rebuild.sql
+    $DBC < db_todo.sql
+    $DBC < db_safe.sql
+    cd $LINUXDIR/
+    yes | sudo sensors-detect
+    python3 sc_data.py
+    func_wallpaper
+}
+
+func_checkall() {
+    for var in $($DBC "SELECT id from t_results"); do
+        echo $($DBC "SELECT variable,outpu FROM t_results WHERE id = '$var'")
+    done
+    echo $($DBC "SELECT texto FROM t_todo")
+}
+
+func_example() {
     clear
     echo "Você deve declarar um dos parâmetros abaixo:"
     echo ""
@@ -62,58 +103,32 @@ if [[ -z "$1" ]]; then
     for var in $($DBC "SELECT id from t_results"); do
         echo $($DBC "SELECT variable from t_results WHERE id = '$var'") '-' $($DBC "SELECT descr from t_results WHERE id = '$var'")
     done
+}
 
-elif [[ "$1" == "startconky" ]]; then
-    if pgrep -x "conky"; then
-        killall conky
-        nice -n 19 conky -c "$LINUXDIR/conky_ju.conf" &
-        #sleep 1
-        #nice -n 19 conky -c "$LINUXDIR/conky_bg.conf" &
-        #xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id `xdotool search --class conky`
-    else
-        nice -n 19 conky -c "$LINUXDIR/conky_ju.conf" &
-        #sleep 1
-        #nice -n 19 conky -c "$LINUXDIR/conky_bg.conf" &
-        #xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id `xdotool search --class conky`
-    fi
+if [[ -z "$1" ]]; then func_example
+
+elif [[ "$1" == "startconky" ]]; then func_startconky
 
 elif [[ "$1" == "startcava" ]]; then konsole --force-reuse --profile Cava --hide-menubar --hide-tabbar --title "Cava" -e cava -p $LINUXDIR/config/cavaconfig
 
 elif [[ "$1" == "wallpaper" ]]; then func_wallpaper
 
-elif [[ "$1" == "calendar" ]]; then $DBC "SELECT mass_out FROM t_bulkcon WHERE id = '7'"
+elif [[ "$1" == "begin" ]]; then func_begin
 
+elif [[ "$1" == "rebuild" ]]; then func_rebuild
+
+elif [[ "$1" == "update" ]]; then func_update
+
+elif [[ "$1" == "check_all" ]]; then func_checkall
+
+elif [[ "$1" == "calendar" ]]; then $DBC "SELECT mass_out FROM t_bulkcon WHERE id = '7'"
+.
 elif [[ "$1" == "task" ]]; then $DBC "SELECT texto FROM t_todo WHERE tipo IN ('task');"
 
 elif [[ "$1" == "safe" ]]; then $DBS "SELECT varname,varvalue FROM t_safe;"
 
 elif [[ "$1" == "note" ]]; then $DBC "SELECT texto FROM t_todo WHERE tipo IN ('note')"
 
-elif [[ "$1" == "begin" ]]; then func_begin
-
-elif [[ "$1" == "rebuild" ]]; then
-    cd $LINUXDIR/
-    $DBC < db_rebuild.sql
-    $DBC < db_todo.sql
-    $DBC < db_safe.sql
-    cd $LINUXDIR/
-    yes | sudo sensors-detect
-    python3 sc_data.py
-    func_wallpaper
-
-elif [[ "$1" == "update" ]]; then
-    cd $LINUXDIR
-    echo $TIMESTAMP 'Ran update' >> $LINUXDIR/err.log
-    func_wallpaper
-    killall conky
-    startconky
-    python3 sc_data.py
-
-elif [[ "$1" == "check_all" ]]; then
-    for var in $($DBC "SELECT id from t_results"); do
-        echo $($DBC "SELECT variable,outpu FROM t_results WHERE id = '$var'")
-    done
-    echo $($DBC "SELECT texto FROM t_todo")
 else
     $DBC "SELECT outpu FROM t_results WHERE variable = '$1'"
 fi
