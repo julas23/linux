@@ -4,21 +4,31 @@ echo "" >> /var/log/backup
 echo "Starting Backup Process" >> /var/log/backup
 
 PASSWORD='jas2305X'
-SOURCE_DIRECTORY='/FS/DATA'
-DESTINATION_DIRECTORY='/FS/BACK/'
-TARGET="/FS/DATA/linux_backup/"$(date +'%a%d%b%Hh')"/"
+SOURCE='/FS/DATA'
+DESTIN='/FS/BACK/'
+TSTAMP=$(date +'%a%d%b%Hh')
+TARGET=$SOURCE'/linux_backup/'$TSTAMP
 
 is_mounted() {
-    mountpoint -q $DESTINATION_DIRECTORY
+    mountpoint -q $DESTIN
 }
 attempt_mount() {
-    if ! is_mounted "$DESTINATION_DIRECTORY"; then
-        echo "Mounting '$DESTINATION_DIRECTORY'..."
-        if ! mount "$DESTINATION_DIRECTORY"; then
-            echo "Failed to mount '$DESTINATION_DIRECTORY'. Aborting."
+    if ! is_mounted "$DESTIN"; then
+        echo "Mounting '$DESTIN'..."
+        if ! mount "$DESTIN"; then
+            echo "Failed to mount '$DESTIN'. Aborting."
             exit 1
         fi
     fi
+}
+
+test_check(){
+    echo 'PASSWORD' $PASSWORD
+    echo 'SOURCE' $SOURCE
+    echo 'DESTI' $DESTIN
+    echo 'TSTAMP' $TSTAMP
+    echo 'TARGET' $TARGET
+    echo 'mkdir' $TARGET
 }
 
 linuxfiles(){
@@ -29,6 +39,12 @@ linuxfiles(){
     echo 'Backup of Crontab'
     crontab -l > $TARGET/crontab.bak
 
+    echo 'Backup of Oh_My_Zsh'
+    tar czf $TARGET/oh-my-zsh.tar.gz $SOURCE/juliano/.oh-my-zsh
+
+    echo 'Backup of Git'
+    tar czf $TARGET/Git.tar.gz $SOURCE/juliano/Git
+
     echo 'Backing Up Linux files'
     cp ~/.zshrc $TARGET/
     cp ~/.bashrc $TARGET/
@@ -36,17 +52,19 @@ linuxfiles(){
     cp /etc/default/grub $TARGET/grub
     cp /etc/mkinitcpio.conf $TARGET/mkinitcpio.conf
     cp /etc/fstab $TARGET/fstab
+    cp /etc/juliano_rc.local $TARGET/juliano_rc.local
+    cp /etc/systemd/system/juliano.service $TARGET/juliano.service
     cp /etc/passwd $TARGET/passwd
     crontab -l > $TARGET/crontab.bak
     cp ~/.xinitrc $TARGET/.xinitrc
 
     echo 'MariaDB Dump backup'
-    sudo mariadb-dump -x -A -u juliano -p$PASSWORD -h localhost --all-databases > $TARGET/conky.sql
-    sudo mariadb-dump -x -A -u juliano -p$PASSWORD -h localhost --all-databases > $TARGET/safe.sql
+    sudo mariadb-dump -x -A -u juliano -p$PASSWORD -h localhost --all-databases > $TARGET/db_$TSTAMP.sql
 
     echo 'Removing 7 days old backups. This list will be deleted.'
-    find $DESTINATION_DIRECTORY/linux_backup/ -type d -mtime +7 -print
-    find $DESTINATION_DIRECTORY/linux_backup/ -type d -mtime +7 -exec rm -r {} \;
+    find $SOURCE/linux_backup/ -type d -mtime +7 -print
+    find $SOURCE/linux_backup/ -type d -mtime +7 -exec rm -r {} \;
+    find $SOURCE/linux_backup/ -type d -mtime +7 -delete;
 
     sudo chown juliano:juliano $TARGET -R
     sudo chmod +r $TARGET -R
@@ -54,23 +72,23 @@ linuxfiles(){
 
 filesystem(){
     is_mounted
-    if [ ! -d "$SOURCE_DIRECTORY" ]; then
-        echo "Source directory '$SOURCE_DIRECTORY' does not exist."
+    if [ ! -d "$SOURCE" ]; then
+        echo "Source directory '$SOURCE' does not exist."
         exit 1
     fi
 
-    if [ ! -d "$DESTINATION_DIRECTORY" ]; then
-        echo "Destination directory '$DESTINATION_DIRECTORY' does not exist."
+    if [ ! -d "$DESTIN" ]; then
+        echo "Destination directory '$DESTIN' does not exist."
         exit 1
     fi
 
-    attempt_mount "$DESTINATION_DIRECTORY"
+    attempt_mount "$DESTIN"
 
-    diff_output=$(rsync -rcv --delete "$SOURCE_DIRECTORY/" "$DESTINATION_DIRECTORY/")
+    diff_output=$(rsync -rcv --delete "$SOURCE/" "$DESTIN/")
 
     if [ -n "$diff_output" ]; then
         echo "Differences found. Synchronizing..."
-        rsync -avu --delete "$SOURCE_DIRECTORY/" "$DESTINATION_DIRECTORY/" >> /var/log/backup
+        rsync -avu --delete "$SOURCE/" "$DESTIN/" >> /var/log/backup
         echo "Synchronization complete."
     else
         echo "No differences found."
@@ -84,6 +102,7 @@ how_to_use(){
 }
 
 if   [ "$1" == "-l" ]; then linuxfiles
+elif [ "$1" == "-c" ]; then test_check
 elif [ "$1" == "-f" ]; then filesystem
 elif [ "$1" == "-a" ]; then
     linuxfiles

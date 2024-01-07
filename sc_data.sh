@@ -2,6 +2,7 @@
 
 HOMEDIR=/FS/DATA/juliano
 LINUXDIR=/FS/DATA/juliano/Git/linux
+TIMESTAMP=$(date +'%A %d %B %Y - %H:%M')
 
 source $LINUXDIR/sc_vars.ini
 
@@ -92,8 +93,9 @@ elif [[ "$1" == "begin" ]]; then func_begin
 
 elif [[ "$1" == "rebuild" ]]; then
     cd $LINUXDIR/
-    $DBC < DBC_rebuild.sql
-    $DBC < DBC_todo.sql
+    $DBC < db_rebuild.sql
+    $DBC < db_todo.sql
+    $DBC < db_safe.sql
     cd $LINUXDIR/
     yes | sudo sensors-detect
     python3 sc_data.py
@@ -101,10 +103,11 @@ elif [[ "$1" == "rebuild" ]]; then
 
 elif [[ "$1" == "update" ]]; then
     cd $LINUXDIR
-    python3 sc_data.py
+    echo $TIMESTAMP 'Ran update' >> $LINUXDIR/err.log
     func_wallpaper
     killall conky
     nice -n 19 conky -c "$LINUXDIR/conky_ju.conf" &
+    python3 sc_data.py
 
 elif [[ "$1" == "check_all" ]]; then
     for var in $($DBC "SELECT id from t_results"); do
