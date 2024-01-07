@@ -106,7 +106,7 @@ elif [[ "$1" == "update" ]]; then
     echo $TIMESTAMP 'Ran update' >> $LINUXDIR/err.log
     func_wallpaper
     killall conky
-    nice -n 19 conky -c "$LINUXDIR/conky_ju.conf" &
+    startconky
     python3 sc_data.py
 
 elif [[ "$1" == "check_all" ]]; then
