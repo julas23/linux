@@ -47,8 +47,9 @@ func_wallpaper() {
 
 func_startconky() {
     if pgrep -x "conky"; then
-        killall conky
-        nice -n 19 conky -c "$LINUXDIR/conky_ju.conf" &
+        clear
+        #killall conky
+        #nice -n 19 conky -c "$LINUXDIR/conky_ju.conf" &
         #sleep 1
         #nice -n 19 conky -c "$LINUXDIR/conky_bg.conf" &
         #xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id `xdotool search --class conky`
@@ -63,9 +64,9 @@ func_startconky() {
 func_update() {
     cd $LINUXDIR
     echo $TIMESTAMP 'Ran update' >> /var/log/output
-    python3 sc_data.py
     func_wallpaper
     func_startconky
+    python3 sc_data.py
 }
 
 func_rebuild() {
@@ -122,7 +123,7 @@ elif [[ "$1" == "update" ]]; then func_update
 elif [[ "$1" == "check_all" ]]; then func_checkall
 
 elif [[ "$1" == "calendar" ]]; then $DBC "SELECT mass_out FROM t_bulkcon WHERE id = '7'"
-.
+
 elif [[ "$1" == "task" ]]; then $DBC "SELECT texto FROM t_todo WHERE tipo IN ('task');"
 
 elif [[ "$1" == "safe" ]]; then $DBS "SELECT varname,varvalue FROM t_safe;"
