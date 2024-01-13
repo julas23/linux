@@ -9,9 +9,13 @@ DESTIN='/FS/BACK/'
 TSTAMP=$(date +'%a%d%b%Hh')
 TARGET=$SOURCE'/linux_backup/'$TSTAMP
 
+sudo chown juliano:juliano /FS/ -R
+sudo chmod 755 /FS/ -R
+
 is_mounted() {
     mountpoint -q $DESTIN
 }
+
 attempt_mount() {
     if ! is_mounted "$DESTIN"; then
         echo "Mounting '$DESTIN'..."
