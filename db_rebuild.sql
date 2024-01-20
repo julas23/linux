@@ -63,5 +63,4 @@ INSERT INTO t_bulkcon (cmd_out, mass_out) VALUES
 ('sudo dmidecode -t 2', ''),
 ('sudo dmidecode -t 17', ''),
 ('nvidia-smi', ''),
-('nvidia-smi', ''),
 ('data-update', '');

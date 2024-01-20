@@ -100,6 +100,9 @@ func_deeptest() {
         do
             echo $($DBC "SELECT texto FROM t_todo WHERE id = '$var2'")
         done
+    echo ''
+    echo ''
+    echo $($DBC "SELECT mass_out FROM t_bulkcon WHERE id = '7'")
 }
 
 func_example() {

@@ -316,7 +316,7 @@ cursor.close()
 time.sleep(5)
 
 ##
-shell_command = "cat /etc/passwd | grep $USER | awk -F: '{print $7}' | cut -d'/' -f 3"
+shell_command = "cat /etc/passwd | grep $USER | awk -F: '{print $7}' | cut -d'/' -f 4"
 command_output = subprocess.run(shell_command, shell=True, stdout=subprocess.PIPE, text=True).stdout.strip()
 
 cursor = conn_conky.cursor()
