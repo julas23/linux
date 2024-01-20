@@ -87,6 +87,21 @@ func_checkall() {
     echo $($DBC "SELECT texto FROM t_todo")
 }
 
+func_deeptest() {
+    echo 'Testing DB Conky Table t_results'
+    for var1 in $($DBC "SELECT id from t_results")
+        do
+            echo $($DBC  "SELECT variable,outpu FROM t_results WHERE id = '$var1'");
+        done
+    echo ''
+    echo ''
+    echo 'Testing DB Conky Table t_todo'
+    for var2 in $($DBC "SELECT id FROM t_todo")
+        do
+            echo $($DBC "SELECT texto FROM t_todo WHERE id = '$var2'")
+        done
+}
+
 func_example() {
     clear
     echo "Você deve declarar um dos parâmetros abaixo:"
@@ -121,6 +136,8 @@ elif [[ "$1" == "rebuild" ]]; then func_rebuild
 elif [[ "$1" == "update" ]]; then func_update
 
 elif [[ "$1" == "check_all" ]]; then func_checkall
+
+elif [[ "$1" == "deeptest" ]]; then func_deeptest
 
 elif [[ "$1" == "calendar" ]]; then $DBC "SELECT mass_out FROM t_bulkcon WHERE id = '7'"
 

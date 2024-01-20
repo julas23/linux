@@ -1,6 +1,0 @@
-rsync: [sender] send_files failed to open "/FS/DATA/juliano/.local/share/Trash/files/nohup.out": Permission denied (13)
-rsync: [sender] opendir "/FS/DATA/lost+found" failed: Permission denied (13)
-rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1336) [sender=3.2.7]
-rsync: [sender] send_files failed to open "/FS/DATA/juliano/.local/share/Trash/files/nohup.out": Permission denied (13)
-rsync: [sender] opendir "/FS/DATA/lost+found" failed: Permission denied (13)
-rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1336) [sender=3.2.7]

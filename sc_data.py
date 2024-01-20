@@ -2,13 +2,15 @@ import mysql.connector
 import subprocess
 import requests
 import datetime
-import sys
 import os
 import time
+import sys
+print(sys.executable)
+print(sys.version)
 
 print('Checking Conky DataBase')
 config_db_conky = {
-    "host": "localhost",
+    "host": "192.168.100.254",
     "user": "conky",
     "password": "conky_db123",
     "database": "conky"
@@ -26,7 +28,7 @@ conn_conky = connect_to_db_conky(config_db_conky)
 
 print('Checking Safe DataBase')
 config_db_safe = {
-    "host": "localhost",
+    "host": "192.168.100.254",
     "user": "juliano",
     "password": "jas2305X",
     "database": "safe"
