@@ -63,7 +63,7 @@ linuxfiles(){
     cp ~/.xinitrc $TARGET/.xinitrc
 
     echo 'MariaDB Dump backup'
-    sudo mariadb-dump -x -A -u juliano -p$PASSWORD -h localhost --all-databases > $TARGET/db_$TSTAMP.sql
+    sudo mariadb-dump -x -A -u juliano -p$PASSWORD -h 192.168.100.254 --all-databases > $TARGET/db_$TSTAMP.sql
 
     echo 'Removing 7 days old backups. This list will be deleted.'
     find $SOURCE/linux_backup/ -type d -mtime +7 -print

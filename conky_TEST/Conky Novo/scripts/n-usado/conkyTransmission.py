@@ -142,7 +142,7 @@ class TransmissionInfo:
             self.options = options
 
             # sort out the server option
-            self.options.server = self.options.server.replace("localhost", "127.0.0.1")
+            self.options.server = self.options.server.replace("192.168.100.254", "127.0.0.1")
 
             # create the rpc and client objects
             self.client = transmissionrpc.Client(self.options.server, self.options.port) #, self.options.username, self.options.password)

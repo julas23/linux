@@ -33,8 +33,8 @@ func_cable_cfg() {
     echo $NAMESERVER1 > /etc/resolv.conf
     echo $NAMESERVER2 >> /etc/resolv.conf
     echo $HOSTNAME > /etc/hostname
-    echo '127.0.0.1     localhost'  > /etc/hosts
-    echo '::1           localhost'  >> /etc/hosts
+    echo '127.0.0.1     192.168.100.254'  > /etc/hosts
+    echo '::1           192.168.100.254'  >> /etc/hosts
     echo '127.0.1.1	    myarch'     >> /etc/hosts
 }
 
@@ -52,8 +52,8 @@ func_wifi_cfg() {
     echo $NAMESERVER1 > /etc/resolv.conf
     echo $NAMESERVER2 >> /etc/resolv.conf
     echo $HOSTNAME > /etc/hostname
-    echo '127.0.0.1     localhost'  > /etc/hosts
-    echo '::1           localhost'  >> /etc/hosts
+    echo '127.0.0.1     192.168.100.254'  > /etc/hosts
+    echo '::1           192.168.100.254'  >> /etc/hosts
     echo '127.0.1.1	    myarch'     >> /etc/hosts
 }
 
@@ -417,12 +417,12 @@ func_mariadb() {
     systemctl enable mariadb
     systemctl start mariadb
 	mariadb -u root -p -e "CREATE DATABASE conky;"
-	mariadb -u root -p -e "CREATE USER '$USERNAME'@'localhost' IDENTIFIED BY '$PASSWORD';"
-	mariadb -u root -p -e "GRANT ALL PRIVILEGES ON *.* TO '$USERNAME'@'localhost';"
-	mariadb -u root -p -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$PASSWORD';"
-	mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';"
-	mariadb -u root -p$PASSWORD -e "CREATE USER 'conky'@'localhost' IDENTIFIED BY '$PASSWORD';"
-	mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON conky.* TO 'conky'@'localhost';"
+	mariadb -u root -p -e "CREATE USER '$USERNAME'@'192.168.100.254' IDENTIFIED BY '$PASSWORD';"
+	mariadb -u root -p -e "GRANT ALL PRIVILEGES ON *.* TO '$USERNAME'@'192.168.100.254';"
+	mariadb -u root -p -e "ALTER USER 'root'@'192.168.100.254' IDENTIFIED BY '$PASSWORD';"
+	mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.100.254';"
+	mariadb -u root -p$PASSWORD -e "CREATE USER 'conky'@'192.168.100.254' IDENTIFIED BY '$PASSWORD';"
+	mariadb -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON conky.* TO 'conky'@'192.168.100.254';"
 	systemctl restart mariadb
 }
 
