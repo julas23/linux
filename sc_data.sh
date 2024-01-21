@@ -4,8 +4,6 @@ HOMEDIR=/FS/DATA/juliano
 LINUXDIR=/FS/DATA/juliano/Git/linux
 TIMESTAMP=$(date +'%A %d %B %Y - %H:%M')
 
-source $LINUXDIR/sc_vars.ini
-
 cd $LINUXDIR/
 
 for i in $(who | awk '{print $1}'); do
