@@ -57,7 +57,7 @@ INSERT INTO t_results (variable, descr, outpu) VALUES
 ('next_4_day_fw', 'Date 4 days ago', '');
 
 INSERT INTO t_bulkcon (cmd_out, mass_out) VALUES
-('screenfetch -nN', ''),
+('neofetch --off', ''),
 ('sudo lshw -class memory', ''),
 ('sensors', ''),
 ('sudo dmidecode -t 2', ''),

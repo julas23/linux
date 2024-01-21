@@ -241,7 +241,7 @@ if [ $TIME1 -lt $TIME ] ; then
         else
             cat ~/.brweather/cache/open2_A | sed 's/{"dt"/\n"{dt"/g' > ~/.brweather/cache/open2_B
             grep "dt_calc" ~/.brweather/cache/open2_B | sed 's/id/cityid/g' > ~/.brweather/cache/open2
-            for i in `egrep ^'"{dt":' ~/.brweather/cache/open2_B | cut -f2 -d':' | cut -f1 -d','` ; do
+            for i in `grep -E ^'"{dt":' ~/.brweather/cache/open2_B | cut -f2 -d':' | cut -f1 -d','` ; do
                 DATE=`date -d "1/1/1970 + $i seconds" "+%a:%H"`
                 grep "\"{dt\":$i" ~/.brweather/cache/open2_B | sed -e "s/$i/$DATE:/" >> ~/.brweather/cache/open2
             done
@@ -268,7 +268,7 @@ if [ $TIME1 -lt $TIME ] ; then
         else
             cat ~/.brweather/cache/open2_A | sed 's/{"dt"/\n"{dt"/g' > ~/.brweather/cache/open2_B
             grep "dt_calc" ~/.brweather/cache/open2_B | sed 's/id/cityid/g' > ~/.brweather/cache/open2
-            for i in `egrep ^'"{dt":' ~/.brweather/cache/open2_B | cut -f2 -d':' | cut -f1 -d','` ; do
+            for i in `grep -E ^'"{dt":' ~/.brweather/cache/open2_B | cut -f2 -d':' | cut -f1 -d','` ; do
                 DATE=`date -d "1/1/1970 + $i seconds" "+%a:%H"`
                 grep "\"{dt\":$i" ~/.brweather/cache/open2_B | sed -e "s/$i/$DATE:/" >> ~/.brweather/cache/open2
             done
